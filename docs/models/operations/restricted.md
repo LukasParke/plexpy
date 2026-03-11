@@ -2,6 +2,14 @@
 
 Indicates if the user has restricted access.
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import Restricted
+
+value = Restricted.DISABLE
+```
+
 
 ## Values
 

@@ -7,9 +7,10 @@ from plex_api_client.models.components import (
     hub as components_hub,
     mediatype as components_mediatype,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -115,6 +116,36 @@ class VoiceSearchHubsGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class VoiceSearchHubsRequestTypedDict(TypedDict):
@@ -270,6 +301,38 @@ class VoiceSearchHubsRequest(BaseModel):
     ] = None
     r"""The number of items to return per hub.  3 if not specified"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+                "type",
+                "limit",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class VoiceSearchHubsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
@@ -316,6 +379,22 @@ class VoiceSearchHubsMediaContainer(BaseModel):
         None
     )
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["identifier", "offset", "size", "totalSize", "Hub"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class VoiceSearchHubsResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -329,6 +408,22 @@ class VoiceSearchHubsResponseBody(BaseModel):
     media_container: Annotated[
         Optional[VoiceSearchHubsMediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class VoiceSearchHubsResponseTypedDict(TypedDict):
@@ -357,3 +452,29 @@ class VoiceSearchHubsResponse(BaseModel):
 
     object: Optional[VoiceSearchHubsResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    VoiceSearchHubsMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    VoiceSearchHubsResponseBody.model_rebuild()
+except NameError:
+    pass

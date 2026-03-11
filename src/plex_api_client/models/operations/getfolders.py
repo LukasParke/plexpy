@@ -3,9 +3,10 @@
 from __future__ import annotations
 import httpx
 from plex_api_client.models.components import accepts as components_accepts
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -111,6 +112,36 @@ class GetFoldersGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetFoldersRequestTypedDict(TypedDict):
@@ -224,6 +255,36 @@ class GetFoldersRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetFoldersDirectoryTypedDict(TypedDict):
     fast_key: NotRequired[str]
@@ -237,6 +298,22 @@ class GetFoldersDirectory(BaseModel):
     key: Optional[str] = None
 
     title: Optional[str] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["fastKey", "key", "title"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetFoldersMediaContainerTypedDict(TypedDict):
@@ -284,6 +361,24 @@ class GetFoldersMediaContainer(BaseModel):
         Optional[List[GetFoldersDirectory]], pydantic.Field(alias="Directory")
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["identifier", "offset", "size", "totalSize", "Directory"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetFoldersResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -297,6 +392,22 @@ class GetFoldersResponseBody(BaseModel):
     media_container: Annotated[
         Optional[GetFoldersMediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetFoldersResponseTypedDict(TypedDict):
@@ -322,3 +433,33 @@ class GetFoldersResponse(BaseModel):
 
     object: Optional[GetFoldersResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    GetFoldersDirectory.model_rebuild()
+except NameError:
+    pass
+try:
+    GetFoldersMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetFoldersResponseBody.model_rebuild()
+except NameError:
+    pass

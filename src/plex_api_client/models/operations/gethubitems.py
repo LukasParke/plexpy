@@ -6,9 +6,10 @@ from plex_api_client.models.components import (
     accepts as components_accepts,
     mediacontainer as components_mediacontainer,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -114,6 +115,36 @@ class GetHubItemsGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetHubItemsRequestTypedDict(TypedDict):
@@ -233,6 +264,37 @@ class GetHubItemsRequest(BaseModel):
     ] = None
     r"""Limit results to count items"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+                "count",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetHubItemsResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -257,6 +319,22 @@ class GetHubItemsResponseBody(BaseModel):
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
 
     """
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetHubItemsResponseTypedDict(TypedDict):
@@ -285,3 +363,25 @@ class GetHubItemsResponse(BaseModel):
 
     object: Optional[GetHubItemsResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    GetHubItemsResponseBody.model_rebuild()
+except NameError:
+    pass

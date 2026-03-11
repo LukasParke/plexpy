@@ -3,9 +3,10 @@
 from __future__ import annotations
 import httpx
 from plex_api_client.models.components import accepts as components_accepts
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -111,6 +112,36 @@ class GetColorsGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetColorsRequestTypedDict(TypedDict):
@@ -223,6 +254,37 @@ class GetColorsRequest(BaseModel):
     ] = None
     r"""Url for image which requires color extraction. Can be relative PMS library path or absolute url."""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+                "url",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class UltraBlurColorsTypedDict(TypedDict):
     bottom_left: NotRequired[str]
@@ -247,6 +309,22 @@ class UltraBlurColors(BaseModel):
 
     top_right: Annotated[Optional[str], pydantic.Field(alias="topRight")] = None
     r"""The color (hex) for the top right quadrant."""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["bottomLeft", "bottomRight", "topLeft", "topRight"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetColorsMediaContainerTypedDict(TypedDict):
@@ -294,6 +372,24 @@ class GetColorsMediaContainer(BaseModel):
         Optional[List[UltraBlurColors]], pydantic.Field(alias="UltraBlurColors")
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["identifier", "offset", "size", "totalSize", "UltraBlurColors"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetColorsResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -307,6 +403,22 @@ class GetColorsResponseBody(BaseModel):
     media_container: Annotated[
         Optional[GetColorsMediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetColorsResponseTypedDict(TypedDict):
@@ -332,3 +444,33 @@ class GetColorsResponse(BaseModel):
 
     object: Optional[GetColorsResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    UltraBlurColors.model_rebuild()
+except NameError:
+    pass
+try:
+    GetColorsMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetColorsResponseBody.model_rebuild()
+except NameError:
+    pass

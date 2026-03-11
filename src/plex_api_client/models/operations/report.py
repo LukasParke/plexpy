@@ -7,9 +7,10 @@ from plex_api_client.models.components import (
     accepts as components_accepts,
     boolint as components_boolint,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import Any, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -115,6 +116,36 @@ class ReportGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class State(str, Enum):
@@ -355,6 +386,51 @@ class ReportRequest(BaseModel):
     ] = None
     r"""Unique per client playback session.  Used if a client can playback multiple items at a time (such as a browser with multiple tabs)"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+                "key",
+                "ratingKey",
+                "state",
+                "playQueueItemID",
+                "time",
+                "duration",
+                "continuing",
+                "updated",
+                "offline",
+                "timeToFirstFrame",
+                "timeStalled",
+                "bandwidth",
+                "bufferedTime",
+                "bufferedSize",
+                "X-Plex-Session-Identifier",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class BandwidthTypedDict(TypedDict):
     bandwidth: NotRequired[int]
@@ -375,6 +451,22 @@ class Bandwidth(BaseModel):
     time: Optional[int] = None
     r"""Media playback time where this bandwidth started"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["bandwidth", "resolution", "time"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class BandwidthsTypedDict(TypedDict):
     r"""A list of media times and bandwidths when trascoding is using with auto adjustment of bandwidth"""
@@ -388,6 +480,22 @@ class Bandwidths(BaseModel):
     bandwidth: Annotated[
         Optional[List[Bandwidth]], pydantic.Field(alias="Bandwidth")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["Bandwidth"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class MediaContainerTypedDict(TypedDict):
@@ -661,6 +769,80 @@ class MediaContainer(BaseModel):
     ] = None
     r"""A user friendly and localized text describing why the session was terminated by the server."""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "identifier",
+                "offset",
+                "size",
+                "totalSize",
+                "allowCameraUpload",
+                "allowChannelAccess",
+                "allowMediaDeletion",
+                "allowSharing",
+                "allowSync",
+                "allowTuners",
+                "backgroundProcessing",
+                "certificate",
+                "companionProxy",
+                "countryCode",
+                "diagnostics",
+                "eventStream",
+                "friendlyName",
+                "hubSearch",
+                "itemClusters",
+                "livetv",
+                "machineIdentifier",
+                "mediaProviders",
+                "multiuser",
+                "musicAnalysis",
+                "myPlex",
+                "myPlexMappingState",
+                "myPlexSigninState",
+                "myPlexSubscription",
+                "myPlexUsername",
+                "offlineTranscode",
+                "ownerFeatures",
+                "platform",
+                "platformVersion",
+                "pluginHost",
+                "pushNotifications",
+                "readOnlyLibraries",
+                "streamingBrainABRVersion",
+                "streamingBrainVersion",
+                "sync",
+                "transcoderActiveVideoSessions",
+                "transcoderAudio",
+                "transcoderLyrics",
+                "transcoderPhoto",
+                "transcoderSubtitles",
+                "transcoderVideo",
+                "transcoderVideoBitrates",
+                "transcoderVideoQualities",
+                "transcoderVideoResolutions",
+                "updatedAt",
+                "updater",
+                "version",
+                "voiceSearch",
+                "Bandwidths",
+                "terminationCode",
+                "terminationText",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class ReportResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -674,6 +856,22 @@ class ReportResponseBody(BaseModel):
     media_container: Annotated[
         Optional[MediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class ReportResponseTypedDict(TypedDict):
@@ -699,3 +897,33 @@ class ReportResponse(BaseModel):
 
     object: Optional[ReportResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    Bandwidths.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    ReportResponseBody.model_rebuild()
+except NameError:
+    pass

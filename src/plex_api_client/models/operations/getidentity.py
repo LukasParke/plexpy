@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 import httpx
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -32,6 +33,22 @@ class GetIdentityMediaContainer(BaseModel):
     version: Optional[str] = None
     r"""The full version string of the PMS"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["claimed", "machineIdentifier", "size", "version"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetIdentityResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -45,6 +62,22 @@ class GetIdentityResponseBody(BaseModel):
     media_container: Annotated[
         Optional[GetIdentityMediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetIdentityResponseTypedDict(TypedDict):
@@ -70,3 +103,29 @@ class GetIdentityResponse(BaseModel):
 
     object: Optional[GetIdentityResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    GetIdentityMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetIdentityResponseBody.model_rebuild()
+except NameError:
+    pass

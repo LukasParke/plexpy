@@ -2,6 +2,14 @@
 
 Whether or not media watched indicators are enabled (little orange dot on media)
 
+## Example Usage
+
+```python
+from plex_api_client.models.components import WatchedIndicator
+
+value = WatchedIndicator.NONE
+```
+
 
 ## Values
 

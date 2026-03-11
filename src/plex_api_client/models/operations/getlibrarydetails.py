@@ -7,7 +7,7 @@ from plex_api_client.models.components import (
     boolint as components_boolint,
     metadata as components_metadata,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import (
     FieldMetadata,
     HeaderMetadata,
@@ -15,6 +15,7 @@ from plex_api_client.utils import (
     QueryParamMetadata,
 )
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -120,6 +121,36 @@ class GetLibraryDetailsGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetLibraryDetailsRequestTypedDict(TypedDict):
@@ -242,6 +273,37 @@ class GetLibraryDetailsRequest(BaseModel):
     ] = components_boolint.BoolInt.FALSE
     r"""Whether or not to include details for a section (types, filters, and sorts). Only exists for backwards compatibility, media providers other than the server libraries have it on always."""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+                "includeDetails",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetLibraryDetailsMediaContainerTypedDict(TypedDict):
     content: NotRequired[str]
@@ -307,6 +369,39 @@ class GetLibraryDetailsMediaContainer(BaseModel):
 
     view_mode: Annotated[Optional[int], pydantic.Field(alias="viewMode")] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "content",
+                "allowSync",
+                "art",
+                "Directory",
+                "identifier",
+                "librarySectionID",
+                "mediaTagPrefix",
+                "mediaTagVersion",
+                "size",
+                "sortAsc",
+                "thumb",
+                "title1",
+                "viewGroup",
+                "viewMode",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetLibraryDetailsResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -321,6 +416,22 @@ class GetLibraryDetailsResponseBody(BaseModel):
         Optional[GetLibraryDetailsMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetLibraryDetailsResponseTypedDict(TypedDict):
@@ -346,3 +457,29 @@ class GetLibraryDetailsResponse(BaseModel):
 
     object: Optional[GetLibraryDetailsResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    GetLibraryDetailsMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetLibraryDetailsResponseBody.model_rebuild()
+except NameError:
+    pass

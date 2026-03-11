@@ -6,9 +6,10 @@ from plex_api_client.models.components import (
     accepts as components_accepts,
     device as components_device,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -114,6 +115,36 @@ class RemoveDeviceFromDVRGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class RemoveDeviceFromDVRRequestTypedDict(TypedDict):
@@ -236,6 +267,36 @@ class RemoveDeviceFromDVRRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class RemoveDeviceFromDVRDVRsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
@@ -282,6 +343,22 @@ class RemoveDeviceFromDVRDVRsMediaContainer(BaseModel):
     status: Optional[int] = None
     r"""A status indicator. If present and non-zero, indicates an error"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["identifier", "offset", "size", "totalSize", "status"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class RemoveDeviceFromDVRDVRTypedDict(TypedDict):
     device: NotRequired[List[components_device.DeviceTypedDict]]
@@ -304,6 +381,22 @@ class RemoveDeviceFromDVRDVR(BaseModel):
 
     uuid: Optional[str] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["Device", "key", "language", "lineup", "uuid"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class RemoveDeviceFromDVRMediaContainerTypedDict(TypedDict):
     media_container: NotRequired[RemoveDeviceFromDVRDVRsMediaContainerTypedDict]
@@ -320,6 +413,22 @@ class RemoveDeviceFromDVRMediaContainer(BaseModel):
         Optional[List[RemoveDeviceFromDVRDVR]], pydantic.Field(alias="DVR")
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer", "DVR"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class RemoveDeviceFromDVRResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -334,6 +443,22 @@ class RemoveDeviceFromDVRResponseBody(BaseModel):
         Optional[RemoveDeviceFromDVRMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class RemoveDeviceFromDVRResponseTypedDict(TypedDict):
@@ -362,3 +487,37 @@ class RemoveDeviceFromDVRResponse(BaseModel):
 
     object: Optional[RemoveDeviceFromDVRResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    RemoveDeviceFromDVRDVRsMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    RemoveDeviceFromDVRDVR.model_rebuild()
+except NameError:
+    pass
+try:
+    RemoveDeviceFromDVRMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    RemoveDeviceFromDVRResponseBody.model_rebuild()
+except NameError:
+    pass

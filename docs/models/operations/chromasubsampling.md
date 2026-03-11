@@ -7,6 +7,14 @@ Use the specified chroma subsambling.
   - 3: 444
 Defaults to 3 (444)
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import ChromaSubsampling
+
+value = ChromaSubsampling.ZERO
+```
+
 
 ## Values
 

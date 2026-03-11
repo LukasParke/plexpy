@@ -3,9 +3,10 @@
 from __future__ import annotations
 import httpx
 from plex_api_client.models.components import accepts as components_accepts
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -111,6 +112,36 @@ class GetDevicesChannelsGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetDevicesChannelsRequestTypedDict(TypedDict):
@@ -224,6 +255,36 @@ class GetDevicesChannelsRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class DeviceChannelTypedDict(TypedDict):
     drm: NotRequired[bool]
@@ -258,6 +319,33 @@ class DeviceChannel(BaseModel):
     signal_strength: Annotated[
         Optional[int], pydantic.Field(alias="signalStrength")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "drm",
+                "favorite",
+                "hd",
+                "identifier",
+                "key",
+                "name",
+                "signalQuality",
+                "signalStrength",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetDevicesChannelsMediaContainerTypedDict(TypedDict):
@@ -305,6 +393,24 @@ class GetDevicesChannelsMediaContainer(BaseModel):
         Optional[List[DeviceChannel]], pydantic.Field(alias="DeviceChannel")
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["identifier", "offset", "size", "totalSize", "DeviceChannel"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetDevicesChannelsResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -319,6 +425,22 @@ class GetDevicesChannelsResponseBody(BaseModel):
         Optional[GetDevicesChannelsMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetDevicesChannelsResponseTypedDict(TypedDict):
@@ -347,3 +469,33 @@ class GetDevicesChannelsResponse(BaseModel):
 
     object: Optional[GetDevicesChannelsResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    DeviceChannel.model_rebuild()
+except NameError:
+    pass
+try:
+    GetDevicesChannelsMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetDevicesChannelsResponseBody.model_rebuild()
+except NameError:
+    pass

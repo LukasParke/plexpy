@@ -2,6 +2,14 @@
 
 Describes both the purpose and intended presentation of the image.
 
+## Example Usage
+
+```python
+from plex_api_client.models.components import ImageType
+
+value = ImageType.BACKGROUND
+```
+
 
 ## Values
 

@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 from .mediatype import MediaType
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -79,3 +80,19 @@ class MediaQuery(BaseModel):
 
     limit: Annotated[Optional[int], FieldMetadata(query=True)] = None
     r"""Maximum number of results to return"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["type", "sourceType", "sort", "group", "limit"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m

@@ -8,7 +8,7 @@ from plex_api_client.models.components import (
     boolint as components_boolint,
     mediacontainerwithplaylistmetadata as components_mediacontainerwithplaylistmetadata,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import (
     FieldMetadata,
     HeaderMetadata,
@@ -16,6 +16,7 @@ from plex_api_client.utils import (
     QueryParamMetadata,
 )
 import pydantic
+from pydantic import model_serializer
 from typing import Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -122,6 +123,36 @@ class ModifyPlaylistGeneratorGlobals(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class ModifyPlaylistGeneratorQueryParamLocationTypedDict(TypedDict):
     uri: NotRequired[str]
@@ -129,6 +160,22 @@ class ModifyPlaylistGeneratorQueryParamLocationTypedDict(TypedDict):
 
 class ModifyPlaylistGeneratorQueryParamLocation(BaseModel):
     uri: Annotated[Optional[str], FieldMetadata(query=True)] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["uri"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class QueryParamScope(str, Enum):
@@ -150,6 +197,22 @@ class Policy(BaseModel):
     unwatched: Annotated[
         Optional[components_boolint.BoolInt], FieldMetadata(query=True)
     ] = components_boolint.BoolInt.FALSE
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["value", "scope", "unwatched"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class ItemTypedDict(TypedDict):
@@ -198,6 +261,32 @@ class Item(BaseModel):
     title: Annotated[Optional[str], FieldMetadata(query=True)] = None
 
     type: Annotated[Optional[int], FieldMetadata(query=True)] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "Location",
+                "locationID",
+                "Policy",
+                "target",
+                "targetTagID",
+                "title",
+                "type",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class ModifyPlaylistGeneratorRequestTypedDict(TypedDict):
@@ -337,6 +426,37 @@ class ModifyPlaylistGeneratorRequest(BaseModel):
 
     """
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+                "Item",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class ModifyPlaylistGeneratorResponseTypedDict(TypedDict):
     content_type: str
@@ -365,3 +485,19 @@ class ModifyPlaylistGeneratorResponse(BaseModel):
         components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadata
     ] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainerWithPlaylistMetadata"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m

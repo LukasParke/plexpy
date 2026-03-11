@@ -4,9 +4,10 @@ from __future__ import annotations
 from enum import Enum
 import httpx
 from plex_api_client.models.components import accepts as components_accepts
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -112,6 +113,36 @@ class GetPlaylistGeneratorsGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetPlaylistGeneratorsRequestTypedDict(TypedDict):
@@ -225,6 +256,36 @@ class GetPlaylistGeneratorsRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetPlaylistGeneratorsType(int, Enum):
     r"""The type of playlist generator.
@@ -277,6 +338,24 @@ class PlayQueueGenerator(BaseModel):
     uri: Optional[str] = None
     r"""The URI indicating the search for this generator"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["changedAt", "createdAt", "id", "playlistID", "type", "updatedAt", "uri"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetPlaylistGeneratorsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
@@ -323,6 +402,24 @@ class GetPlaylistGeneratorsMediaContainer(BaseModel):
         Optional[List[PlayQueueGenerator]], pydantic.Field(alias="PlayQueueGenerator")
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["identifier", "offset", "size", "totalSize", "PlayQueueGenerator"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetPlaylistGeneratorsResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -337,6 +434,22 @@ class GetPlaylistGeneratorsResponseBody(BaseModel):
         Optional[GetPlaylistGeneratorsMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetPlaylistGeneratorsResponseTypedDict(TypedDict):
@@ -362,3 +475,33 @@ class GetPlaylistGeneratorsResponse(BaseModel):
 
     object: Optional[GetPlaylistGeneratorsResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    PlayQueueGenerator.model_rebuild()
+except NameError:
+    pass
+try:
+    GetPlaylistGeneratorsMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetPlaylistGeneratorsResponseBody.model_rebuild()
+except NameError:
+    pass

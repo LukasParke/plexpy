@@ -8,9 +8,10 @@ from plex_api_client.models.components import (
     mediacontainerwithmetadata as components_mediacontainerwithmetadata,
     mediatype as components_mediatype,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -116,6 +117,36 @@ class GetLibraryMatchesGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetLibraryMatchesRequestTypedDict(TypedDict):
@@ -362,6 +393,50 @@ class GetLibraryMatchesRequest(BaseModel):
     ] = None
     r"""Used for albums and tracks. The artist name for albums or the album name for tracks."""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+                "type",
+                "includeFullMetadata",
+                "includeAncestorMetadata",
+                "includeAlternateMetadataSources",
+                "guid",
+                "title",
+                "year",
+                "path",
+                "grandparentTitle",
+                "grandparentYear",
+                "parentIndex",
+                "index",
+                "originallyAvailableAt",
+                "parentTitle",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetLibraryMatchesResponseTypedDict(TypedDict):
     content_type: str
@@ -393,3 +468,19 @@ class GetLibraryMatchesResponse(BaseModel):
         components_mediacontainerwithmetadata.MediaContainerWithMetadata
     ] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainerWithMetadata"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m

@@ -61,30 +61,14 @@ class Services(BaseModel):
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = []
-        nullable_fields = ["token", "secret"]
-        null_default_fields = []
-
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
+            if val != UNSET_SENTINEL:
                 m[k] = val
 
         return m
@@ -150,38 +134,28 @@ class Subscription(BaseModel):
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = [
-            "features",
-            "active",
-            "subscribedAt",
-            "status",
-            "paymentService",
-            "plan",
-        ]
-        nullable_fields = ["subscribedAt", "paymentService", "plan"]
-        null_default_fields = []
-
+        optional_fields = set(
+            ["features", "active", "subscribedAt", "status", "paymentService", "plan"]
+        )
+        nullable_fields = set(["subscribedAt", "paymentService", "plan"])
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
+            is_nullable_and_explicitly_set = (
+                k in nullable_fields
+                and (self.__pydantic_fields_set__.intersection({n}))  # pylint: disable=no-member
+            )
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
-                m[k] = val
+            if val != UNSET_SENTINEL:
+                if (
+                    val is not None
+                    or k not in optional_fields
+                    or is_nullable_and_explicitly_set
+                ):
+                    m[k] = val
 
         return m
 
@@ -242,38 +216,28 @@ class UserPlexAccountSubscription(BaseModel):
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = [
-            "features",
-            "active",
-            "subscribedAt",
-            "status",
-            "paymentService",
-            "plan",
-        ]
-        nullable_fields = ["subscribedAt", "paymentService", "plan"]
-        null_default_fields = []
-
+        optional_fields = set(
+            ["features", "active", "subscribedAt", "status", "paymentService", "plan"]
+        )
+        nullable_fields = set(["subscribedAt", "paymentService", "plan"])
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
+            is_nullable_and_explicitly_set = (
+                k in nullable_fields
+                and (self.__pydantic_fields_set__.intersection({n}))  # pylint: disable=no-member
+            )
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
-                m[k] = val
+            if val != UNSET_SENTINEL:
+                if (
+                    val is not None
+                    or k not in optional_fields
+                    or is_nullable_and_explicitly_set
+                ):
+                    m[k] = val
 
         return m
 
@@ -508,72 +472,85 @@ class UserPlexAccount(BaseModel):
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = [
-            "adsConsent",
-            "adsConsentReminderAt",
-            "adsConsentSetAt",
-            "anonymous",
-            "backupCodesCreated",
-            "confirmed",
-            "country",
-            "emailOnlyAuth",
-            "experimentalFeatures",
-            "entitlements",
-            "guest",
-            "hasPassword",
-            "home",
-            "homeAdmin",
-            "homeSize",
-            "locale",
-            "mailingListActive",
-            "mailingListStatus",
-            "maxHomeSize",
-            "pin",
-            "profile",
-            "protected",
-            "rememberExpiresAt",
-            "restricted",
-            "roles",
-            "scrobbleTypes",
-            "services",
-            "subscription",
-            "subscriptionDescription",
-            "subscriptions",
-            "thumb",
-            "twoFactorEnabled",
-            "attributionPartner",
-        ]
-        nullable_fields = [
-            "adsConsent",
-            "adsConsentReminderAt",
-            "adsConsentSetAt",
-            "anonymous",
-            "locale",
-            "subscriptionDescription",
-            "attributionPartner",
-        ]
-        null_default_fields = []
-
+        optional_fields = set(
+            [
+                "adsConsent",
+                "adsConsentReminderAt",
+                "adsConsentSetAt",
+                "anonymous",
+                "backupCodesCreated",
+                "confirmed",
+                "country",
+                "emailOnlyAuth",
+                "experimentalFeatures",
+                "entitlements",
+                "guest",
+                "hasPassword",
+                "home",
+                "homeAdmin",
+                "homeSize",
+                "locale",
+                "mailingListActive",
+                "mailingListStatus",
+                "maxHomeSize",
+                "pin",
+                "profile",
+                "protected",
+                "rememberExpiresAt",
+                "restricted",
+                "roles",
+                "scrobbleTypes",
+                "services",
+                "subscription",
+                "subscriptionDescription",
+                "subscriptions",
+                "thumb",
+                "twoFactorEnabled",
+                "attributionPartner",
+            ]
+        )
+        nullable_fields = set(
+            [
+                "adsConsent",
+                "adsConsentReminderAt",
+                "adsConsentSetAt",
+                "anonymous",
+                "locale",
+                "subscriptionDescription",
+                "attributionPartner",
+            ]
+        )
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
+            is_nullable_and_explicitly_set = (
+                k in nullable_fields
+                and (self.__pydantic_fields_set__.intersection({n}))  # pylint: disable=no-member
+            )
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
-                m[k] = val
+            if val != UNSET_SENTINEL:
+                if (
+                    val is not None
+                    or k not in optional_fields
+                    or is_nullable_and_explicitly_set
+                ):
+                    m[k] = val
 
         return m
+
+
+try:
+    Subscription.model_rebuild()
+except NameError:
+    pass
+try:
+    UserPlexAccountSubscription.model_rebuild()
+except NameError:
+    pass
+try:
+    UserPlexAccount.model_rebuild()
+except NameError:
+    pass

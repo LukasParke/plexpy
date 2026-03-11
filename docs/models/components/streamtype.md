@@ -6,6 +6,14 @@ Stream type:
   - SUBTITLE = 3 (Subtitle stream)
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.components import StreamType
+
+value = StreamType.VIDEO
+```
+
 
 ## Values
 

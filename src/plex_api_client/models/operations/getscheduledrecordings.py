@@ -5,8 +5,9 @@ import httpx
 from plex_api_client.models.components import (
     mediagraboperation as components_mediagraboperation,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -59,6 +60,24 @@ class GetScheduledRecordingsMediaContainer(BaseModel):
         pydantic.Field(alias="MediaGrabOperation"),
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["identifier", "offset", "size", "totalSize", "MediaGrabOperation"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetScheduledRecordingsResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -73,6 +92,22 @@ class GetScheduledRecordingsResponseBody(BaseModel):
         Optional[GetScheduledRecordingsMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetScheduledRecordingsResponseTypedDict(TypedDict):
@@ -101,3 +136,29 @@ class GetScheduledRecordingsResponse(BaseModel):
 
     object: Optional[GetScheduledRecordingsResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    GetScheduledRecordingsMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetScheduledRecordingsResponseBody.model_rebuild()
+except NameError:
+    pass

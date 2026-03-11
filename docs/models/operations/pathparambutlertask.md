@@ -2,6 +2,14 @@
 
 The task name
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import PathParamButlerTask
+
+value = PathParamButlerTask.AUTOMATIC_UPDATES
+```
+
 
 ## Values
 

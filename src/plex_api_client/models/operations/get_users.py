@@ -125,6 +125,36 @@ class GetUsersGlobals(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetUsersRequestTypedDict(TypedDict):
     accepts: NotRequired[components_accepts.Accepts]
@@ -227,6 +257,36 @@ class GetUsersRequest(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class Protected(int, Enum):
@@ -351,6 +411,22 @@ class Server(BaseModel):
 
     pending: Optional[Pending] = Pending.DISABLE
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["allLibraries", "owned", "pending"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class UserTypedDict(TypedDict):
     id: int
@@ -464,52 +540,51 @@ class User(BaseModel):
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = [
-            "recommendationsPlaylistId",
-            "protected",
-            "home",
-            "allowTuners",
-            "allowSync",
-            "allowCameraUpload",
-            "allowChannels",
-            "allowSubtitleAdmin",
-            "filterAll",
-            "filterMovies",
-            "filterMusic",
-            "filterPhotos",
-            "filterTelevision",
-            "restricted",
-        ]
-        nullable_fields = [
-            "recommendationsPlaylistId",
-            "filterAll",
-            "filterMovies",
-            "filterMusic",
-            "filterPhotos",
-        ]
-        null_default_fields = []
-
+        optional_fields = set(
+            [
+                "recommendationsPlaylistId",
+                "protected",
+                "home",
+                "allowTuners",
+                "allowSync",
+                "allowCameraUpload",
+                "allowChannels",
+                "allowSubtitleAdmin",
+                "filterAll",
+                "filterMovies",
+                "filterMusic",
+                "filterPhotos",
+                "filterTelevision",
+                "restricted",
+            ]
+        )
+        nullable_fields = set(
+            [
+                "recommendationsPlaylistId",
+                "filterAll",
+                "filterMovies",
+                "filterMusic",
+                "filterPhotos",
+            ]
+        )
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
+            is_nullable_and_explicitly_set = (
+                k in nullable_fields
+                and (self.__pydantic_fields_set__.intersection({n}))  # pylint: disable=no-member
+            )
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
-                m[k] = val
+            if val != UNSET_SENTINEL:
+                if (
+                    val is not None
+                    or k not in optional_fields
+                    or is_nullable_and_explicitly_set
+                ):
+                    m[k] = val
 
         return m
 
@@ -566,6 +641,22 @@ class GetUsersResponseBody(BaseModel):
     ] = None
     r"""Container holding user and server details."""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetUsersResponseTypedDict(TypedDict):
     content_type: str
@@ -590,3 +681,37 @@ class GetUsersResponse(BaseModel):
 
     object: Optional[GetUsersResponseBody] = None
     r"""Successful response with media container data in JSON"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    Server.model_rebuild()
+except NameError:
+    pass
+try:
+    User.model_rebuild()
+except NameError:
+    pass
+try:
+    GetUsersMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetUsersResponseBody.model_rebuild()
+except NameError:
+    pass

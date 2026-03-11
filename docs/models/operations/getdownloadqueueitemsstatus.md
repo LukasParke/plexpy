@@ -9,6 +9,14 @@ The state of the item:
   - expired: The transcoded item has timed out and is no longer available
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import GetDownloadQueueItemsStatus
+
+value = GetDownloadQueueItemsStatus.DECIDING
+```
+
 
 ## Values
 

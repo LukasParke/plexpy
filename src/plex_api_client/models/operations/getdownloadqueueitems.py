@@ -7,9 +7,10 @@ from plex_api_client.models.components import (
     accepts as components_accepts,
     transcodesession as components_transcodesession,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -115,6 +116,36 @@ class GetDownloadQueueItemsGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetDownloadQueueItemsRequestTypedDict(TypedDict):
@@ -237,6 +268,36 @@ class GetDownloadQueueItemsRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetDownloadQueueItemsDecisionResultTypedDict(TypedDict):
     available_bandwidth: NotRequired[int]
@@ -292,6 +353,34 @@ class GetDownloadQueueItemsDecisionResult(BaseModel):
     transcode_decision_text: Annotated[
         Optional[str], pydantic.Field(alias="transcodeDecisionText")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "availableBandwidth",
+                "directPlayDecisionCode",
+                "directPlayDecisionText",
+                "generalDecisionCode",
+                "generalDecisionText",
+                "mdeDecisionCode",
+                "mdeDecisionText",
+                "transcodeDecisionCode",
+                "transcodeDecisionText",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetDownloadQueueItemsStatus(str, Enum):
@@ -381,6 +470,33 @@ class GetDownloadQueueItemsDownloadQueueItem(BaseModel):
     ] = None
     r"""The transcode session if item is currently being transcoded"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "DecisionResult",
+                "error",
+                "id",
+                "key",
+                "queueId",
+                "status",
+                "transcode",
+                "TranscodeSession",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetDownloadQueueItemsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
@@ -430,6 +546,24 @@ class GetDownloadQueueItemsMediaContainer(BaseModel):
         pydantic.Field(alias="DownloadQueueItem"),
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["identifier", "offset", "size", "totalSize", "DownloadQueueItem"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetDownloadQueueItemsResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -444,6 +578,22 @@ class GetDownloadQueueItemsResponseBody(BaseModel):
         Optional[GetDownloadQueueItemsMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetDownloadQueueItemsResponseTypedDict(TypedDict):
@@ -469,3 +619,37 @@ class GetDownloadQueueItemsResponse(BaseModel):
 
     object: Optional[GetDownloadQueueItemsResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    GetDownloadQueueItemsDecisionResult.model_rebuild()
+except NameError:
+    pass
+try:
+    GetDownloadQueueItemsDownloadQueueItem.model_rebuild()
+except NameError:
+    pass
+try:
+    GetDownloadQueueItemsMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetDownloadQueueItemsResponseBody.model_rebuild()
+except NameError:
+    pass

@@ -308,7 +308,7 @@ class Authentication(BaseSDK):
                 marketplace=self.sdk_configuration.globals.marketplace,
             ),
             get_serialized_body=lambda: utils.serialize_request_body(
-                request.request_body,
+                request.request_body if request is not None else None,
                 False,
                 True,
                 "form",
@@ -432,7 +432,7 @@ class Authentication(BaseSDK):
                 marketplace=self.sdk_configuration.globals.marketplace,
             ),
             get_serialized_body=lambda: utils.serialize_request_body(
-                request.request_body,
+                request.request_body if request is not None else None,
                 False,
                 True,
                 "form",

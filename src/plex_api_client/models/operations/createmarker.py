@@ -4,7 +4,7 @@ from __future__ import annotations
 from enum import Enum
 import httpx
 from plex_api_client.models.components import accepts as components_accepts
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import (
     FieldMetadata,
     HeaderMetadata,
@@ -12,7 +12,7 @@ from plex_api_client.utils import (
     QueryParamMetadata,
 )
 import pydantic
-from pydantic import ConfigDict
+from pydantic import ConfigDict, model_serializer
 from typing import Any, Dict, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -118,6 +118,36 @@ class CreateMarkerGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class AttributesTypedDict(TypedDict):
@@ -268,6 +298,38 @@ class CreateMarkerRequest(BaseModel):
     ] = None
     r"""The attributes to assign to this marker"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+                "endTimeOffset",
+                "attributes",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class CreateMarkerType(str, Enum):
     INTRO = "intro"
@@ -352,6 +414,38 @@ class CreateMarkerMediaContainer(BaseModel):
     def additional_properties(self, value):
         self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "identifier",
+                "offset",
+                "size",
+                "totalSize",
+                "color",
+                "endTimeOffset",
+                "id",
+                "startTimeOffset",
+                "title",
+                "type",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
+
+        return m
+
 
 class CreateMarkerResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -365,6 +459,22 @@ class CreateMarkerResponseBody(BaseModel):
     media_container: Annotated[
         Optional[CreateMarkerMediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class CreateMarkerResponseTypedDict(TypedDict):
@@ -390,3 +500,29 @@ class CreateMarkerResponse(BaseModel):
 
     object: Optional[CreateMarkerResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    CreateMarkerMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    CreateMarkerResponseBody.model_rebuild()
+except NameError:
+    pass

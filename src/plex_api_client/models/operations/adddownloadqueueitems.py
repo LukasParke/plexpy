@@ -10,7 +10,7 @@ from plex_api_client.models.components import (
     protocol as components_protocol,
     subtitles as components_subtitles,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import (
     FieldMetadata,
     HeaderMetadata,
@@ -18,6 +18,7 @@ from plex_api_client.utils import (
     QueryParamMetadata,
 )
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -123,6 +124,36 @@ class AddDownloadQueueItemsGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class AddDownloadQueueItemsRequestTypedDict(TypedDict):
@@ -484,6 +515,62 @@ class AddDownloadQueueItemsRequest(BaseModel):
     ] = None
     r"""Target maximum video resolution."""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+                "advancedSubtitles",
+                "audioBoost",
+                "audioChannelCount",
+                "autoAdjustQuality",
+                "autoAdjustSubtitle",
+                "directPlay",
+                "directStream",
+                "directStreamAudio",
+                "disableResolutionRotation",
+                "hasMDE",
+                "location",
+                "mediaBufferSize",
+                "mediaIndex",
+                "musicBitrate",
+                "offset",
+                "partIndex",
+                "path",
+                "peakBitrate",
+                "photoResolution",
+                "protocol",
+                "secondsPerSegment",
+                "subtitleSize",
+                "subtitles",
+                "videoBitrate",
+                "videoQuality",
+                "videoResolution",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class AddedQueueItemsTypedDict(TypedDict):
     id: NotRequired[int]
@@ -498,6 +585,22 @@ class AddedQueueItems(BaseModel):
 
     key: Optional[str] = None
     r"""The key added to the queue"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["id", "key"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class AddDownloadQueueItemsMediaContainerTypedDict(TypedDict):
@@ -545,6 +648,24 @@ class AddDownloadQueueItemsMediaContainer(BaseModel):
         Optional[List[AddedQueueItems]], pydantic.Field(alias="AddedQueueItems")
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["identifier", "offset", "size", "totalSize", "AddedQueueItems"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class AddDownloadQueueItemsResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -559,6 +680,22 @@ class AddDownloadQueueItemsResponseBody(BaseModel):
         Optional[AddDownloadQueueItemsMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class AddDownloadQueueItemsResponseTypedDict(TypedDict):
@@ -584,3 +721,29 @@ class AddDownloadQueueItemsResponse(BaseModel):
 
     object: Optional[AddDownloadQueueItemsResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    AddDownloadQueueItemsMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    AddDownloadQueueItemsResponseBody.model_rebuild()
+except NameError:
+    pass

@@ -1,5 +1,13 @@
 # PathParamElement
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import PathParamElement
+
+value = PathParamElement.THUMB
+```
+
 
 ## Values
 

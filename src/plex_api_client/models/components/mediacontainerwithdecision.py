@@ -7,9 +7,9 @@ from .sort import Sort, SortTypedDict
 from .tag import Tag, TagTypedDict
 from datetime import date
 from enum import Enum
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
-from pydantic import ConfigDict
+from pydantic import ConfigDict, model_serializer
 from typing import Any, Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -26,6 +26,16 @@ class MediaContainerWithDecisionGuids(BaseModel):
     r"""The unique identifier for the Guid. Can be prefixed with imdb://, tmdb://, tvdb://
 
     """
+
+
+class MediaContainerWithDecisionHasVoiceActivity(int, Enum):
+    r"""Voice activity detection availability flag returned by PMS.
+    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+
+    """
+
+    FALSE = 0
+    TRUE = 1
 
 
 class MediaContainerWithDecisionStreamType(int, Enum):
@@ -366,6 +376,77 @@ class MediaContainerWithDecisionStream(BaseModel):
     def additional_properties(self, value):
         self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "default",
+                "audioChannelLayout",
+                "channels",
+                "bitDepth",
+                "DOVIBLCompatID",
+                "DOVIBLPresent",
+                "DOVIELPresent",
+                "DOVILevel",
+                "DOVIPresent",
+                "DOVIProfile",
+                "DOVIRPUPresent",
+                "DOVIVersion",
+                "bitrate",
+                "canAutoSync",
+                "chromaLocation",
+                "chromaSubsampling",
+                "codedHeight",
+                "codedWidth",
+                "closedCaptions",
+                "colorPrimaries",
+                "colorRange",
+                "colorSpace",
+                "colorTrc",
+                "extendedDisplayTitle",
+                "frameRate",
+                "hasScalingMatrix",
+                "height",
+                "index",
+                "language",
+                "languageCode",
+                "languageTag",
+                "format",
+                "headerCompression",
+                "level",
+                "original",
+                "profile",
+                "refFrames",
+                "samplingRate",
+                "scanType",
+                "embeddedInVideo",
+                "selected",
+                "forced",
+                "hearingImpaired",
+                "dub",
+                "title",
+                "streamIdentifier",
+                "width",
+                "decision",
+                "location",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
+
+        return m
+
 
 class Decision(str, Enum):
     DIRECTPLAY = "directplay"
@@ -462,6 +543,42 @@ class MediaContainerWithDecisionPart(BaseModel):
     def additional_properties(self, value):
         self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accessible",
+                "audioProfile",
+                "container",
+                "duration",
+                "exists",
+                "file",
+                "has64bitOffsets",
+                "indexes",
+                "optimizedForStreaming",
+                "size",
+                "Stream",
+                "videoProfile",
+                "decision",
+                "selected",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
+
+        return m
+
 
 class MediaContainerWithDecisionMediaTypedDict(TypedDict):
     r"""`Media` represents an one or more media files (parts) and is a child of a metadata item. There aren't necessarily any guaranteed attributes on media elements since the attributes will vary based on the type. The possible attributes are not documented here, but they typically have self-evident names. High-level media information that can be used for badging and flagging, such as `videoResolution` and codecs, is included on the media element."""
@@ -475,7 +592,11 @@ class MediaContainerWithDecisionMediaTypedDict(TypedDict):
     container: NotRequired[str]
     duration: NotRequired[int]
     has64bit_offsets: NotRequired[bool]
-    has_voice_activity: NotRequired[bool]
+    has_voice_activity: NotRequired[MediaContainerWithDecisionHasVoiceActivity]
+    r"""Voice activity detection availability flag returned by PMS.
+    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+
+    """
     height: NotRequired[int]
     optimized_for_streaming: NotRequired[bool]
     part: NotRequired[List[MediaContainerWithDecisionPartTypedDict]]
@@ -520,8 +641,13 @@ class MediaContainerWithDecisionMedia(BaseModel):
     ] = None
 
     has_voice_activity: Annotated[
-        Optional[bool], pydantic.Field(alias="hasVoiceActivity")
-    ] = None
+        Optional[MediaContainerWithDecisionHasVoiceActivity],
+        pydantic.Field(alias="hasVoiceActivity"),
+    ] = MediaContainerWithDecisionHasVoiceActivity.FALSE
+    r"""Voice activity detection availability flag returned by PMS.
+    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+
+    """
 
     height: Optional[int] = None
 
@@ -562,6 +688,48 @@ class MediaContainerWithDecisionMedia(BaseModel):
     @additional_properties.setter
     def additional_properties(self, value):
         self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "aspectRatio",
+                "audioChannels",
+                "audioCodec",
+                "audioProfile",
+                "bitrate",
+                "container",
+                "duration",
+                "has64bitOffsets",
+                "hasVoiceActivity",
+                "height",
+                "optimizedForStreaming",
+                "Part",
+                "videoCodec",
+                "videoFrameRate",
+                "videoProfile",
+                "videoResolution",
+                "width",
+                "abr",
+                "resourceSession",
+                "selected",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
+
+        return m
 
 
 class MediaContainerWithDecisionMetadataTypedDict(TypedDict):
@@ -974,6 +1142,95 @@ class MediaContainerWithDecisionMetadata(BaseModel):
     def additional_properties(self, value):
         self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "absoluteIndex",
+                "art",
+                "audienceRating",
+                "audienceRatingImage",
+                "Autotag",
+                "banner",
+                "chapterSource",
+                "childCount",
+                "composite",
+                "contentRating",
+                "Country",
+                "Director",
+                "duration",
+                "Filter",
+                "Genre",
+                "grandparentArt",
+                "grandparentGuid",
+                "grandparentHero",
+                "grandparentKey",
+                "grandparentRatingKey",
+                "grandparentTheme",
+                "grandparentThumb",
+                "grandparentTitle",
+                "guid",
+                "guids",
+                "hero",
+                "Image",
+                "index",
+                "lastViewedAt",
+                "leafCount",
+                "Media",
+                "originallyAvailableAt",
+                "originalTitle",
+                "parentGuid",
+                "parentHero",
+                "parentIndex",
+                "parentKey",
+                "parentRatingKey",
+                "parentThumb",
+                "parentTitle",
+                "primaryExtraKey",
+                "prompt",
+                "rating",
+                "RatingArray",
+                "ratingCount",
+                "ratingImage",
+                "ratingKey",
+                "Role",
+                "search",
+                "secondary",
+                "skipChildren",
+                "skipParent",
+                "Sort",
+                "studio",
+                "subtype",
+                "summary",
+                "tagline",
+                "theme",
+                "thumb",
+                "titleSort",
+                "updatedAt",
+                "userRating",
+                "viewCount",
+                "viewedLeafCount",
+                "viewOffset",
+                "Writer",
+                "year",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
+
+        return m
+
 
 class MediaContainerWithDecisionMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
@@ -1074,6 +1331,39 @@ class MediaContainerWithDecisionMediaContainer(BaseModel):
         Optional[str], pydantic.Field(alias="transcodeDecisionText")
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "identifier",
+                "offset",
+                "size",
+                "totalSize",
+                "availableBandwidth",
+                "directPlayDecisionCode",
+                "directPlayDecisionText",
+                "generalDecisionCode",
+                "generalDecisionText",
+                "mdeDecisionCode",
+                "mdeDecisionText",
+                "Metadata",
+                "transcodeDecisionCode",
+                "transcodeDecisionText",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class MediaContainerWithDecisionTypedDict(TypedDict):
     r"""`MediaContainer` is commonly found as the root of a response and is a pretty generic container. Common attributes include `identifier` and things related to paging (`offset`, `size`, `totalSize`).
@@ -1096,3 +1386,45 @@ class MediaContainerWithDecision(BaseModel):
         Optional[MediaContainerWithDecisionMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    MediaContainerWithDecisionStream.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainerWithDecisionPart.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainerWithDecisionMedia.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainerWithDecisionMetadata.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainerWithDecisionMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainerWithDecision.model_rebuild()
+except NameError:
+    pass

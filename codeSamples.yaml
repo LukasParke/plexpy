@@ -210,6 +210,7 @@ actions:
 
                 res = plex_api.timeline.mark_played(request={
                     "identifier": "<value>",
+                    "key": "59398",
                 })
 
                 assert res is not None
@@ -6790,7 +6791,9 @@ actions:
                 token="<YOUR_API_KEY_HERE>",
             ) as plex_api:
 
-                res = plex_api.library_playlists.create_playlist(request={})
+                res = plex_api.library_playlists.create_playlist(request={
+                    "uri": "https://short-term-disconnection.name/",
+                })
 
                 assert res.media_container_with_playlist_metadata is not None
 
@@ -7292,7 +7295,7 @@ actions:
 
             with PlexAPI(
                 accepts=components.Accepts.APPLICATION_XML,
-                client_identifier="abc123",
+                client_identifier="3381b62b-9ab7-4e37-827b-203e9809eb58",
                 token="<YOUR_API_KEY_HERE>",
             ) as plex_api:
 
@@ -7332,7 +7335,7 @@ actions:
             ) as plex_api:
 
                 res = plex_api.general.get_source_connection_information(request={
-                    "source": "<value>",
+                    "source": "server://client-identifier",
                     "refresh": components.BoolInt.TRUE,
                 })
 
@@ -7770,7 +7773,7 @@ actions:
 
             with PlexAPI(
                 accepts=components.Accepts.APPLICATION_XML,
-                client_identifier="abc123",
+                client_identifier="3381b62b-9ab7-4e37-827b-203e9809eb58",
                 product="Plex for Roku",
                 version="2.4.1",
                 platform="Roku",
@@ -7778,7 +7781,7 @@ actions:
                 device="Roku 3",
                 model="4200X",
                 device_vendor="Roku",
-                device_name="Living Room TV",
+                device_name="Chrome",
                 marketplace="googlePlay",
                 token="<YOUR_API_KEY_HERE>",
             ) as plex_api:
@@ -7801,7 +7804,7 @@ actions:
 
             with PlexAPI(
                 accepts=components.Accepts.APPLICATION_XML,
-                client_identifier="abc123",
+                client_identifier="3381b62b-9ab7-4e37-827b-203e9809eb58",
                 product="Plex for Roku",
                 version="2.4.1",
                 platform="Roku",

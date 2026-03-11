@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 import httpx
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import Any, Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -59,6 +60,34 @@ class Activity(BaseModel):
     uuid: Optional[str] = None
     r"""The ID of the activity"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "cancellable",
+                "Context",
+                "progress",
+                "Response",
+                "subtitle",
+                "title",
+                "type",
+                "userID",
+                "uuid",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class ListActivitiesMediaContainerTypedDict(TypedDict):
     activity: NotRequired[List[ActivityTypedDict]]
@@ -68,6 +97,22 @@ class ListActivitiesMediaContainer(BaseModel):
     activity: Annotated[Optional[List[Activity]], pydantic.Field(alias="Activity")] = (
         None
     )
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["Activity"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class ListActivitiesResponseBodyTypedDict(TypedDict):
@@ -82,6 +127,22 @@ class ListActivitiesResponseBody(BaseModel):
     media_container: Annotated[
         Optional[ListActivitiesMediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class ListActivitiesResponseTypedDict(TypedDict):
@@ -107,3 +168,33 @@ class ListActivitiesResponse(BaseModel):
 
     object: Optional[ListActivitiesResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    Activity.model_rebuild()
+except NameError:
+    pass
+try:
+    ListActivitiesMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    ListActivitiesResponseBody.model_rebuild()
+except NameError:
+    pass

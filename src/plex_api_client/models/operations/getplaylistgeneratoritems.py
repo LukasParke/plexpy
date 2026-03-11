@@ -12,10 +12,10 @@ from plex_api_client.models.components import (
     sort as components_sort,
     tag as components_tag,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
-from pydantic import ConfigDict
+from pydantic import ConfigDict, model_serializer
 from typing import Any, Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -121,6 +121,36 @@ class GetPlaylistGeneratorItemsGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetPlaylistGeneratorItemsRequestTypedDict(TypedDict):
@@ -242,6 +272,36 @@ class GetPlaylistGeneratorItemsRequest(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetPlaylistGeneratorItemsGuidsTypedDict(TypedDict):
@@ -730,6 +790,97 @@ class GetPlaylistGeneratorItemsMetadata(BaseModel):
     def additional_properties(self, value):
         self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "absoluteIndex",
+                "art",
+                "audienceRating",
+                "audienceRatingImage",
+                "Autotag",
+                "banner",
+                "chapterSource",
+                "childCount",
+                "composite",
+                "contentRating",
+                "Country",
+                "Director",
+                "duration",
+                "Filter",
+                "Genre",
+                "grandparentArt",
+                "grandparentGuid",
+                "grandparentHero",
+                "grandparentKey",
+                "grandparentRatingKey",
+                "grandparentTheme",
+                "grandparentThumb",
+                "grandparentTitle",
+                "guid",
+                "guids",
+                "hero",
+                "Image",
+                "index",
+                "lastViewedAt",
+                "leafCount",
+                "Media",
+                "originallyAvailableAt",
+                "originalTitle",
+                "parentGuid",
+                "parentHero",
+                "parentIndex",
+                "parentKey",
+                "parentRatingKey",
+                "parentThumb",
+                "parentTitle",
+                "primaryExtraKey",
+                "prompt",
+                "rating",
+                "RatingArray",
+                "ratingCount",
+                "ratingImage",
+                "ratingKey",
+                "Role",
+                "search",
+                "secondary",
+                "skipChildren",
+                "skipParent",
+                "Sort",
+                "studio",
+                "subtype",
+                "summary",
+                "tagline",
+                "theme",
+                "thumb",
+                "titleSort",
+                "updatedAt",
+                "userRating",
+                "viewCount",
+                "viewedLeafCount",
+                "viewOffset",
+                "Writer",
+                "year",
+                "processingState",
+                "processingStateContext",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
+
+        return m
+
 
 class GetPlaylistGeneratorItemsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
@@ -776,6 +927,22 @@ class GetPlaylistGeneratorItemsMediaContainer(BaseModel):
         Optional[GetPlaylistGeneratorItemsMetadata], pydantic.Field(alias="Metadata")
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["identifier", "offset", "size", "totalSize", "Metadata"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetPlaylistGeneratorItemsResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -790,6 +957,22 @@ class GetPlaylistGeneratorItemsResponseBody(BaseModel):
         Optional[GetPlaylistGeneratorItemsMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetPlaylistGeneratorItemsResponseTypedDict(TypedDict):
@@ -815,3 +998,33 @@ class GetPlaylistGeneratorItemsResponse(BaseModel):
 
     object: Optional[GetPlaylistGeneratorItemsResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    GetPlaylistGeneratorItemsMetadata.model_rebuild()
+except NameError:
+    pass
+try:
+    GetPlaylistGeneratorItemsMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetPlaylistGeneratorItemsResponseBody.model_rebuild()
+except NameError:
+    pass

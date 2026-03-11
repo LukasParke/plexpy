@@ -3,6 +3,14 @@
 The type of media content in the Plex library. This can represent videos, music, or photos.
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.components import MediaTypeString
+
+value = MediaTypeString.MOVIE
+```
+
 
 ## Values
 

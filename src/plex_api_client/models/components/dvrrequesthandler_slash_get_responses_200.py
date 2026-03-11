@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 from .device import Device, DeviceTypedDict
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -55,6 +56,22 @@ class DvrRequestHandlerSlashGetResponses200MediaContainerMediaContainer(BaseMode
     status: Optional[int] = None
     r"""A status indicator. If present and non-zero, indicates an error"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["identifier", "offset", "size", "totalSize", "status"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class DvrTypedDict(TypedDict):
     device: NotRequired[List[DeviceTypedDict]]
@@ -75,6 +92,22 @@ class Dvr(BaseModel):
 
     uuid: Optional[str] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["Device", "key", "language", "lineup", "uuid"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class DvrRequestHandlerSlashGetResponses200MediaContainerTypedDict(TypedDict):
     media_container: NotRequired[
@@ -90,6 +123,22 @@ class DvrRequestHandlerSlashGetResponses200MediaContainer(BaseModel):
     ] = None
 
     dvr: Annotated[Optional[List[Dvr]], pydantic.Field(alias="DVR")] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer", "DVR"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class DvrRequestHandlerSlashGetResponses200TypedDict(TypedDict):
@@ -107,3 +156,37 @@ class DvrRequestHandlerSlashGetResponses200(BaseModel):
         Optional[DvrRequestHandlerSlashGetResponses200MediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    DvrRequestHandlerSlashGetResponses200MediaContainerMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    Dvr.model_rebuild()
+except NameError:
+    pass
+try:
+    DvrRequestHandlerSlashGetResponses200MediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    DvrRequestHandlerSlashGetResponses200.model_rebuild()
+except NameError:
+    pass

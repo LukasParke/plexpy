@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 from enum import Enum
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -112,6 +113,32 @@ class GetResponses200Hub(BaseModel):
     title: Optional[str] = None
     r"""The title of this hub"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "homeVisibility",
+                "identifier",
+                "promotedToOwnHome",
+                "promotedToRecommended",
+                "promotedToSharedHome",
+                "recommendationsVisibility",
+                "title",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetResponses200MediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
@@ -158,6 +185,22 @@ class GetResponses200MediaContainer(BaseModel):
         None
     )
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["identifier", "offset", "size", "totalSize", "Hub"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetResponses200TypedDict(TypedDict):
     r"""OK"""
@@ -171,3 +214,33 @@ class GetResponses200(BaseModel):
     media_container: Annotated[
         Optional[GetResponses200MediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    GetResponses200Hub.model_rebuild()
+except NameError:
+    pass
+try:
+    GetResponses200MediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetResponses200.model_rebuild()
+except NameError:
+    pass

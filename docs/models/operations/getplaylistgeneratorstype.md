@@ -6,6 +6,14 @@ The type of playlist generator.
   - 42: A optimized version generator
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import GetPlaylistGeneratorsType
+
+value = GetPlaylistGeneratorsType.MINUS_1
+```
+
 
 ## Values
 

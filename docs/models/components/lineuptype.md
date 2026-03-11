@@ -8,6 +8,14 @@
 - `4`: Virtual
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.components import LineupType
+
+value = LineupType.MINUS_1
+```
+
 
 ## Values
 

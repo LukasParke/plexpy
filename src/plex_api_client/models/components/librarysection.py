@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 from .mediatypestring import MediaTypeString
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import Any, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -23,6 +24,22 @@ class LibrarySectionLocation(BaseModel):
 
     path: Optional[Any] = None
     r"""The path of where this directory exists on disk"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["id", "path"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class LibrarySectionTypedDict(TypedDict):
@@ -109,3 +126,46 @@ class LibrarySection(BaseModel):
     thumb: Optional[str] = None
 
     updated_at: Annotated[Optional[int], pydantic.Field(alias="updatedAt")] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "title",
+                "agent",
+                "allowSync",
+                "art",
+                "composite",
+                "content",
+                "contentChangedAt",
+                "createdAt",
+                "directory",
+                "filters",
+                "hidden",
+                "key",
+                "Location",
+                "refreshing",
+                "scannedAt",
+                "scanner",
+                "thumb",
+                "updatedAt",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    LibrarySection.model_rebuild()
+except NameError:
+    pass

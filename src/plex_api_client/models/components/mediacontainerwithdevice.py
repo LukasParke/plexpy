@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 from .channelmapping import ChannelMapping, ChannelMappingTypedDict
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -53,6 +54,38 @@ class MediaContainerWithDeviceDevice(BaseModel):
 
     uuid: Optional[str] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "ChannelMapping",
+                "key",
+                "lastSeenAt",
+                "make",
+                "model",
+                "modelNumber",
+                "protocol",
+                "sources",
+                "state",
+                "status",
+                "tuners",
+                "uri",
+                "uuid",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class MediaContainerWithDeviceMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
@@ -99,6 +132,22 @@ class MediaContainerWithDeviceMediaContainer(BaseModel):
         Optional[List[MediaContainerWithDeviceDevice]], pydantic.Field(alias="Device")
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["identifier", "offset", "size", "totalSize", "Device"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class MediaContainerWithDeviceTypedDict(TypedDict):
     media_container: NotRequired[MediaContainerWithDeviceMediaContainerTypedDict]
@@ -109,3 +158,33 @@ class MediaContainerWithDevice(BaseModel):
         Optional[MediaContainerWithDeviceMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    MediaContainerWithDeviceDevice.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainerWithDeviceMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainerWithDevice.model_rebuild()
+except NameError:
+    pass

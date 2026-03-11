@@ -7,9 +7,10 @@ from plex_api_client.models.components import (
     accepts as components_accepts,
     boolint as components_boolint,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -115,6 +116,36 @@ class CreatePlayQueueGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class Type(str, Enum):
@@ -309,6 +340,45 @@ class CreatePlayQueueRequest(BaseModel):
     ] = components_boolint.BoolInt.FALSE
     r"""Only applies to queues of type show or seasons, whether to return a queue that is started on the On Deck episode if one exists. Otherwise begins the play queue on the beginning of the show or season."""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+                "uri",
+                "playlistID",
+                "key",
+                "shuffle",
+                "repeat",
+                "continuous",
+                "extrasPrefixCount",
+                "recursive",
+                "onDeck",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class CreatePlayQueueMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
@@ -411,6 +481,38 @@ class CreatePlayQueueMediaContainer(BaseModel):
     ] = None
     r"""The version of the play queue. It increments every time a change is made to the play queue to assist clients in knowing when to refresh."""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "identifier",
+                "offset",
+                "size",
+                "totalSize",
+                "playQueueID",
+                "playQueueLastAddedItemID",
+                "playQueueSelectedItemID",
+                "playQueueSelectedItemOffset",
+                "playQueueSelectedMetadataItemID",
+                "playQueueShuffled",
+                "playQueueSourceURI",
+                "playQueueTotalCount",
+                "playQueueVersion",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class CreatePlayQueueResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -424,6 +526,22 @@ class CreatePlayQueueResponseBody(BaseModel):
     media_container: Annotated[
         Optional[CreatePlayQueueMediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class CreatePlayQueueResponseTypedDict(TypedDict):
@@ -452,3 +570,29 @@ class CreatePlayQueueResponse(BaseModel):
 
     object: Optional[CreatePlayQueueResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    CreatePlayQueueMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    CreatePlayQueueResponseBody.model_rebuild()
+except NameError:
+    pass

@@ -1,5 +1,13 @@
 # AdvancedSubtitles
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import AdvancedSubtitles
+
+value = AdvancedSubtitles.AUTO
+```
+
 
 ## Values
 

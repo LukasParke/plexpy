@@ -1,5 +1,13 @@
 # MediaContainerWithDecisionDecision
 
+## Example Usage
+
+```python
+from plex_api_client.models.components import MediaContainerWithDecisionDecision
+
+value = MediaContainerWithDecisionDecision.COPY
+```
+
 
 ## Values
 

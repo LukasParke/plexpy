@@ -7,6 +7,14 @@ Whether this hub is visible on the home screen
   - shared: Visible to shared users
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.components import HomeVisibility
+
+value = HomeVisibility.ALL
+```
+
 
 ## Values
 

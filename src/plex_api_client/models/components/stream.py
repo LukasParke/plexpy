@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 from enum import Enum
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
-from pydantic import ConfigDict
+from pydantic import ConfigDict, model_serializer
 from typing import Any, Dict, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -318,3 +318,78 @@ class Stream(BaseModel):
     @additional_properties.setter
     def additional_properties(self, value):
         self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "default",
+                "audioChannelLayout",
+                "channels",
+                "bitDepth",
+                "DOVIBLCompatID",
+                "DOVIBLPresent",
+                "DOVIELPresent",
+                "DOVILevel",
+                "DOVIPresent",
+                "DOVIProfile",
+                "DOVIRPUPresent",
+                "DOVIVersion",
+                "bitrate",
+                "canAutoSync",
+                "chromaLocation",
+                "chromaSubsampling",
+                "codedHeight",
+                "codedWidth",
+                "closedCaptions",
+                "colorPrimaries",
+                "colorRange",
+                "colorSpace",
+                "colorTrc",
+                "extendedDisplayTitle",
+                "frameRate",
+                "hasScalingMatrix",
+                "height",
+                "index",
+                "language",
+                "languageCode",
+                "languageTag",
+                "format",
+                "headerCompression",
+                "level",
+                "original",
+                "profile",
+                "refFrames",
+                "samplingRate",
+                "scanType",
+                "embeddedInVideo",
+                "selected",
+                "forced",
+                "hearingImpaired",
+                "dub",
+                "title",
+                "streamIdentifier",
+                "width",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
+
+        return m
+
+
+try:
+    Stream.model_rebuild()
+except NameError:
+    pass

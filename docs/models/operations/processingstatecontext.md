@@ -2,6 +2,14 @@
 
 The error which could have occurred (or `good`)
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import ProcessingStateContext
+
+value = ProcessingStateContext.GOOD
+```
+
 
 ## Values
 

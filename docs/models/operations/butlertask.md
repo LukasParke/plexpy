@@ -2,6 +2,14 @@
 
 The task name
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import ButlerTask
+
+value = ButlerTask.AUTOMATIC_UPDATES
+```
+
 
 ## Values
 

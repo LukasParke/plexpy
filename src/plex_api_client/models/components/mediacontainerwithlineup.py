@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 from .lineup import Lineup, LineupTypedDict
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -56,6 +57,24 @@ class MediaContainerWithLineupMediaContainer(BaseModel):
     uuid: Optional[str] = None
     r"""The UUID of this set lineups"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["identifier", "offset", "size", "totalSize", "Lineup", "uuid"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class MediaContainerWithLineupTypedDict(TypedDict):
     media_container: NotRequired[MediaContainerWithLineupMediaContainerTypedDict]
@@ -66,3 +85,29 @@ class MediaContainerWithLineup(BaseModel):
         Optional[MediaContainerWithLineupMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    MediaContainerWithLineupMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainerWithLineup.model_rebuild()
+except NameError:
+    pass

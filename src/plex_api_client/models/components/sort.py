@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 from enum import Enum
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
-from pydantic import ConfigDict
+from pydantic import ConfigDict, model_serializer
 from typing import Any, Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -30,6 +30,22 @@ class SortPivot(BaseModel):
     key: Optional[str] = None
 
     symbol: Optional[str] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["title", "type", "context", "id", "key", "symbol"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class SortDefault(str, Enum):
@@ -143,3 +159,50 @@ class Sort(BaseModel):
     @additional_properties.setter
     def additional_properties(self, value):
         self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "title",
+                "type",
+                "art",
+                "content",
+                "filter",
+                "hasPrefs",
+                "hasStoreServices",
+                "hubKey",
+                "identifier",
+                "key",
+                "lastAccessedAt",
+                "Pivot",
+                "share",
+                "thumb",
+                "titleBar",
+                "default",
+                "defaultDirection",
+                "descKey",
+                "firstCharacterKey",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
+
+        return m
+
+
+try:
+    Sort.model_rebuild()
+except NameError:
+    pass

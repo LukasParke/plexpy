@@ -7,6 +7,14 @@ The visibility of this hub in recommendations:
   - shared: Visible to shared users
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.components import RecommendationsVisibility
+
+value = RecommendationsVisibility.ALL
+```
+
 
 ## Values
 

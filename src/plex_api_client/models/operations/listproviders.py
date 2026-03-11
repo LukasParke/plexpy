@@ -3,8 +3,9 @@
 from __future__ import annotations
 import httpx
 from plex_api_client.models.components import directory as components_directory
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import Any, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -24,6 +25,22 @@ class Feature(BaseModel):
     key: Optional[str] = None
 
     type: Optional[str] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["Directory", "key", "type"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class ListProvidersMediaContainerTypedDict(TypedDict):
@@ -300,6 +317,81 @@ class ListProvidersMediaContainer(BaseModel):
     types: Optional[str] = None
     r"""This attribute contains a comma-separated list of the media types exposed by the provider (e.g. `video, audio`)."""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "identifier",
+                "offset",
+                "size",
+                "totalSize",
+                "allowCameraUpload",
+                "allowChannelAccess",
+                "allowMediaDeletion",
+                "allowSharing",
+                "allowSync",
+                "allowTuners",
+                "backgroundProcessing",
+                "certificate",
+                "companionProxy",
+                "countryCode",
+                "diagnostics",
+                "eventStream",
+                "friendlyName",
+                "hubSearch",
+                "itemClusters",
+                "livetv",
+                "machineIdentifier",
+                "mediaProviders",
+                "multiuser",
+                "musicAnalysis",
+                "myPlex",
+                "myPlexMappingState",
+                "myPlexSigninState",
+                "myPlexSubscription",
+                "myPlexUsername",
+                "offlineTranscode",
+                "ownerFeatures",
+                "platform",
+                "platformVersion",
+                "pluginHost",
+                "pushNotifications",
+                "readOnlyLibraries",
+                "streamingBrainABRVersion",
+                "streamingBrainVersion",
+                "sync",
+                "transcoderActiveVideoSessions",
+                "transcoderAudio",
+                "transcoderLyrics",
+                "transcoderPhoto",
+                "transcoderSubtitles",
+                "transcoderVideo",
+                "transcoderVideoBitrates",
+                "transcoderVideoQualities",
+                "transcoderVideoResolutions",
+                "updatedAt",
+                "updater",
+                "version",
+                "voiceSearch",
+                "Feature",
+                "protocols",
+                "title",
+                "types",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class ListProvidersResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -313,6 +405,22 @@ class ListProvidersResponseBody(BaseModel):
     media_container: Annotated[
         Optional[ListProvidersMediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class ListProvidersResponseTypedDict(TypedDict):
@@ -338,3 +446,33 @@ class ListProvidersResponse(BaseModel):
 
     object: Optional[ListProvidersResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    Feature.model_rebuild()
+except NameError:
+    pass
+try:
+    ListProvidersMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    ListProvidersResponseBody.model_rebuild()
+except NameError:
+    pass

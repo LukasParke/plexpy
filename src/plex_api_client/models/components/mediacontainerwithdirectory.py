@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 from .directory import Directory, DirectoryTypedDict
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -53,6 +54,24 @@ class MediaContainerWithDirectoryMediaContainer(BaseModel):
         Optional[List[Directory]], pydantic.Field(alias="Directory")
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["identifier", "offset", "size", "totalSize", "Directory"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class MediaContainerWithDirectoryTypedDict(TypedDict):
     media_container: NotRequired[MediaContainerWithDirectoryMediaContainerTypedDict]
@@ -63,3 +82,29 @@ class MediaContainerWithDirectory(BaseModel):
         Optional[MediaContainerWithDirectoryMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    MediaContainerWithDirectoryMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainerWithDirectory.model_rebuild()
+except NameError:
+    pass

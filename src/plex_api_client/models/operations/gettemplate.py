@@ -7,9 +7,10 @@ from plex_api_client.models.components import (
     mediagraboperation as components_mediagraboperation,
     setting as components_setting,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import Any, Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -115,6 +116,36 @@ class GetTemplateGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""The marketplace on which the client application is distributed"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetTemplateRequestTypedDict(TypedDict):
@@ -227,6 +258,37 @@ class GetTemplateRequest(BaseModel):
     ] = None
     r"""The guid of the item for which to get the template"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "Product",
+                "Version",
+                "Platform",
+                "Platform-Version",
+                "Device",
+                "Model",
+                "Device-Vendor",
+                "Device-Name",
+                "Marketplace",
+                "guid",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class MediaSubscriptionTypedDict(TypedDict):
     r"""A media subscription contains a representation of metadata desired to be recorded"""
@@ -329,6 +391,43 @@ class MediaSubscription(BaseModel):
 
     selected: Optional[bool] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "title",
+                "type",
+                "airingsType",
+                "createdAt",
+                "Directory",
+                "durationTotal",
+                "key",
+                "librarySectionTitle",
+                "locationPath",
+                "MediaGrabOperation",
+                "Playlist",
+                "Setting",
+                "storageTotal",
+                "targetLibrarySectionID",
+                "targetSectionLocationID",
+                "Video",
+                "parameters",
+                "selected",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class SubscriptionTemplateTypedDict(TypedDict):
     media_subscription: NotRequired[List[MediaSubscriptionTypedDict]]
@@ -338,6 +437,22 @@ class SubscriptionTemplate(BaseModel):
     media_subscription: Annotated[
         Optional[List[MediaSubscription]], pydantic.Field(alias="MediaSubscription")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaSubscription"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetTemplateMediaContainerTypedDict(TypedDict):
@@ -386,6 +501,24 @@ class GetTemplateMediaContainer(BaseModel):
         pydantic.Field(alias="SubscriptionTemplate"),
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["identifier", "offset", "size", "totalSize", "SubscriptionTemplate"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetTemplateResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -399,6 +532,22 @@ class GetTemplateResponseBody(BaseModel):
     media_container: Annotated[
         Optional[GetTemplateMediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetTemplateResponseTypedDict(TypedDict):
@@ -427,3 +576,37 @@ class GetTemplateResponse(BaseModel):
 
     object: Optional[GetTemplateResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    MediaSubscription.model_rebuild()
+except NameError:
+    pass
+try:
+    SubscriptionTemplate.model_rebuild()
+except NameError:
+    pass
+try:
+    GetTemplateMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetTemplateResponseBody.model_rebuild()
+except NameError:
+    pass

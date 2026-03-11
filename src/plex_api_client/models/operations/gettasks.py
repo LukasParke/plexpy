@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 import httpx
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -44,6 +45,31 @@ class GetTasksButlerTask(BaseModel):
     title: Optional[str] = None
     r"""A user-friendly title of the task"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "description",
+                "enabled",
+                "interval",
+                "name",
+                "scheduleRandomized",
+                "title",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class ButlerTasksTypedDict(TypedDict):
     butler_task: NotRequired[List[GetTasksButlerTaskTypedDict]]
@@ -53,6 +79,22 @@ class ButlerTasks(BaseModel):
     butler_task: Annotated[
         Optional[List[GetTasksButlerTask]], pydantic.Field(alias="ButlerTask")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["ButlerTask"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetTasksResponseBodyTypedDict(TypedDict):
@@ -67,6 +109,22 @@ class GetTasksResponseBody(BaseModel):
     butler_tasks: Annotated[
         Optional[ButlerTasks], pydantic.Field(alias="ButlerTasks")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["ButlerTasks"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetTasksResponseTypedDict(TypedDict):
@@ -92,3 +150,33 @@ class GetTasksResponse(BaseModel):
 
     object: Optional[GetTasksResponseBody] = None
     r"""Butler tasks"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    GetTasksButlerTask.model_rebuild()
+except NameError:
+    pass
+try:
+    ButlerTasks.model_rebuild()
+except NameError:
+    pass
+try:
+    GetTasksResponseBody.model_rebuild()
+except NameError:
+    pass

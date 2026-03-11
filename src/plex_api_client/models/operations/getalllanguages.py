@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 import httpx
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -19,6 +20,22 @@ class Language(BaseModel):
     r"""3 letter language code"""
 
     title: Optional[str] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["code", "title"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetAllLanguagesMediaContainerTypedDict(TypedDict):
@@ -66,6 +83,22 @@ class GetAllLanguagesMediaContainer(BaseModel):
         None
     )
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["identifier", "offset", "size", "totalSize", "Language"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetAllLanguagesResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -79,6 +112,22 @@ class GetAllLanguagesResponseBody(BaseModel):
     media_container: Annotated[
         Optional[GetAllLanguagesMediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetAllLanguagesResponseTypedDict(TypedDict):
@@ -107,3 +156,29 @@ class GetAllLanguagesResponse(BaseModel):
 
     object: Optional[GetAllLanguagesResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    GetAllLanguagesMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetAllLanguagesResponseBody.model_rebuild()
+except NameError:
+    pass

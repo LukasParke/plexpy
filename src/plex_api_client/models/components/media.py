@@ -2,11 +2,22 @@
 
 from __future__ import annotations
 from .part import Part, PartTypedDict
-from plex_api_client.types import BaseModel
+from enum import Enum
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
-from pydantic import ConfigDict
+from pydantic import ConfigDict, model_serializer
 from typing import Any, Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
+
+
+class HasVoiceActivity(int, Enum):
+    r"""Voice activity detection availability flag returned by PMS.
+    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+
+    """
+
+    FALSE = 0
+    TRUE = 1
 
 
 class MediaTypedDict(TypedDict):
@@ -21,7 +32,11 @@ class MediaTypedDict(TypedDict):
     container: NotRequired[str]
     duration: NotRequired[int]
     has64bit_offsets: NotRequired[bool]
-    has_voice_activity: NotRequired[bool]
+    has_voice_activity: NotRequired[HasVoiceActivity]
+    r"""Voice activity detection availability flag returned by PMS.
+    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+
+    """
     height: NotRequired[int]
     optimized_for_streaming: NotRequired[bool]
     part: NotRequired[List[PartTypedDict]]
@@ -63,8 +78,12 @@ class Media(BaseModel):
     ] = None
 
     has_voice_activity: Annotated[
-        Optional[bool], pydantic.Field(alias="hasVoiceActivity")
-    ] = None
+        Optional[HasVoiceActivity], pydantic.Field(alias="hasVoiceActivity")
+    ] = HasVoiceActivity.FALSE
+    r"""Voice activity detection availability flag returned by PMS.
+    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+
+    """
 
     height: Optional[int] = None
 
@@ -95,3 +114,48 @@ class Media(BaseModel):
     @additional_properties.setter
     def additional_properties(self, value):
         self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "aspectRatio",
+                "audioChannels",
+                "audioCodec",
+                "audioProfile",
+                "bitrate",
+                "container",
+                "duration",
+                "has64bitOffsets",
+                "hasVoiceActivity",
+                "height",
+                "optimizedForStreaming",
+                "Part",
+                "videoCodec",
+                "videoFrameRate",
+                "videoProfile",
+                "videoResolution",
+                "width",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
+
+        return m
+
+
+try:
+    Media.model_rebuild()
+except NameError:
+    pass

@@ -5,8 +5,9 @@ import httpx
 from plex_api_client.models.components import (
     librarysection as components_librarysection,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -65,6 +66,32 @@ class GetSectionsMediaContainer(BaseModel):
     title1: Optional[str] = None
     r"""Typically just \"Plex Library\" """
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "identifier",
+                "offset",
+                "size",
+                "totalSize",
+                "allowSync",
+                "Directory",
+                "title1",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetSectionsResponseBodyTypedDict(TypedDict):
     r"""OK"""
@@ -78,6 +105,22 @@ class GetSectionsResponseBody(BaseModel):
     media_container: Annotated[
         Optional[GetSectionsMediaContainer], pydantic.Field(alias="MediaContainer")
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetSectionsResponseTypedDict(TypedDict):
@@ -106,3 +149,29 @@ class GetSectionsResponse(BaseModel):
 
     object: Optional[GetSectionsResponseBody] = None
     r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["object"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    GetSectionsMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    GetSectionsResponseBody.model_rebuild()
+except NameError:
+    pass

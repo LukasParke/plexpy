@@ -8,9 +8,9 @@ from .media import Media, MediaTypedDict
 from .sort import Sort, SortTypedDict
 from .tag import Tag, TagTypedDict
 from datetime import date
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
-from pydantic import ConfigDict
+from pydantic import ConfigDict, model_serializer
 from typing import Any, Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -443,6 +443,96 @@ class MetadataItem(BaseModel):
     def additional_properties(self, value):
         self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "absoluteIndex",
+                "art",
+                "audienceRating",
+                "audienceRatingImage",
+                "Autotag",
+                "banner",
+                "chapterSource",
+                "childCount",
+                "composite",
+                "contentRating",
+                "Country",
+                "Director",
+                "duration",
+                "Filter",
+                "Genre",
+                "grandparentArt",
+                "grandparentGuid",
+                "grandparentHero",
+                "grandparentKey",
+                "grandparentRatingKey",
+                "grandparentTheme",
+                "grandparentThumb",
+                "grandparentTitle",
+                "guid",
+                "guids",
+                "hero",
+                "Image",
+                "index",
+                "lastViewedAt",
+                "leafCount",
+                "Media",
+                "originallyAvailableAt",
+                "originalTitle",
+                "parentGuid",
+                "parentHero",
+                "parentIndex",
+                "parentKey",
+                "parentRatingKey",
+                "parentThumb",
+                "parentTitle",
+                "primaryExtraKey",
+                "prompt",
+                "rating",
+                "RatingArray",
+                "ratingCount",
+                "ratingImage",
+                "ratingKey",
+                "Role",
+                "search",
+                "secondary",
+                "skipChildren",
+                "skipParent",
+                "Sort",
+                "studio",
+                "subtype",
+                "summary",
+                "tagline",
+                "theme",
+                "thumb",
+                "titleSort",
+                "updatedAt",
+                "userRating",
+                "viewCount",
+                "viewedLeafCount",
+                "viewOffset",
+                "Writer",
+                "year",
+                "MetadataItem",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
+
+        return m
+
 
 class MediaContainerWithNestedMetadataMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
@@ -489,6 +579,24 @@ class MediaContainerWithNestedMetadataMediaContainer(BaseModel):
         Optional[List[MetadataItem]], pydantic.Field(alias="MetadataItem")
     ] = None
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            ["identifier", "offset", "size", "totalSize", "MetadataItem"]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class MediaContainerWithNestedMetadataTypedDict(TypedDict):
     media_container: NotRequired[
@@ -501,3 +609,33 @@ class MediaContainerWithNestedMetadata(BaseModel):
         Optional[MediaContainerWithNestedMetadataMediaContainer],
         pydantic.Field(alias="MediaContainer"),
     ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainer"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    MetadataItem.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainerWithNestedMetadataMediaContainer.model_rebuild()
+except NameError:
+    pass
+try:
+    MediaContainerWithNestedMetadata.model_rebuild()
+except NameError:
+    pass

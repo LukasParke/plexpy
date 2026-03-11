@@ -1,5 +1,13 @@
 # GetItemArtworkPathParamElement
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import GetItemArtworkPathParamElement
+
+value = GetItemArtworkPathParamElement.THUMB
+```
+
 
 ## Values
 

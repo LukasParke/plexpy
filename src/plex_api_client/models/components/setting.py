@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 from enum import Enum
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import Optional, Union
 from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
@@ -90,3 +91,38 @@ class Setting(BaseModel):
 
     value: Optional[Value] = None
     r"""The current value of this setting"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "type",
+                "default",
+                "advanced",
+                "enumValues",
+                "group",
+                "hidden",
+                "id",
+                "label",
+                "summary",
+                "value",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    Setting.model_rebuild()
+except NameError:
+    pass

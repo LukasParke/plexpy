@@ -1,5 +1,13 @@
 # Element
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import Element
+
+value = Element.THUMB
+```
+
 
 ## Values
 

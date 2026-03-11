@@ -8,6 +8,14 @@ An integer log level to write to the PMS log with.
   - 4: Verbose
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import Level
+
+value = Level.ZERO
+```
+
 
 ## Values
 

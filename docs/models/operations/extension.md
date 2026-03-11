@@ -3,6 +3,14 @@
 Extension 
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import Extension
+
+value = Extension.M3U8
+```
+
 
 ## Values
 

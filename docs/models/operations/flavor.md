@@ -5,6 +5,14 @@
 - `2`: The country has a single postal code, returned in `example`.
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import Flavor
+
+value = Flavor.ZERO
+```
+
 
 ## Values
 

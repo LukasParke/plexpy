@@ -13,6 +13,14 @@ The status of this update.
 - done - This release is complete
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import GetUpdatesStatusState
+
+value = GetUpdatesStatusState.AVAILABLE
+```
+
 
 ## Values
 

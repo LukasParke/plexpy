@@ -8,6 +8,14 @@ The state of this queue
   - error: At least one item has encountered an error
 
 
+## Example Usage
+
+```python
+from plex_api_client.models.operations import CreateDownloadQueueStatus
+
+value = CreateDownloadQueueStatus.DECIDING
+```
+
 
 ## Values
 

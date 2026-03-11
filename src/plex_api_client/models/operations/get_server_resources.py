@@ -7,9 +7,10 @@ from plex_api_client.models.components import (
     accepts as components_accepts,
     plexdevice as components_plexdevice,
 )
-from plex_api_client.types import BaseModel
+from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
 import pydantic
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -39,6 +40,22 @@ class GetServerResourcesGlobals(BaseModel):
         FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
     ] = None
     r"""An opaque identifier unique to the client"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["accepts", "Client-Identifier"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class IncludeHTTPS(int, Enum):
@@ -119,6 +136,30 @@ class GetServerResourcesRequest(BaseModel):
     ] = IncludeIPv6.FALSE
     r"""Include IPv6 entries in the results"""
 
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "accepts",
+                "Client-Identifier",
+                "includeHttps",
+                "includeRelay",
+                "includeIPv6",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
 
 class GetServerResourcesResponseTypedDict(TypedDict):
     content_type: str
@@ -143,3 +184,19 @@ class GetServerResourcesResponse(BaseModel):
 
     plex_devices: Optional[List[components_plexdevice.PlexDevice]] = None
     r"""List of Plex Devices. This includes Plex hosted servers and clients"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["PlexDevices"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
