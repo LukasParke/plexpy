@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 from datetime import date
+from enum import Enum
 import httpx
 from plex_api_client.models.components import (
     filter_ as components_filter_,
@@ -16,8 +17,8 @@ from plex_api_client.models.components import (
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
 from pydantic import ConfigDict, model_serializer
-from typing import Any, Dict, List, Optional
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing import Any, Dict, List, Optional, Union
+from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 
 class GuidsTypedDict(TypedDict):
@@ -32,6 +33,32 @@ class Guids(BaseModel):
     r"""The unique identifier for the Guid. Can be prefixed with imdb://, tmdb://, tvdb://
 
     """
+
+
+class Two(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+class SkipParent2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+SkipChildrenTypedDict = TypeAliasType("SkipChildrenTypedDict", Union[bool, Two])
+r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
+
+
+SkipChildren = TypeAliasType("SkipChildren", Union[bool, Two])
+r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
+
+
+SkipParentTypedDict = TypeAliasType("SkipParentTypedDict", Union[bool, SkipParent2])
+r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
+
+
+SkipParent = TypeAliasType("SkipParent", Union[bool, SkipParent2])
+r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
 
 
 class MetadataTypedDict(TypedDict):
@@ -147,9 +174,9 @@ class MetadataTypedDict(TypedDict):
     r"""Indicates this is a search directory"""
     secondary: NotRequired[bool]
     r"""Used by old clients to provide nested menus allowing for primative (but structured) navigation."""
-    skip_children: NotRequired[bool]
+    skip_children: NotRequired[SkipChildrenTypedDict]
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
-    skip_parent: NotRequired[bool]
+    skip_parent: NotRequired[SkipParentTypedDict]
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
     sort: NotRequired[List[components_sort.SortTypedDict]]
     r"""Typically only seen in metadata at a library's top level"""
@@ -415,12 +442,14 @@ class Metadata(BaseModel):
     secondary: Optional[bool] = None
     r"""Used by old clients to provide nested menus allowing for primative (but structured) navigation."""
 
-    skip_children: Annotated[Optional[bool], pydantic.Field(alias="skipChildren")] = (
-        None
-    )
+    skip_children: Annotated[
+        Optional[SkipChildren], pydantic.Field(alias="skipChildren")
+    ] = None
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
 
-    skip_parent: Annotated[Optional[bool], pydantic.Field(alias="skipParent")] = None
+    skip_parent: Annotated[Optional[SkipParent], pydantic.Field(alias="skipParent")] = (
+        None
+    )
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
 
     sort: Annotated[

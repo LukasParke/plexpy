@@ -11,8 +11,8 @@ from enum import Enum
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
 from pydantic import ConfigDict, model_serializer
-from typing import Any, Dict, List, Optional
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing import Any, Dict, List, Optional, Union
+from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 
 class PlaylistType(str, Enum):
@@ -35,6 +35,44 @@ class MediaContainerWithPlaylistMetadataGuids(BaseModel):
     r"""The unique identifier for the Guid. Can be prefixed with imdb://, tmdb://, tvdb://
 
     """
+
+
+class MediaContainerWithPlaylistMetadataSkipChildren2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+class MediaContainerWithPlaylistMetadataSkipParent2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+MediaContainerWithPlaylistMetadataSkipChildrenTypedDict = TypeAliasType(
+    "MediaContainerWithPlaylistMetadataSkipChildrenTypedDict",
+    Union[bool, MediaContainerWithPlaylistMetadataSkipChildren2],
+)
+r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
+
+
+MediaContainerWithPlaylistMetadataSkipChildren = TypeAliasType(
+    "MediaContainerWithPlaylistMetadataSkipChildren",
+    Union[bool, MediaContainerWithPlaylistMetadataSkipChildren2],
+)
+r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
+
+
+MediaContainerWithPlaylistMetadataSkipParentTypedDict = TypeAliasType(
+    "MediaContainerWithPlaylistMetadataSkipParentTypedDict",
+    Union[bool, MediaContainerWithPlaylistMetadataSkipParent2],
+)
+r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
+
+
+MediaContainerWithPlaylistMetadataSkipParent = TypeAliasType(
+    "MediaContainerWithPlaylistMetadataSkipParent",
+    Union[bool, MediaContainerWithPlaylistMetadataSkipParent2],
+)
+r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
 
 
 class MediaContainerWithPlaylistMetadataMetadataTypedDict(TypedDict):
@@ -152,9 +190,9 @@ class MediaContainerWithPlaylistMetadataMetadataTypedDict(TypedDict):
     r"""Indicates this is a search directory"""
     secondary: NotRequired[bool]
     r"""Used by old clients to provide nested menus allowing for primative (but structured) navigation."""
-    skip_children: NotRequired[bool]
+    skip_children: NotRequired[MediaContainerWithPlaylistMetadataSkipChildrenTypedDict]
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
-    skip_parent: NotRequired[bool]
+    skip_parent: NotRequired[MediaContainerWithPlaylistMetadataSkipParentTypedDict]
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
     sort: NotRequired[List[SortTypedDict]]
     r"""Typically only seen in metadata at a library's top level"""
@@ -408,12 +446,16 @@ class MediaContainerWithPlaylistMetadataMetadata(BaseModel):
     secondary: Optional[bool] = None
     r"""Used by old clients to provide nested menus allowing for primative (but structured) navigation."""
 
-    skip_children: Annotated[Optional[bool], pydantic.Field(alias="skipChildren")] = (
-        None
-    )
+    skip_children: Annotated[
+        Optional[MediaContainerWithPlaylistMetadataSkipChildren],
+        pydantic.Field(alias="skipChildren"),
+    ] = None
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
 
-    skip_parent: Annotated[Optional[bool], pydantic.Field(alias="skipParent")] = None
+    skip_parent: Annotated[
+        Optional[MediaContainerWithPlaylistMetadataSkipParent],
+        pydantic.Field(alias="skipParent"),
+    ] = None
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
 
     sort: Annotated[Optional[List[Sort]], pydantic.Field(alias="Sort")] = None

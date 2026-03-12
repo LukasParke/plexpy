@@ -16,8 +16,8 @@ from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
 from pydantic import ConfigDict, model_serializer
-from typing import Any, Dict, List, Optional
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing import Any, Dict, List, Optional, Union
+from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 
 class GetPlaylistGeneratorItemsGlobalsTypedDict(TypedDict):
@@ -318,6 +318,42 @@ class GetPlaylistGeneratorItemsGuids(BaseModel):
     """
 
 
+class SkipChildren2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+class GetPlaylistGeneratorItemsSkipParent2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+GetPlaylistGeneratorItemsSkipChildrenTypedDict = TypeAliasType(
+    "GetPlaylistGeneratorItemsSkipChildrenTypedDict", Union[bool, SkipChildren2]
+)
+r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
+
+
+GetPlaylistGeneratorItemsSkipChildren = TypeAliasType(
+    "GetPlaylistGeneratorItemsSkipChildren", Union[bool, SkipChildren2]
+)
+r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
+
+
+GetPlaylistGeneratorItemsSkipParentTypedDict = TypeAliasType(
+    "GetPlaylistGeneratorItemsSkipParentTypedDict",
+    Union[bool, GetPlaylistGeneratorItemsSkipParent2],
+)
+r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
+
+
+GetPlaylistGeneratorItemsSkipParent = TypeAliasType(
+    "GetPlaylistGeneratorItemsSkipParent",
+    Union[bool, GetPlaylistGeneratorItemsSkipParent2],
+)
+r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
+
+
 class ProcessingState(str, Enum):
     r"""The state of processing if this generator is part of an optimizer playlist"""
 
@@ -453,9 +489,9 @@ class GetPlaylistGeneratorItemsMetadataTypedDict(TypedDict):
     r"""Indicates this is a search directory"""
     secondary: NotRequired[bool]
     r"""Used by old clients to provide nested menus allowing for primative (but structured) navigation."""
-    skip_children: NotRequired[bool]
+    skip_children: NotRequired[GetPlaylistGeneratorItemsSkipChildrenTypedDict]
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
-    skip_parent: NotRequired[bool]
+    skip_parent: NotRequired[GetPlaylistGeneratorItemsSkipParentTypedDict]
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
     sort: NotRequired[List[components_sort.SortTypedDict]]
     r"""Typically only seen in metadata at a library's top level"""
@@ -714,12 +750,16 @@ class GetPlaylistGeneratorItemsMetadata(BaseModel):
     secondary: Optional[bool] = None
     r"""Used by old clients to provide nested menus allowing for primative (but structured) navigation."""
 
-    skip_children: Annotated[Optional[bool], pydantic.Field(alias="skipChildren")] = (
-        None
-    )
+    skip_children: Annotated[
+        Optional[GetPlaylistGeneratorItemsSkipChildren],
+        pydantic.Field(alias="skipChildren"),
+    ] = None
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
 
-    skip_parent: Annotated[Optional[bool], pydantic.Field(alias="skipParent")] = None
+    skip_parent: Annotated[
+        Optional[GetPlaylistGeneratorItemsSkipParent],
+        pydantic.Field(alias="skipParent"),
+    ] = None
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
 
     sort: Annotated[

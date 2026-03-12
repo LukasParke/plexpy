@@ -1,21 +1,21 @@
 # HasVoiceActivity
 
 Voice activity detection availability flag returned by PMS.
-PMS returns this as string values (`"0"` or `"1"`) instead of a JSON boolean.
+PMS may return this as a boolean or as string values (`"0"` or `"1"`).
 
 
-## Example Usage
+
+## Supported Types
+
+### `bool`
 
 ```python
-from plex_api_client.models.components import HasVoiceActivity
-
-value = HasVoiceActivity.FALSE
+value: bool = /* values here */
 ```
 
+### `components.Two`
 
-## Values
+```python
+value: components.Two = /* values here */
+```
 
-| Name    | Value   |
-| ------- | ------- |
-| `FALSE` | 0       |
-| `TRUE`  | 1       |

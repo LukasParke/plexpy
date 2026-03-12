@@ -6,18 +6,27 @@ from enum import Enum
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
 from pydantic import ConfigDict, model_serializer
-from typing import Any, Dict, List, Optional
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing import Any, Dict, List, Optional, Union
+from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 
-class HasVoiceActivity(int, Enum):
-    r"""Voice activity detection availability flag returned by PMS.
-    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+class Two(str, Enum):
+    ZERO = "0"
+    ONE = "1"
 
-    """
 
-    FALSE = 0
-    TRUE = 1
+HasVoiceActivityTypedDict = TypeAliasType("HasVoiceActivityTypedDict", Union[bool, Two])
+r"""Voice activity detection availability flag returned by PMS.
+PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
+
+"""
+
+
+HasVoiceActivity = TypeAliasType("HasVoiceActivity", Union[bool, Two])
+r"""Voice activity detection availability flag returned by PMS.
+PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
+
+"""
 
 
 class MediaTypedDict(TypedDict):
@@ -32,9 +41,9 @@ class MediaTypedDict(TypedDict):
     container: NotRequired[str]
     duration: NotRequired[int]
     has64bit_offsets: NotRequired[bool]
-    has_voice_activity: NotRequired[HasVoiceActivity]
+    has_voice_activity: NotRequired[HasVoiceActivityTypedDict]
     r"""Voice activity detection availability flag returned by PMS.
-    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+    PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
 
     """
     height: NotRequired[int]
@@ -79,9 +88,9 @@ class Media(BaseModel):
 
     has_voice_activity: Annotated[
         Optional[HasVoiceActivity], pydantic.Field(alias="hasVoiceActivity")
-    ] = HasVoiceActivity.FALSE
+    ] = None
     r"""Voice activity detection availability flag returned by PMS.
-    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+    PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
 
     """
 

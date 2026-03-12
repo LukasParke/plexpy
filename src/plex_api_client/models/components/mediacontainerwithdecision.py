@@ -10,8 +10,8 @@ from enum import Enum
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
 from pydantic import ConfigDict, model_serializer
-from typing import Any, Dict, List, Optional
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing import Any, Dict, List, Optional, Union
+from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 
 class MediaContainerWithDecisionGuidsTypedDict(TypedDict):
@@ -28,14 +28,28 @@ class MediaContainerWithDecisionGuids(BaseModel):
     """
 
 
-class MediaContainerWithDecisionHasVoiceActivity(int, Enum):
-    r"""Voice activity detection availability flag returned by PMS.
-    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+class HasVoiceActivity2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
 
-    """
 
-    FALSE = 0
-    TRUE = 1
+MediaContainerWithDecisionHasVoiceActivityTypedDict = TypeAliasType(
+    "MediaContainerWithDecisionHasVoiceActivityTypedDict",
+    Union[bool, HasVoiceActivity2],
+)
+r"""Voice activity detection availability flag returned by PMS.
+PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
+
+"""
+
+
+MediaContainerWithDecisionHasVoiceActivity = TypeAliasType(
+    "MediaContainerWithDecisionHasVoiceActivity", Union[bool, HasVoiceActivity2]
+)
+r"""Voice activity detection availability flag returned by PMS.
+PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
+
+"""
 
 
 class MediaContainerWithDecisionStreamType(int, Enum):
@@ -592,9 +606,9 @@ class MediaContainerWithDecisionMediaTypedDict(TypedDict):
     container: NotRequired[str]
     duration: NotRequired[int]
     has64bit_offsets: NotRequired[bool]
-    has_voice_activity: NotRequired[MediaContainerWithDecisionHasVoiceActivity]
+    has_voice_activity: NotRequired[MediaContainerWithDecisionHasVoiceActivityTypedDict]
     r"""Voice activity detection availability flag returned by PMS.
-    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+    PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
 
     """
     height: NotRequired[int]
@@ -643,9 +657,9 @@ class MediaContainerWithDecisionMedia(BaseModel):
     has_voice_activity: Annotated[
         Optional[MediaContainerWithDecisionHasVoiceActivity],
         pydantic.Field(alias="hasVoiceActivity"),
-    ] = MediaContainerWithDecisionHasVoiceActivity.FALSE
+    ] = None
     r"""Voice activity detection availability flag returned by PMS.
-    PMS returns this as string values (`\"0\"` or `\"1\"`) instead of a JSON boolean.
+    PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
 
     """
 
@@ -730,6 +744,44 @@ class MediaContainerWithDecisionMedia(BaseModel):
             m[k] = v
 
         return m
+
+
+class MediaContainerWithDecisionSkipChildren2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+class MediaContainerWithDecisionSkipParent2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+MediaContainerWithDecisionSkipChildrenTypedDict = TypeAliasType(
+    "MediaContainerWithDecisionSkipChildrenTypedDict",
+    Union[bool, MediaContainerWithDecisionSkipChildren2],
+)
+r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
+
+
+MediaContainerWithDecisionSkipChildren = TypeAliasType(
+    "MediaContainerWithDecisionSkipChildren",
+    Union[bool, MediaContainerWithDecisionSkipChildren2],
+)
+r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
+
+
+MediaContainerWithDecisionSkipParentTypedDict = TypeAliasType(
+    "MediaContainerWithDecisionSkipParentTypedDict",
+    Union[bool, MediaContainerWithDecisionSkipParent2],
+)
+r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
+
+
+MediaContainerWithDecisionSkipParent = TypeAliasType(
+    "MediaContainerWithDecisionSkipParent",
+    Union[bool, MediaContainerWithDecisionSkipParent2],
+)
+r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
 
 
 class MediaContainerWithDecisionMetadataTypedDict(TypedDict):
@@ -839,9 +891,9 @@ class MediaContainerWithDecisionMetadataTypedDict(TypedDict):
     r"""Indicates this is a search directory"""
     secondary: NotRequired[bool]
     r"""Used by old clients to provide nested menus allowing for primative (but structured) navigation."""
-    skip_children: NotRequired[bool]
+    skip_children: NotRequired[MediaContainerWithDecisionSkipChildrenTypedDict]
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
-    skip_parent: NotRequired[bool]
+    skip_parent: NotRequired[MediaContainerWithDecisionSkipParentTypedDict]
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
     sort: NotRequired[List[SortTypedDict]]
     r"""Typically only seen in metadata at a library's top level"""
@@ -1080,12 +1132,16 @@ class MediaContainerWithDecisionMetadata(BaseModel):
     secondary: Optional[bool] = None
     r"""Used by old clients to provide nested menus allowing for primative (but structured) navigation."""
 
-    skip_children: Annotated[Optional[bool], pydantic.Field(alias="skipChildren")] = (
-        None
-    )
+    skip_children: Annotated[
+        Optional[MediaContainerWithDecisionSkipChildren],
+        pydantic.Field(alias="skipChildren"),
+    ] = None
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
 
-    skip_parent: Annotated[Optional[bool], pydantic.Field(alias="skipParent")] = None
+    skip_parent: Annotated[
+        Optional[MediaContainerWithDecisionSkipParent],
+        pydantic.Field(alias="skipParent"),
+    ] = None
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
 
     sort: Annotated[Optional[List[Sort]], pydantic.Field(alias="Sort")] = None
