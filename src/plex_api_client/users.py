@@ -23,6 +23,8 @@ class Users(BaseSDK):
 
         Get list of all users that are friends and have library access with the provided Plex authentication token
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -70,6 +72,7 @@ class Users(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -138,6 +141,8 @@ class Users(BaseSDK):
 
         Get list of all users that are friends and have library access with the provided Plex authentication token
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -185,6 +190,7 @@ class Users(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 

@@ -271,6 +271,8 @@ class Devices(BaseSDK):
 
         Get the list of all devices present
 
+        If set, this operation will use `token` from the global security.
+
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -299,6 +301,7 @@ class Devices(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -354,6 +357,8 @@ class Devices(BaseSDK):
 
         Get the list of all devices present
 
+        If set, this operation will use `token` from the global security.
+
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -382,6 +387,7 @@ class Devices(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -440,6 +446,8 @@ class Devices(BaseSDK):
 
         This endpoint adds a device to an existing grabber. The device is identified, and added to the correct grabber.
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -487,6 +495,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -544,6 +553,8 @@ class Devices(BaseSDK):
 
         This endpoint adds a device to an existing grabber. The device is identified, and added to the correct grabber.
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -591,6 +602,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -645,6 +657,8 @@ class Devices(BaseSDK):
 
         Tell grabbers to discover devices
 
+        If set, this operation will use `token` from the global security.
+
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -673,6 +687,7 @@ class Devices(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -727,6 +742,8 @@ class Devices(BaseSDK):
 
         Tell grabbers to discover devices
 
+        If set, this operation will use `token` from the global security.
+
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -755,6 +772,7 @@ class Devices(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -812,6 +830,8 @@ class Devices(BaseSDK):
 
         Remove a devices by its id along with its channel mappings
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -859,6 +879,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -917,6 +938,8 @@ class Devices(BaseSDK):
 
         Remove a devices by its id along with its channel mappings
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -964,6 +987,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1023,6 +1047,8 @@ class Devices(BaseSDK):
 
         Get a device's details by its id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1070,6 +1096,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1128,6 +1155,8 @@ class Devices(BaseSDK):
 
         Get a device's details by its id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1175,6 +1204,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1232,6 +1262,8 @@ class Devices(BaseSDK):
 
         Enable or disable a device by its id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1279,6 +1311,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1337,6 +1370,8 @@ class Devices(BaseSDK):
 
         Enable or disable a device by its id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1384,6 +1419,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1651,6 +1687,8 @@ class Devices(BaseSDK):
 
         Get a device's channels by its id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1698,6 +1736,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1757,6 +1796,8 @@ class Devices(BaseSDK):
 
         Get a device's channels by its id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1804,6 +1845,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1863,6 +1905,8 @@ class Devices(BaseSDK):
 
         Set device preferences by its id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1910,6 +1954,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1965,6 +2010,8 @@ class Devices(BaseSDK):
 
         Set device preferences by its id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2012,6 +2059,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2474,6 +2522,8 @@ class Devices(BaseSDK):
 
         Get a device's thumb for display to the user
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2521,6 +2571,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2579,6 +2630,8 @@ class Devices(BaseSDK):
 
         Get a device's thumb for display to the user
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2626,6 +2679,7 @@ class Devices(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 

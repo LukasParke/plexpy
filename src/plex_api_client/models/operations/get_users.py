@@ -310,7 +310,7 @@ class AllowTuners(int, Enum):
     ENABLE = 1
 
 
-class AllowSync(int, Enum):
+class GetUsersAllowSync(int, Enum):
     r"""Indicates if the user is allowed to sync media."""
 
     DISABLE = 0
@@ -446,7 +446,7 @@ class UserTypedDict(TypedDict):
     protected: NotRequired[Protected]
     home: NotRequired[Home]
     allow_tuners: NotRequired[AllowTuners]
-    allow_sync: NotRequired[AllowSync]
+    allow_sync: NotRequired[GetUsersAllowSync]
     allow_camera_upload: NotRequired[AllowCameraUpload]
     allow_channels: NotRequired[AllowChannels]
     allow_subtitle_admin: NotRequired[AllowSubtitleAdmin]
@@ -495,9 +495,9 @@ class User(BaseModel):
         Optional[AllowTuners], pydantic.Field(alias="allowTuners")
     ] = AllowTuners.DISABLE
 
-    allow_sync: Annotated[Optional[AllowSync], pydantic.Field(alias="allowSync")] = (
-        AllowSync.DISABLE
-    )
+    allow_sync: Annotated[
+        Optional[GetUsersAllowSync], pydantic.Field(alias="allowSync")
+    ] = GetUsersAllowSync.DISABLE
 
     allow_camera_upload: Annotated[
         Optional[AllowCameraUpload], pydantic.Field(alias="allowCameraUpload")

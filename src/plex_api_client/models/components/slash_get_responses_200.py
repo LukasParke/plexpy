@@ -2,11 +2,28 @@
 
 from __future__ import annotations
 from .metadata import Metadata, MetadataTypedDict
+from enum import Enum
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
 from pydantic import model_serializer
-from typing import List, Optional
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing import List, Optional, Union
+from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
+
+
+class SlashGetResponses200AllowSync2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+SlashGetResponses200AllowSyncTypedDict = TypeAliasType(
+    "SlashGetResponses200AllowSyncTypedDict",
+    Union[bool, SlashGetResponses200AllowSync2],
+)
+
+
+SlashGetResponses200AllowSync = TypeAliasType(
+    "SlashGetResponses200AllowSync", Union[bool, SlashGetResponses200AllowSync2]
+)
 
 
 class SlashGetResponses200MediaContainerTypedDict(TypedDict):
@@ -16,7 +33,7 @@ class SlashGetResponses200MediaContainerTypedDict(TypedDict):
     - Secondary: These are marked with `\"secondary\": true` and were used by old clients to provide nested menus allowing for primative (but structured) navigation.
     - Special: There is a By Folder entry which allows browsing the media by the underlying filesystem structure, and there's a completely obsolete entry marked `\"search\": true` which used to be used to allow clients to build search dialogs on the fly.
     """
-    allow_sync: NotRequired[bool]
+    allow_sync: NotRequired[SlashGetResponses200AllowSyncTypedDict]
     art: NotRequired[str]
     directory: NotRequired[List[MetadataTypedDict]]
     identifier: NotRequired[str]
@@ -39,7 +56,9 @@ class SlashGetResponses200MediaContainer(BaseModel):
     - Special: There is a By Folder entry which allows browsing the media by the underlying filesystem structure, and there's a completely obsolete entry marked `\"search\": true` which used to be used to allow clients to build search dialogs on the fly.
     """
 
-    allow_sync: Annotated[Optional[bool], pydantic.Field(alias="allowSync")] = None
+    allow_sync: Annotated[
+        Optional[SlashGetResponses200AllowSync], pydantic.Field(alias="allowSync")
+    ] = None
 
     art: Optional[str] = None
 

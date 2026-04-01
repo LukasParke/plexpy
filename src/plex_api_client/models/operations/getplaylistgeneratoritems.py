@@ -318,7 +318,7 @@ class GetPlaylistGeneratorItemsGuids(BaseModel):
     """
 
 
-class SkipChildren2(str, Enum):
+class GetPlaylistGeneratorItemsSkipChildren2(str, Enum):
     ZERO = "0"
     ONE = "1"
 
@@ -329,13 +329,15 @@ class GetPlaylistGeneratorItemsSkipParent2(str, Enum):
 
 
 GetPlaylistGeneratorItemsSkipChildrenTypedDict = TypeAliasType(
-    "GetPlaylistGeneratorItemsSkipChildrenTypedDict", Union[bool, SkipChildren2]
+    "GetPlaylistGeneratorItemsSkipChildrenTypedDict",
+    Union[bool, GetPlaylistGeneratorItemsSkipChildren2],
 )
 r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
 
 
 GetPlaylistGeneratorItemsSkipChildren = TypeAliasType(
-    "GetPlaylistGeneratorItemsSkipChildren", Union[bool, SkipChildren2]
+    "GetPlaylistGeneratorItemsSkipChildren",
+    Union[bool, GetPlaylistGeneratorItemsSkipChildren2],
 )
 r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
 

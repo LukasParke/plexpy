@@ -9,9 +9,9 @@
 value: bool = /* values here */
 ```
 
-### `operations.Two`
+### `components.AllowSync3`
 
 ```python
-value: operations.Two = /* values here */
+value: components.AllowSync3 = /* values here */
 ```
 

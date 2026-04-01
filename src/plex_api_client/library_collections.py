@@ -28,6 +28,8 @@ class LibraryCollections(BaseSDK):
 
         Add items to a collection by uri
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -75,6 +77,7 @@ class LibraryCollections(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -133,6 +136,8 @@ class LibraryCollections(BaseSDK):
 
         Add items to a collection by uri
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -180,6 +185,7 @@ class LibraryCollections(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -238,6 +244,8 @@ class LibraryCollections(BaseSDK):
 
         Delete an item from a collection
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -285,6 +293,7 @@ class LibraryCollections(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -343,6 +352,8 @@ class LibraryCollections(BaseSDK):
 
         Delete an item from a collection
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -390,6 +401,7 @@ class LibraryCollections(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -448,6 +460,8 @@ class LibraryCollections(BaseSDK):
 
         Reorder items in a collection with one item after another
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -495,6 +509,7 @@ class LibraryCollections(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -553,6 +568,8 @@ class LibraryCollections(BaseSDK):
 
         Reorder items in a collection with one item after another
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -600,6 +617,7 @@ class LibraryCollections(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 

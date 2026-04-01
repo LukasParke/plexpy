@@ -11,9 +11,9 @@ When found on a show item, indicates that the children (seasons) should be skipp
 value: bool = /* values here */
 ```
 
-### `operations.SkipChildren2`
+### `operations.GetPlaylistGeneratorItemsSkipChildren2`
 
 ```python
-value: operations.SkipChildren2 = /* values here */
+value: operations.GetPlaylistGeneratorItemsSkipChildren2 = /* values here */
 ```
 

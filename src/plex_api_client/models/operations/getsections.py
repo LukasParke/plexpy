@@ -3,6 +3,7 @@
 from __future__ import annotations
 import httpx
 from plex_api_client.models.components import (
+    allowsync as components_allowsync,
     librarysection as components_librarysection,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
@@ -29,7 +30,7 @@ class GetSectionsMediaContainerTypedDict(TypedDict):
     r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
 
     """
-    allow_sync: NotRequired[bool]
+    allow_sync: NotRequired[components_allowsync.AllowSyncTypedDict]
     directory: NotRequired[List[components_librarysection.LibrarySectionTypedDict]]
     title1: NotRequired[str]
     r"""Typically just \"Plex Library\" """
@@ -56,7 +57,9 @@ class GetSectionsMediaContainer(BaseModel):
 
     """
 
-    allow_sync: Annotated[Optional[bool], pydantic.Field(alias="allowSync")] = None
+    allow_sync: Annotated[
+        Optional[components_allowsync.AllowSync], pydantic.Field(alias="allowSync")
+    ] = None
 
     directory: Annotated[
         Optional[List[components_librarysection.LibrarySection]],

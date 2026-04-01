@@ -7,6 +7,7 @@ from plex_api_client.utils.dynamic_imports import lazy_getattr, lazy_dir
 if TYPE_CHECKING:
     from .accepts import Accepts
     from .advancedsubtitles import AdvancedSubtitles
+    from .allowsync import AllowSync, AllowSync3, AllowSyncTypedDict
     from .boolint import BoolInt
     from .channel import Channel, ChannelTypedDict
     from .channelmapping import ChannelMapping, ChannelMappingTypedDict
@@ -57,7 +58,10 @@ if TYPE_CHECKING:
         ItemsTypedDict,
     )
     from .librarysection import (
+        AllowSync2,
         LibrarySection,
+        LibrarySectionAllowSync,
+        LibrarySectionAllowSyncTypedDict,
         LibrarySectionLocation,
         LibrarySectionLocationTypedDict,
         LibrarySectionTypedDict,
@@ -93,6 +97,9 @@ if TYPE_CHECKING:
         Decision,
         HasVoiceActivity2,
         MediaContainerWithDecision,
+        MediaContainerWithDecisionCanAutoSync,
+        MediaContainerWithDecisionCanAutoSync2,
+        MediaContainerWithDecisionCanAutoSyncTypedDict,
         MediaContainerWithDecisionDecision,
         MediaContainerWithDecisionGuids,
         MediaContainerWithDecisionGuidsTypedDict,
@@ -250,6 +257,9 @@ if TYPE_CHECKING:
     )
     from .slash_get_responses_200 import (
         SlashGetResponses200,
+        SlashGetResponses200AllowSync,
+        SlashGetResponses200AllowSync2,
+        SlashGetResponses200AllowSyncTypedDict,
         SlashGetResponses200MediaContainer,
         SlashGetResponses200MediaContainerTypedDict,
         SlashGetResponses200TypedDict,
@@ -262,7 +272,14 @@ if TYPE_CHECKING:
         SortPivotTypedDict,
         SortTypedDict,
     )
-    from .stream import Stream, StreamType, StreamTypedDict
+    from .stream import (
+        CanAutoSync,
+        CanAutoSync2,
+        CanAutoSyncTypedDict,
+        Stream,
+        StreamType,
+        StreamTypedDict,
+    )
     from .subtitles import Subtitles
     from .tag import Tag, TagTypedDict
     from .transcodesession import TranscodeSession, TranscodeSessionTypedDict
@@ -297,8 +314,15 @@ __all__ = [
     "Accepts",
     "AdvancedSubtitles",
     "AiringsType",
+    "AllowSync",
+    "AllowSync2",
+    "AllowSync3",
+    "AllowSyncTypedDict",
     "AutoSelectSubtitle",
     "BoolInt",
+    "CanAutoSync",
+    "CanAutoSync2",
+    "CanAutoSyncTypedDict",
     "Channel",
     "ChannelMapping",
     "ChannelMappingTypedDict",
@@ -367,6 +391,8 @@ __all__ = [
     "ItemsSkipParentTypedDict",
     "ItemsTypedDict",
     "LibrarySection",
+    "LibrarySectionAllowSync",
+    "LibrarySectionAllowSyncTypedDict",
     "LibrarySectionLocation",
     "LibrarySectionLocationTypedDict",
     "LibrarySectionTypedDict",
@@ -392,6 +418,9 @@ __all__ = [
     "MediaContainerWithArtworkType",
     "MediaContainerWithArtworkTypedDict",
     "MediaContainerWithDecision",
+    "MediaContainerWithDecisionCanAutoSync",
+    "MediaContainerWithDecisionCanAutoSync2",
+    "MediaContainerWithDecisionCanAutoSyncTypedDict",
     "MediaContainerWithDecisionDecision",
     "MediaContainerWithDecisionGuids",
     "MediaContainerWithDecisionGuidsTypedDict",
@@ -519,6 +548,9 @@ __all__ = [
     "SkipParent2",
     "SkipParentTypedDict",
     "SlashGetResponses200",
+    "SlashGetResponses200AllowSync",
+    "SlashGetResponses200AllowSync2",
+    "SlashGetResponses200AllowSyncTypedDict",
     "SlashGetResponses200MediaContainer",
     "SlashGetResponses200MediaContainerTypedDict",
     "SlashGetResponses200TypedDict",
@@ -560,6 +592,9 @@ __all__ = [
 _dynamic_imports: dict[str, str] = {
     "Accepts": ".accepts",
     "AdvancedSubtitles": ".advancedsubtitles",
+    "AllowSync": ".allowsync",
+    "AllowSync3": ".allowsync",
+    "AllowSyncTypedDict": ".allowsync",
     "BoolInt": ".boolint",
     "Channel": ".channel",
     "ChannelTypedDict": ".channel",
@@ -617,7 +652,10 @@ _dynamic_imports: dict[str, str] = {
     "ItemsSkipParent2": ".items",
     "ItemsSkipParentTypedDict": ".items",
     "ItemsTypedDict": ".items",
+    "AllowSync2": ".librarysection",
     "LibrarySection": ".librarysection",
+    "LibrarySectionAllowSync": ".librarysection",
+    "LibrarySectionAllowSyncTypedDict": ".librarysection",
     "LibrarySectionLocation": ".librarysection",
     "LibrarySectionLocationTypedDict": ".librarysection",
     "LibrarySectionTypedDict": ".librarysection",
@@ -648,6 +686,9 @@ _dynamic_imports: dict[str, str] = {
     "Decision": ".mediacontainerwithdecision",
     "HasVoiceActivity2": ".mediacontainerwithdecision",
     "MediaContainerWithDecision": ".mediacontainerwithdecision",
+    "MediaContainerWithDecisionCanAutoSync": ".mediacontainerwithdecision",
+    "MediaContainerWithDecisionCanAutoSync2": ".mediacontainerwithdecision",
+    "MediaContainerWithDecisionCanAutoSyncTypedDict": ".mediacontainerwithdecision",
     "MediaContainerWithDecisionDecision": ".mediacontainerwithdecision",
     "MediaContainerWithDecisionGuids": ".mediacontainerwithdecision",
     "MediaContainerWithDecisionGuidsTypedDict": ".mediacontainerwithdecision",
@@ -779,6 +820,9 @@ _dynamic_imports: dict[str, str] = {
     "Value": ".setting",
     "ValueTypedDict": ".setting",
     "SlashGetResponses200": ".slash_get_responses_200",
+    "SlashGetResponses200AllowSync": ".slash_get_responses_200",
+    "SlashGetResponses200AllowSync2": ".slash_get_responses_200",
+    "SlashGetResponses200AllowSyncTypedDict": ".slash_get_responses_200",
     "SlashGetResponses200MediaContainer": ".slash_get_responses_200",
     "SlashGetResponses200MediaContainerTypedDict": ".slash_get_responses_200",
     "SlashGetResponses200TypedDict": ".slash_get_responses_200",
@@ -788,6 +832,9 @@ _dynamic_imports: dict[str, str] = {
     "SortPivot": ".sort",
     "SortPivotTypedDict": ".sort",
     "SortTypedDict": ".sort",
+    "CanAutoSync": ".stream",
+    "CanAutoSync2": ".stream",
+    "CanAutoSyncTypedDict": ".stream",
     "Stream": ".stream",
     "StreamType": ".stream",
     "StreamTypedDict": ".stream",

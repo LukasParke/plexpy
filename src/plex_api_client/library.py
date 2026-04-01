@@ -247,6 +247,8 @@ class Library(BaseSDK):
 
         Delete the hub caches so they are recomputed on next request
 
+        If set, this operation will use `token` from the global security.
+
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -275,6 +277,7 @@ class Library(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -326,6 +329,8 @@ class Library(BaseSDK):
 
         Delete the hub caches so they are recomputed on next request
 
+        If set, this operation will use `token` from the global security.
+
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -354,6 +359,7 @@ class Library(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -405,6 +411,8 @@ class Library(BaseSDK):
 
         Clean out any now unused bundles. Bundles can become unused when media is deleted
 
+        If set, this operation will use `token` from the global security.
+
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -433,6 +441,7 @@ class Library(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -484,6 +493,8 @@ class Library(BaseSDK):
 
         Clean out any now unused bundles. Bundles can become unused when media is deleted
 
+        If set, this operation will use `token` from the global security.
+
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -512,6 +523,7 @@ class Library(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1001,6 +1013,8 @@ class Library(BaseSDK):
 
         Initiate optimize on the database.
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1048,6 +1062,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1103,6 +1118,8 @@ class Library(BaseSDK):
 
         Initiate optimize on the database.
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1150,6 +1167,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1588,6 +1606,8 @@ class Library(BaseSDK):
 
         Add a new library section to the server
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1635,6 +1655,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1692,6 +1713,8 @@ class Library(BaseSDK):
 
         Add a new library section to the server
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1739,6 +1762,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1793,6 +1817,8 @@ class Library(BaseSDK):
 
         Stop all refreshes across all sections
 
+        If set, this operation will use `token` from the global security.
+
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -1821,6 +1847,7 @@ class Library(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1875,6 +1902,8 @@ class Library(BaseSDK):
 
         Stop all refreshes across all sections
 
+        If set, this operation will use `token` from the global security.
+
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -1903,6 +1932,7 @@ class Library(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1961,6 +1991,8 @@ class Library(BaseSDK):
 
         Get a section's preferences for a metadata type
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2008,6 +2040,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2066,6 +2099,8 @@ class Library(BaseSDK):
 
         Get a section's preferences for a metadata type
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2113,6 +2148,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2171,6 +2207,8 @@ class Library(BaseSDK):
 
         Tell PMS to refresh all section metadata
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2220,6 +2258,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2275,6 +2314,8 @@ class Library(BaseSDK):
 
         Tell PMS to refresh all section metadata
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2324,6 +2365,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2583,6 +2625,8 @@ class Library(BaseSDK):
 
         Delete a single metadata item from the library, deleting media as well
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2630,6 +2674,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2685,6 +2730,8 @@ class Library(BaseSDK):
 
         Delete a single metadata item from the library, deleting media as well
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2732,6 +2779,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2787,6 +2835,8 @@ class Library(BaseSDK):
 
         Edit metadata items setting fields
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2834,6 +2884,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2889,6 +2940,8 @@ class Library(BaseSDK):
 
         Edit metadata items setting fields
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2936,6 +2989,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2990,6 +3044,8 @@ class Library(BaseSDK):
 
         Start the detection of ads in a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -3037,6 +3093,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -3091,6 +3148,8 @@ class Library(BaseSDK):
 
         Start the detection of ads in a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -3138,6 +3197,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -3405,6 +3465,8 @@ class Library(BaseSDK):
 
         Start the analysis of a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -3452,6 +3514,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -3507,6 +3570,8 @@ class Library(BaseSDK):
 
         Start the analysis of a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -3554,6 +3619,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -3608,6 +3674,8 @@ class Library(BaseSDK):
 
         Start the chapter thumb generation for an item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -3655,6 +3723,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -3709,6 +3778,8 @@ class Library(BaseSDK):
 
         Start the chapter thumb generation for an item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -3756,6 +3827,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -3810,6 +3882,8 @@ class Library(BaseSDK):
 
         Start credit detection on a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -3857,6 +3931,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -3911,6 +3986,8 @@ class Library(BaseSDK):
 
         Start credit detection on a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -3958,6 +4035,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -4651,6 +4729,8 @@ class Library(BaseSDK):
 
         Start the indexing (BIF generation) of an item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -4698,6 +4778,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -4753,6 +4834,8 @@ class Library(BaseSDK):
 
         Start the indexing (BIF generation) of an item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -4800,6 +4883,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -4854,6 +4938,8 @@ class Library(BaseSDK):
 
         Start the detection of intros in a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -4901,6 +4987,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -4955,6 +5042,8 @@ class Library(BaseSDK):
 
         Start the detection of intros in a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -5002,6 +5091,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -5264,6 +5354,8 @@ class Library(BaseSDK):
 
         Match a metadata item to a guid
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -5311,6 +5403,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -5365,6 +5458,8 @@ class Library(BaseSDK):
 
         Match a metadata item to a guid
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -5412,6 +5507,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -5466,6 +5562,8 @@ class Library(BaseSDK):
 
         Get the list of metadata matches for a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -5513,6 +5611,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -5570,6 +5669,8 @@ class Library(BaseSDK):
 
         Get the list of metadata matches for a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -5617,6 +5718,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -5674,6 +5776,8 @@ class Library(BaseSDK):
 
         Merge a metadata item with other items
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -5721,6 +5825,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -5775,6 +5880,8 @@ class Library(BaseSDK):
 
         Merge a metadata item with other items
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -5822,6 +5929,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -6087,6 +6195,8 @@ class Library(BaseSDK):
 
         Set the preferences on a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -6134,6 +6244,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -6189,6 +6300,8 @@ class Library(BaseSDK):
 
         Set the preferences on a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -6236,6 +6349,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -6291,6 +6405,8 @@ class Library(BaseSDK):
 
         Refresh a metadata item from the agent
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -6338,6 +6454,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -6393,6 +6510,8 @@ class Library(BaseSDK):
 
         Refresh a metadata item from the agent
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -6440,6 +6559,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -6912,6 +7032,8 @@ class Library(BaseSDK):
 
         Split a metadata item into multiple items
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -6959,6 +7081,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -7013,6 +7136,8 @@ class Library(BaseSDK):
 
         Split a metadata item into multiple items
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -7060,6 +7185,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -7114,6 +7240,8 @@ class Library(BaseSDK):
 
         Add a subtitle to a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -7161,6 +7289,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -7215,6 +7344,8 @@ class Library(BaseSDK):
 
         Add a subtitle to a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -7262,6 +7393,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -7522,6 +7654,8 @@ class Library(BaseSDK):
 
         Unmatch a metadata item to info fetched from the agent
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -7569,6 +7703,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -7621,6 +7756,8 @@ class Library(BaseSDK):
 
         Unmatch a metadata item to info fetched from the agent
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -7668,6 +7805,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -7722,6 +7860,8 @@ class Library(BaseSDK):
 
         Get the list of users which have played this item starting with the most
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -7769,6 +7909,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -7826,6 +7967,8 @@ class Library(BaseSDK):
 
         Get the list of users which have played this item starting with the most
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -7873,6 +8016,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -7931,6 +8075,8 @@ class Library(BaseSDK):
 
         Start the detection of voice in a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -7978,6 +8124,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -8033,6 +8180,8 @@ class Library(BaseSDK):
 
         Start the detection of voice in a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -8080,6 +8229,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -8961,6 +9111,8 @@ class Library(BaseSDK):
 
         Delete a library section by id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -9008,6 +9160,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -9063,6 +9216,8 @@ class Library(BaseSDK):
 
         Delete a library section by id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -9110,6 +9265,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -9374,6 +9530,8 @@ class Library(BaseSDK):
 
         Edit a library section by id setting parameters
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -9421,6 +9579,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -9475,6 +9634,8 @@ class Library(BaseSDK):
 
         Edit a library section by id setting parameters
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -9522,6 +9683,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -9866,6 +10028,8 @@ class Library(BaseSDK):
 
         Start analysis of all items in a section.  If BIF generation is enabled, this will also be started on this section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -9913,6 +10077,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -9967,6 +10132,8 @@ class Library(BaseSDK):
 
         Start analysis of all items in a section.  If BIF generation is enabled, this will also be started on this section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -10014,6 +10181,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -10702,6 +10870,8 @@ class Library(BaseSDK):
 
         Empty trash in the section, permanently deleting media/metadata for missing media
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -10749,6 +10919,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -10803,6 +10974,8 @@ class Library(BaseSDK):
 
         Empty trash in the section, permanently deleting media/metadata for missing media
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -10850,6 +11023,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -10905,6 +11079,8 @@ class Library(BaseSDK):
 
         Get common filters on a section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -10952,6 +11128,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -11010,6 +11187,8 @@ class Library(BaseSDK):
 
         Get common filters on a section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -11057,6 +11236,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -11324,6 +11504,8 @@ class Library(BaseSDK):
 
         Delete all the indexes in a section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -11371,6 +11553,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -11425,6 +11608,8 @@ class Library(BaseSDK):
 
         Delete all the indexes in a section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -11472,6 +11657,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -11526,6 +11712,8 @@ class Library(BaseSDK):
 
         Delete all the intro markers in a section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -11573,6 +11761,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -11627,6 +11816,8 @@ class Library(BaseSDK):
 
         Delete all the intro markers in a section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -11674,6 +11865,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -11939,6 +12131,8 @@ class Library(BaseSDK):
 
         Set the prefs for a section by id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -11986,6 +12180,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -12041,6 +12236,8 @@ class Library(BaseSDK):
 
         Set the prefs for a section by id
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -12088,6 +12285,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -12142,6 +12340,8 @@ class Library(BaseSDK):
 
         Cancel the refresh of a section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -12189,6 +12389,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -12243,6 +12444,8 @@ class Library(BaseSDK):
 
         Cancel the refresh of a section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -12290,6 +12493,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -12344,6 +12548,8 @@ class Library(BaseSDK):
 
         Start a refresh of this section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -12391,6 +12597,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -12445,6 +12652,8 @@ class Library(BaseSDK):
 
         Start a refresh of this section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -12492,6 +12701,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -14203,6 +14413,8 @@ class Library(BaseSDK):
 
         Delete a single media from a metadata item in the library
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -14250,6 +14462,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -14305,6 +14518,8 @@ class Library(BaseSDK):
 
         Delete a single media from a metadata item in the library
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -14352,6 +14567,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -14615,6 +14831,8 @@ class Library(BaseSDK):
 
         Delete a library collection from the PMS
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -14662,6 +14880,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -14717,6 +14936,8 @@ class Library(BaseSDK):
 
         Delete a library collection from the PMS
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -14764,6 +14985,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -14819,6 +15041,8 @@ class Library(BaseSDK):
 
         Get a composite image of images in this section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -14866,6 +15090,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -14921,6 +15146,8 @@ class Library(BaseSDK):
 
         Get a composite image of images in this section
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -14968,6 +15195,7 @@ class Library(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 

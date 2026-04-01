@@ -1716,6 +1716,8 @@ class Hubs(BaseSDK):
 
         Reset hubs for this section to defaults and delete custom hubs
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1763,6 +1765,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1818,6 +1821,8 @@ class Hubs(BaseSDK):
 
         Reset hubs for this section to defaults and delete custom hubs
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1865,6 +1870,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -1917,6 +1923,8 @@ class Hubs(BaseSDK):
 
         Get the list of hubs including both built-in and custom
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -1964,6 +1972,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2020,6 +2029,8 @@ class Hubs(BaseSDK):
 
         Get the list of hubs including both built-in and custom
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2067,6 +2078,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2126,6 +2138,8 @@ class Hubs(BaseSDK):
 
         Create a custom hub based on a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2173,6 +2187,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2228,6 +2243,8 @@ class Hubs(BaseSDK):
 
         Create a custom hub based on a metadata item
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2275,6 +2292,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2327,6 +2345,8 @@ class Hubs(BaseSDK):
 
         Changed the ordering of a hub among others hubs
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2374,6 +2394,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2430,6 +2451,8 @@ class Hubs(BaseSDK):
 
         Changed the ordering of a hub among others hubs
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2477,6 +2500,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2536,6 +2560,8 @@ class Hubs(BaseSDK):
 
         Delete a custom hub from the server
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2583,6 +2609,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2638,6 +2665,8 @@ class Hubs(BaseSDK):
 
         Delete a custom hub from the server
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2685,6 +2714,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2740,6 +2770,8 @@ class Hubs(BaseSDK):
 
         Changed the visibility of a hub for both the admin and shared users
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2787,6 +2819,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
@@ -2842,6 +2875,8 @@ class Hubs(BaseSDK):
 
         Changed the visibility of a hub for both the admin and shared users
 
+        If set, this operation will use `token` from the global security.
+
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2889,6 +2924,7 @@ class Hubs(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
+            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 

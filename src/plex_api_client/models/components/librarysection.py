@@ -2,11 +2,27 @@
 
 from __future__ import annotations
 from .mediatypestring import MediaTypeString
+from enum import Enum
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
 from pydantic import model_serializer
-from typing import Any, List, Optional
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing import Any, List, Optional, Union
+from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
+
+
+class AllowSync2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+LibrarySectionAllowSyncTypedDict = TypeAliasType(
+    "LibrarySectionAllowSyncTypedDict", Union[bool, AllowSync2]
+)
+
+
+LibrarySectionAllowSync = TypeAliasType(
+    "LibrarySectionAllowSync", Union[bool, AllowSync2]
+)
 
 
 class LibrarySectionLocationTypedDict(TypedDict):
@@ -53,7 +69,7 @@ class LibrarySectionTypedDict(TypedDict):
     title: NotRequired[str]
     r"""The title of the library"""
     agent: NotRequired[str]
-    allow_sync: NotRequired[bool]
+    allow_sync: NotRequired[LibrarySectionAllowSyncTypedDict]
     art: NotRequired[str]
     composite: NotRequired[str]
     content: NotRequired[bool]
@@ -89,7 +105,9 @@ class LibrarySection(BaseModel):
 
     agent: Optional[str] = None
 
-    allow_sync: Annotated[Optional[bool], pydantic.Field(alias="allowSync")] = None
+    allow_sync: Annotated[
+        Optional[LibrarySectionAllowSync], pydantic.Field(alias="allowSync")
+    ] = None
 
     art: Optional[str] = None
 

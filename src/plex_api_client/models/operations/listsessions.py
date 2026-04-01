@@ -35,7 +35,7 @@ class Guids(BaseModel):
     """
 
 
-class Two(str, Enum):
+class SkipChildren2(str, Enum):
     ZERO = "0"
     ONE = "1"
 
@@ -45,11 +45,13 @@ class SkipParent2(str, Enum):
     ONE = "1"
 
 
-SkipChildrenTypedDict = TypeAliasType("SkipChildrenTypedDict", Union[bool, Two])
+SkipChildrenTypedDict = TypeAliasType(
+    "SkipChildrenTypedDict", Union[bool, SkipChildren2]
+)
 r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
 
 
-SkipChildren = TypeAliasType("SkipChildren", Union[bool, Two])
+SkipChildren = TypeAliasType("SkipChildren", Union[bool, SkipChildren2])
 r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
 
 

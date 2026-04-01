@@ -33,6 +33,11 @@ class HasVoiceActivity2(str, Enum):
     ONE = "1"
 
 
+class MediaContainerWithDecisionCanAutoSync2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
 MediaContainerWithDecisionHasVoiceActivityTypedDict = TypeAliasType(
     "MediaContainerWithDecisionHasVoiceActivityTypedDict",
     Union[bool, HasVoiceActivity2],
@@ -50,6 +55,20 @@ r"""Voice activity detection availability flag returned by PMS.
 PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
 
 """
+
+
+MediaContainerWithDecisionCanAutoSyncTypedDict = TypeAliasType(
+    "MediaContainerWithDecisionCanAutoSyncTypedDict",
+    Union[bool, MediaContainerWithDecisionCanAutoSync2],
+)
+r"""Indicates if the stream can auto-sync."""
+
+
+MediaContainerWithDecisionCanAutoSync = TypeAliasType(
+    "MediaContainerWithDecisionCanAutoSync",
+    Union[bool, MediaContainerWithDecisionCanAutoSync2],
+)
+r"""Indicates if the stream can auto-sync."""
 
 
 class MediaContainerWithDecisionStreamType(int, Enum):
@@ -123,7 +142,7 @@ class MediaContainerWithDecisionStreamTypedDict(TypedDict):
     r"""Dolby Vision version."""
     bitrate: NotRequired[int]
     r"""Bitrate of the stream."""
-    can_auto_sync: NotRequired[bool]
+    can_auto_sync: NotRequired[MediaContainerWithDecisionCanAutoSyncTypedDict]
     r"""Indicates if the stream can auto-sync."""
     chroma_location: NotRequired[str]
     r"""Chroma sample location."""
@@ -262,7 +281,10 @@ class MediaContainerWithDecisionStream(BaseModel):
     bitrate: Optional[int] = None
     r"""Bitrate of the stream."""
 
-    can_auto_sync: Annotated[Optional[bool], pydantic.Field(alias="canAutoSync")] = None
+    can_auto_sync: Annotated[
+        Optional[MediaContainerWithDecisionCanAutoSync],
+        pydantic.Field(alias="canAutoSync"),
+    ] = None
     r"""Indicates if the stream can auto-sync."""
 
     chroma_location: Annotated[

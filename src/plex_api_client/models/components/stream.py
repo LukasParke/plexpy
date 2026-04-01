@@ -5,8 +5,21 @@ from enum import Enum
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
 from pydantic import ConfigDict, model_serializer
-from typing import Any, Dict, Optional
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing import Any, Dict, Optional, Union
+from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
+
+
+class CanAutoSync2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+CanAutoSyncTypedDict = TypeAliasType("CanAutoSyncTypedDict", Union[bool, CanAutoSync2])
+r"""Indicates if the stream can auto-sync."""
+
+
+CanAutoSync = TypeAliasType("CanAutoSync", Union[bool, CanAutoSync2])
+r"""Indicates if the stream can auto-sync."""
 
 
 class StreamType(int, Enum):
@@ -60,7 +73,7 @@ class StreamTypedDict(TypedDict):
     r"""Dolby Vision version."""
     bitrate: NotRequired[int]
     r"""Bitrate of the stream."""
-    can_auto_sync: NotRequired[bool]
+    can_auto_sync: NotRequired[CanAutoSyncTypedDict]
     r"""Indicates if the stream can auto-sync."""
     chroma_location: NotRequired[str]
     r"""Chroma sample location."""
@@ -195,7 +208,9 @@ class Stream(BaseModel):
     bitrate: Optional[int] = None
     r"""Bitrate of the stream."""
 
-    can_auto_sync: Annotated[Optional[bool], pydantic.Field(alias="canAutoSync")] = None
+    can_auto_sync: Annotated[
+        Optional[CanAutoSync], pydantic.Field(alias="canAutoSync")
+    ] = None
     r"""Indicates if the stream can auto-sync."""
 
     chroma_location: Annotated[
