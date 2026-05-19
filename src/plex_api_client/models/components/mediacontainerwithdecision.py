@@ -33,6 +33,11 @@ class HasVoiceActivity2(str, Enum):
     ONE = "1"
 
 
+class MediaContainerWithDecisionOptimizedForStreaming(int, Enum):
+    ZERO = 0
+    ONE = 1
+
+
 class MediaContainerWithDecisionCanAutoSync2(str, Enum):
     ZERO = "0"
     ONE = "1"
@@ -634,7 +639,9 @@ class MediaContainerWithDecisionMediaTypedDict(TypedDict):
 
     """
     height: NotRequired[int]
-    optimized_for_streaming: NotRequired[bool]
+    optimized_for_streaming: NotRequired[
+        MediaContainerWithDecisionOptimizedForStreaming
+    ]
     part: NotRequired[List[MediaContainerWithDecisionPartTypedDict]]
     video_codec: NotRequired[str]
     video_frame_rate: NotRequired[str]
@@ -688,7 +695,8 @@ class MediaContainerWithDecisionMedia(BaseModel):
     height: Optional[int] = None
 
     optimized_for_streaming: Annotated[
-        Optional[bool], pydantic.Field(alias="optimizedForStreaming")
+        Optional[MediaContainerWithDecisionOptimizedForStreaming],
+        pydantic.Field(alias="optimizedForStreaming"),
     ] = None
 
     part: Annotated[

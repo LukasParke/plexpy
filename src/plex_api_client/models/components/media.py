@@ -15,6 +15,11 @@ class Two(str, Enum):
     ONE = "1"
 
 
+class OptimizedForStreaming(int, Enum):
+    ZERO = 0
+    ONE = 1
+
+
 HasVoiceActivityTypedDict = TypeAliasType("HasVoiceActivityTypedDict", Union[bool, Two])
 r"""Voice activity detection availability flag returned by PMS.
 PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
@@ -47,7 +52,7 @@ class MediaTypedDict(TypedDict):
 
     """
     height: NotRequired[int]
-    optimized_for_streaming: NotRequired[bool]
+    optimized_for_streaming: NotRequired[OptimizedForStreaming]
     part: NotRequired[List[PartTypedDict]]
     video_codec: NotRequired[str]
     video_frame_rate: NotRequired[str]
@@ -97,7 +102,7 @@ class Media(BaseModel):
     height: Optional[int] = None
 
     optimized_for_streaming: Annotated[
-        Optional[bool], pydantic.Field(alias="optimizedForStreaming")
+        Optional[OptimizedForStreaming], pydantic.Field(alias="optimizedForStreaming")
     ] = None
 
     part: Annotated[Optional[List[Part]], pydantic.Field(alias="Part")] = None
