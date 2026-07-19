@@ -6,7 +6,7 @@ from plex_api_client._hooks import HookContext
 from plex_api_client.models import components, errors, operations
 from plex_api_client.types import BaseModel, OptionalNullable, UNSET
 from plex_api_client.utils.unmarshal_json_response import unmarshal_json_response
-from typing import Mapping, Optional, Union, cast
+from typing import Any, Mapping, Optional, Union, cast
 
 
 class Epg(BaseSDK):
@@ -81,10 +81,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -93,6 +97,8 @@ class Epg(BaseSDK):
                 operation_id="computeChannelMap",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -187,10 +193,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -199,6 +209,8 @@ class Epg(BaseSDK):
                 operation_id="computeChannelMap",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -292,10 +304,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -304,6 +320,8 @@ class Epg(BaseSDK):
                 operation_id="getChannels",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -312,8 +330,8 @@ class Epg(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetChannelsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetChannelsResponseBody], http_res
+                channel_response=unmarshal_json_response(
+                    Optional[components.ChannelResponse], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -397,10 +415,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -409,6 +431,8 @@ class Epg(BaseSDK):
                 operation_id="getChannels",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -417,8 +441,8 @@ class Epg(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetChannelsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetChannelsResponseBody], http_res
+                channel_response=unmarshal_json_response(
+                    Optional[components.ChannelResponse], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -480,10 +504,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -492,12 +520,15 @@ class Epg(BaseSDK):
                 operation_id="getCountries",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetCountriesResponse(
                 object=unmarshal_json_response(
@@ -508,7 +539,10 @@ class Epg(BaseSDK):
                 raw_response=http_res,
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -563,10 +597,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -575,12 +613,15 @@ class Epg(BaseSDK):
                 operation_id="getCountries",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetCountriesResponse(
                 object=unmarshal_json_response(
@@ -591,7 +632,200 @@ class Epg(BaseSDK):
                 raw_response=http_res,
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_epg_guide(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetEPGGuideResponse:
+        r"""Get EPG Guide
+
+        Fetch the global electronic program guide.
+
+        If set, this operation will use `token` from the global security.
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request(
+            method="GET",
+            path="/livetv/epg/guide",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getEPGGuide",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetEPGGuideResponse(
+                media_container_with_metadata=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMetadata], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_epg_guide_async(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetEPGGuideResponse:
+        r"""Get EPG Guide
+
+        Fetch the global electronic program guide.
+
+        If set, this operation will use `token` from the global security.
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request_async(
+            method="GET",
+            path="/livetv/epg/guide",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getEPGGuide",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetEPGGuideResponse(
+                media_container_with_metadata=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMetadata], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -646,10 +880,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -658,12 +896,15 @@ class Epg(BaseSDK):
                 operation_id="getAllLanguages",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetAllLanguagesResponse(
                 object=unmarshal_json_response(
@@ -674,7 +915,10 @@ class Epg(BaseSDK):
                 raw_response=http_res,
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -729,10 +973,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -741,12 +989,15 @@ class Epg(BaseSDK):
                 operation_id="getAllLanguages",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetAllLanguagesResponse(
                 object=unmarshal_json_response(
@@ -757,7 +1008,10 @@ class Epg(BaseSDK):
                 raw_response=http_res,
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -811,7 +1065,7 @@ class Epg(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="application/json",
             http_headers=http_headers,
             _globals=operations.GetLineupGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
@@ -834,10 +1088,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -846,14 +1104,19 @@ class Epg(BaseSDK):
                 operation_id="getLineup",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
-        if utils.match_response(http_res, "200", "*"):
+        if utils.match_response(http_res, "200", "application/json"):
             return operations.GetLineupResponse(
+                media_container_with_lineup=unmarshal_json_response(
+                    Optional[components.MediaContainerWithLineup], http_res
+                ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
@@ -913,7 +1176,7 @@ class Epg(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="application/json",
             http_headers=http_headers,
             _globals=operations.GetLineupGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
@@ -936,10 +1199,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -948,14 +1215,19 @@ class Epg(BaseSDK):
                 operation_id="getLineup",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
-        if utils.match_response(http_res, "200", "*"):
+        if utils.match_response(http_res, "200", "application/json"):
             return operations.GetLineupResponse(
+                media_container_with_lineup=unmarshal_json_response(
+                    Optional[components.MediaContainerWithLineup], http_res
+                ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
@@ -982,7 +1254,7 @@ class Epg(BaseSDK):
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> operations.GetLineupChannelsResponse:
-        r"""Get the channels for mulitple lineups
+        r"""Get the channels for multiple lineups
 
         Get the channels across multiple lineups
 
@@ -1039,10 +1311,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1051,6 +1327,8 @@ class Epg(BaseSDK):
                 operation_id="getLineupChannels",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1087,7 +1365,7 @@ class Epg(BaseSDK):
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> operations.GetLineupChannelsResponse:
-        r"""Get the channels for mulitple lineups
+        r"""Get the channels for multiple lineups
 
         Get the channels across multiple lineups
 
@@ -1144,10 +1422,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1156,6 +1438,8 @@ class Epg(BaseSDK):
                 operation_id="getLineupChannels",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1172,6 +1456,240 @@ class Epg(BaseSDK):
                 raw_response=http_res,
             )
         if utils.match_response(http_res, ["404", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def search_epg(
+        self,
+        *,
+        request: Union[
+            operations.SearchEPGRequest, operations.SearchEPGRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.SearchEPGResponse:
+        r"""Search EPG
+
+        Search the electronic program guide for upcoming airings.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.SearchEPGRequest)
+        request = cast(operations.SearchEPGRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/livetv/epg/search",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.SearchEPGGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="searchEPG",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.SearchEPGResponse(
+                media_container_with_metadata=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMetadata], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def search_epg_async(
+        self,
+        *,
+        request: Union[
+            operations.SearchEPGRequest, operations.SearchEPGRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.SearchEPGResponse:
+        r"""Search EPG
+
+        Search the electronic program guide for upcoming airings.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.SearchEPGRequest)
+        request = cast(operations.SearchEPGRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/livetv/epg/search",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.SearchEPGGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="searchEPG",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.SearchEPGResponse(
+                media_container_with_metadata=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMetadata], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -1249,10 +1767,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1261,6 +1783,8 @@ class Epg(BaseSDK):
                 operation_id="getCountriesLineups",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1354,10 +1878,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1366,6 +1894,8 @@ class Epg(BaseSDK):
                 operation_id="getCountriesLineups",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1459,10 +1989,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1471,6 +2005,8 @@ class Epg(BaseSDK):
                 operation_id="getCountryRegions",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1565,10 +2101,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1577,6 +2117,8 @@ class Epg(BaseSDK):
                 operation_id="getCountryRegions",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1670,10 +2212,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1682,6 +2228,8 @@ class Epg(BaseSDK):
                 operation_id="listLineups",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1775,10 +2323,14 @@ class Epg(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1787,6 +2339,8 @@ class Epg(BaseSDK):
                 operation_id="listLineups",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["EPG"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),

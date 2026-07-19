@@ -16,16 +16,12 @@ from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 class MediaContainerWithDecisionGuidsTypedDict(TypedDict):
     id: str
-    r"""The unique identifier for the Guid. Can be prefixed with imdb://, tmdb://, tvdb://
-
-    """
+    r"""The unique identifier for the Guid. Can be prefixed with imdb://, tmdb://, tvdb://"""
 
 
 class MediaContainerWithDecisionGuids(BaseModel):
     id: str
-    r"""The unique identifier for the Guid. Can be prefixed with imdb://, tmdb://, tvdb://
-
-    """
+    r"""The unique identifier for the Guid. Can be prefixed with imdb://, tmdb://, tvdb://"""
 
 
 class HasVoiceActivity2(str, Enum):
@@ -38,18 +34,12 @@ class MediaContainerWithDecisionOptimizedForStreaming(int, Enum):
     ONE = 1
 
 
-class MediaContainerWithDecisionCanAutoSync2(str, Enum):
-    ZERO = "0"
-    ONE = "1"
-
-
 MediaContainerWithDecisionHasVoiceActivityTypedDict = TypeAliasType(
     "MediaContainerWithDecisionHasVoiceActivityTypedDict",
     Union[bool, HasVoiceActivity2],
 )
 r"""Voice activity detection availability flag returned by PMS.
 PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
-
 """
 
 
@@ -58,13 +48,34 @@ MediaContainerWithDecisionHasVoiceActivity = TypeAliasType(
 )
 r"""Voice activity detection availability flag returned by PMS.
 PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
-
 """
+
+
+class MediaContainerWithDecisionBitrateMode(str, Enum):
+    r"""Audio bitrate mode (cbr or vbr)."""
+
+    CBR = "cbr"
+    VBR = "vbr"
+
+
+class Two1(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+MediaContainerWithDecisionCanAutoSync2TypedDict = TypeAliasType(
+    "MediaContainerWithDecisionCanAutoSync2TypedDict", Union[Two1, bool]
+)
+
+
+MediaContainerWithDecisionCanAutoSync2 = TypeAliasType(
+    "MediaContainerWithDecisionCanAutoSync2", Union[Two1, bool]
+)
 
 
 MediaContainerWithDecisionCanAutoSyncTypedDict = TypeAliasType(
     "MediaContainerWithDecisionCanAutoSyncTypedDict",
-    Union[bool, MediaContainerWithDecisionCanAutoSync2],
+    Union[bool, MediaContainerWithDecisionCanAutoSync2TypedDict],
 )
 r"""Indicates if the stream can auto-sync."""
 
@@ -81,7 +92,6 @@ class MediaContainerWithDecisionStreamType(int, Enum):
     - VIDEO = 1 (Video stream)
     - AUDIO = 2 (Audio stream)
     - SUBTITLE = 3 (Subtitle stream)
-
     """
 
     VIDEO = 1
@@ -121,14 +131,47 @@ class MediaContainerWithDecisionStreamTypedDict(TypedDict):
     key: str
     r"""Key to access this stream part."""
     stream_type: MediaContainerWithDecisionStreamType
+    title: NotRequired[str]
+    r"""Optional title for the stream (e.g., language variant)."""
+    format_: NotRequired[str]
+    r"""Format of the stream (e.g., srt)."""
     default: NotRequired[bool]
     r"""Indicates if this stream is default."""
+    album_gain: NotRequired[float]
+    r"""ReplayGain album gain in dB."""
+    album_peak: NotRequired[float]
+    r"""ReplayGain album peak amplitude."""
+    album_range: NotRequired[float]
+    r"""ReplayGain album dynamic range in dB."""
     audio_channel_layout: NotRequired[str]
     r"""Audio channel layout."""
-    channels: NotRequired[int]
-    r"""Number of audio channels (for audio streams)."""
     bit_depth: NotRequired[int]
     r"""Bit depth of the video stream."""
+    bitrate: NotRequired[int]
+    r"""Bitrate of the stream."""
+    bitrate_mode: NotRequired[MediaContainerWithDecisionBitrateMode]
+    r"""Audio bitrate mode (cbr or vbr)."""
+    can_auto_sync: NotRequired[MediaContainerWithDecisionCanAutoSyncTypedDict]
+    r"""Indicates if the stream can auto-sync."""
+    channels: NotRequired[int]
+    r"""Number of audio channels (for audio streams)."""
+    chroma_location: NotRequired[str]
+    r"""Chroma sample location."""
+    chroma_subsampling: NotRequired[str]
+    r"""Chroma subsampling format."""
+    closed_captions: NotRequired[bool]
+    coded_height: NotRequired[int]
+    r"""Coded video height."""
+    coded_width: NotRequired[int]
+    r"""Coded video width."""
+    color_primaries: NotRequired[str]
+    r"""Color primaries used."""
+    color_range: NotRequired[str]
+    r"""Color range (e.g., tv)."""
+    color_space: NotRequired[str]
+    r"""Color space."""
+    color_trc: NotRequired[str]
+    r"""Color transfer characteristics."""
     dovibl_compat_id: NotRequired[int]
     r"""Dolby Vision BL compatibility ID."""
     dovibl_present: NotRequired[bool]
@@ -145,32 +188,23 @@ class MediaContainerWithDecisionStreamTypedDict(TypedDict):
     r"""Indicates if Dolby Vision RPU is present."""
     dovi_version: NotRequired[str]
     r"""Dolby Vision version."""
-    bitrate: NotRequired[int]
-    r"""Bitrate of the stream."""
-    can_auto_sync: NotRequired[MediaContainerWithDecisionCanAutoSyncTypedDict]
-    r"""Indicates if the stream can auto-sync."""
-    chroma_location: NotRequired[str]
-    r"""Chroma sample location."""
-    chroma_subsampling: NotRequired[str]
-    r"""Chroma subsampling format."""
-    coded_height: NotRequired[int]
-    r"""Coded video height."""
-    coded_width: NotRequired[int]
-    r"""Coded video width."""
-    closed_captions: NotRequired[bool]
-    color_primaries: NotRequired[str]
-    r"""Color primaries used."""
-    color_range: NotRequired[str]
-    r"""Color range (e.g., tv)."""
-    color_space: NotRequired[str]
-    r"""Color space."""
-    color_trc: NotRequired[str]
-    r"""Color transfer characteristics."""
+    dub: NotRequired[bool]
+    r"""Indicates if the stream is a dub."""
+    embedded_in_video: NotRequired[str]
+    end_ramp: NotRequired[str]
+    r"""Loudness ramp end type."""
     extended_display_title: NotRequired[str]
     r"""Extended display title for the stream."""
+    forced: NotRequired[bool]
     frame_rate: NotRequired[float]
     r"""Frame rate of the stream."""
+    gain: NotRequired[float]
+    r"""Track replay gain in dB."""
     has_scaling_matrix: NotRequired[bool]
+    header_compression: NotRequired[bool]
+    r"""Indicates whether header compression is enabled."""
+    hearing_impaired: NotRequired[bool]
+    r"""Indicates if the stream is for the hearing impaired."""
     height: NotRequired[int]
     r"""Height of the video stream."""
     index: NotRequired[int]
@@ -181,32 +215,48 @@ class MediaContainerWithDecisionStreamTypedDict(TypedDict):
     r"""ISO language code."""
     language_tag: NotRequired[str]
     r"""Language tag (e.g., en)."""
-    format_: NotRequired[str]
-    r"""Format of the stream (e.g., srt)."""
-    header_compression: NotRequired[bool]
-    r"""Indicates whether header compression is enabled."""
     level: NotRequired[int]
     r"""Video level."""
+    loudness: NotRequired[float]
+    r"""Integrated loudness in LUFS."""
+    lra: NotRequired[float]
+    r"""Loudness range in LU."""
+    min_lines: NotRequired[int]
+    r"""Minimum lines in the lyric file."""
     original: NotRequired[bool]
     r"""Indicates if this is the original stream."""
+    peak: NotRequired[float]
+    r"""Track peak amplitude."""
+    perfect_match: NotRequired[bool]
+    r"""Whether the subtitle is an exact match."""
     profile: NotRequired[str]
     r"""Video profile."""
+    provider: NotRequired[str]
+    r"""Lyric or subtitle provider name."""
+    provider_title: NotRequired[str]
+    r"""Subtitle provider display name."""
     ref_frames: NotRequired[int]
     r"""Number of reference frames."""
     sampling_rate: NotRequired[int]
     r"""Sampling rate for the audio stream."""
     scan_type: NotRequired[str]
-    embedded_in_video: NotRequired[str]
+    score: NotRequired[float]
+    r"""Subtitle match confidence score (0-100)."""
     selected: NotRequired[bool]
     r"""Indicates if this stream is selected (applicable for audio streams)."""
-    forced: NotRequired[bool]
-    hearing_impaired: NotRequired[bool]
-    r"""Indicates if the stream is for the hearing impaired."""
-    dub: NotRequired[bool]
-    r"""Indicates if the stream is a dub."""
-    title: NotRequired[str]
-    r"""Optional title for the stream (e.g., language variant)."""
+    source_key: NotRequired[str]
+    r"""Source identifier for the subtitle."""
+    start_ramp: NotRequired[str]
+    r"""Loudness ramp start type."""
     stream_identifier: NotRequired[int]
+    timed: NotRequired[bool]
+    r"""Whether lyrics are timestamped."""
+    transient: NotRequired[bool]
+    r"""Whether the subtitle is temporary or downloaded."""
+    user_id: NotRequired[int]
+    r"""ID of the user who added the subtitle."""
+    visual_impaired: NotRequired[bool]
+    r"""Whether this audio track is an audio description track."""
     width: NotRequired[int]
     r"""Width of the video stream."""
     decision: NotRequired[MediaContainerWithDecisionDecision]
@@ -237,19 +287,83 @@ class MediaContainerWithDecisionStream(BaseModel):
         MediaContainerWithDecisionStreamType, pydantic.Field(alias="streamType")
     ]
 
+    title: Optional[str] = None
+    r"""Optional title for the stream (e.g., language variant)."""
+
+    format_: Annotated[Optional[str], pydantic.Field(alias="format")] = None
+    r"""Format of the stream (e.g., srt)."""
+
     default: Optional[bool] = None
     r"""Indicates if this stream is default."""
+
+    album_gain: Annotated[Optional[float], pydantic.Field(alias="albumGain")] = None
+    r"""ReplayGain album gain in dB."""
+
+    album_peak: Annotated[Optional[float], pydantic.Field(alias="albumPeak")] = None
+    r"""ReplayGain album peak amplitude."""
+
+    album_range: Annotated[Optional[float], pydantic.Field(alias="albumRange")] = None
+    r"""ReplayGain album dynamic range in dB."""
 
     audio_channel_layout: Annotated[
         Optional[str], pydantic.Field(alias="audioChannelLayout")
     ] = None
     r"""Audio channel layout."""
 
+    bit_depth: Annotated[Optional[int], pydantic.Field(alias="bitDepth")] = None
+    r"""Bit depth of the video stream."""
+
+    bitrate: Optional[int] = None
+    r"""Bitrate of the stream."""
+
+    bitrate_mode: Annotated[
+        Optional[MediaContainerWithDecisionBitrateMode],
+        pydantic.Field(alias="bitrateMode"),
+    ] = None
+    r"""Audio bitrate mode (cbr or vbr)."""
+
+    can_auto_sync: Annotated[
+        Optional[MediaContainerWithDecisionCanAutoSync],
+        pydantic.Field(alias="canAutoSync"),
+    ] = None
+    r"""Indicates if the stream can auto-sync."""
+
     channels: Optional[int] = None
     r"""Number of audio channels (for audio streams)."""
 
-    bit_depth: Annotated[Optional[int], pydantic.Field(alias="bitDepth")] = None
-    r"""Bit depth of the video stream."""
+    chroma_location: Annotated[
+        Optional[str], pydantic.Field(alias="chromaLocation")
+    ] = None
+    r"""Chroma sample location."""
+
+    chroma_subsampling: Annotated[
+        Optional[str], pydantic.Field(alias="chromaSubsampling")
+    ] = None
+    r"""Chroma subsampling format."""
+
+    closed_captions: Annotated[
+        Optional[bool], pydantic.Field(alias="closedCaptions")
+    ] = None
+
+    coded_height: Annotated[Optional[int], pydantic.Field(alias="codedHeight")] = None
+    r"""Coded video height."""
+
+    coded_width: Annotated[Optional[int], pydantic.Field(alias="codedWidth")] = None
+    r"""Coded video width."""
+
+    color_primaries: Annotated[
+        Optional[str], pydantic.Field(alias="colorPrimaries")
+    ] = None
+    r"""Color primaries used."""
+
+    color_range: Annotated[Optional[str], pydantic.Field(alias="colorRange")] = None
+    r"""Color range (e.g., tv)."""
+
+    color_space: Annotated[Optional[str], pydantic.Field(alias="colorSpace")] = None
+    r"""Color space."""
+
+    color_trc: Annotated[Optional[str], pydantic.Field(alias="colorTrc")] = None
+    r"""Color transfer characteristics."""
 
     dovibl_compat_id: Annotated[
         Optional[int], pydantic.Field(alias="DOVIBLCompatID")
@@ -283,60 +397,42 @@ class MediaContainerWithDecisionStream(BaseModel):
     dovi_version: Annotated[Optional[str], pydantic.Field(alias="DOVIVersion")] = None
     r"""Dolby Vision version."""
 
-    bitrate: Optional[int] = None
-    r"""Bitrate of the stream."""
+    dub: Optional[bool] = None
+    r"""Indicates if the stream is a dub."""
 
-    can_auto_sync: Annotated[
-        Optional[MediaContainerWithDecisionCanAutoSync],
-        pydantic.Field(alias="canAutoSync"),
-    ] = None
-    r"""Indicates if the stream can auto-sync."""
-
-    chroma_location: Annotated[
-        Optional[str], pydantic.Field(alias="chromaLocation")
-    ] = None
-    r"""Chroma sample location."""
-
-    chroma_subsampling: Annotated[
-        Optional[str], pydantic.Field(alias="chromaSubsampling")
-    ] = None
-    r"""Chroma subsampling format."""
-
-    coded_height: Annotated[Optional[int], pydantic.Field(alias="codedHeight")] = None
-    r"""Coded video height."""
-
-    coded_width: Annotated[Optional[int], pydantic.Field(alias="codedWidth")] = None
-    r"""Coded video width."""
-
-    closed_captions: Annotated[
-        Optional[bool], pydantic.Field(alias="closedCaptions")
+    embedded_in_video: Annotated[
+        Optional[str], pydantic.Field(alias="embeddedInVideo")
     ] = None
 
-    color_primaries: Annotated[
-        Optional[str], pydantic.Field(alias="colorPrimaries")
-    ] = None
-    r"""Color primaries used."""
-
-    color_range: Annotated[Optional[str], pydantic.Field(alias="colorRange")] = None
-    r"""Color range (e.g., tv)."""
-
-    color_space: Annotated[Optional[str], pydantic.Field(alias="colorSpace")] = None
-    r"""Color space."""
-
-    color_trc: Annotated[Optional[str], pydantic.Field(alias="colorTrc")] = None
-    r"""Color transfer characteristics."""
+    end_ramp: Annotated[Optional[str], pydantic.Field(alias="endRamp")] = None
+    r"""Loudness ramp end type."""
 
     extended_display_title: Annotated[
         Optional[str], pydantic.Field(alias="extendedDisplayTitle")
     ] = None
     r"""Extended display title for the stream."""
 
+    forced: Optional[bool] = None
+
     frame_rate: Annotated[Optional[float], pydantic.Field(alias="frameRate")] = None
     r"""Frame rate of the stream."""
+
+    gain: Optional[float] = None
+    r"""Track replay gain in dB."""
 
     has_scaling_matrix: Annotated[
         Optional[bool], pydantic.Field(alias="hasScalingMatrix")
     ] = None
+
+    header_compression: Annotated[
+        Optional[bool], pydantic.Field(alias="headerCompression")
+    ] = None
+    r"""Indicates whether header compression is enabled."""
+
+    hearing_impaired: Annotated[
+        Optional[bool], pydantic.Field(alias="hearingImpaired")
+    ] = None
+    r"""Indicates if the stream is for the hearing impaired."""
 
     height: Optional[int] = None
     r"""Height of the video stream."""
@@ -353,22 +449,39 @@ class MediaContainerWithDecisionStream(BaseModel):
     language_tag: Annotated[Optional[str], pydantic.Field(alias="languageTag")] = None
     r"""Language tag (e.g., en)."""
 
-    format_: Annotated[Optional[str], pydantic.Field(alias="format")] = None
-    r"""Format of the stream (e.g., srt)."""
-
-    header_compression: Annotated[
-        Optional[bool], pydantic.Field(alias="headerCompression")
-    ] = None
-    r"""Indicates whether header compression is enabled."""
-
     level: Optional[int] = None
     r"""Video level."""
+
+    loudness: Optional[float] = None
+    r"""Integrated loudness in LUFS."""
+
+    lra: Optional[float] = None
+    r"""Loudness range in LU."""
+
+    min_lines: Annotated[Optional[int], pydantic.Field(alias="minLines")] = None
+    r"""Minimum lines in the lyric file."""
 
     original: Optional[bool] = None
     r"""Indicates if this is the original stream."""
 
+    peak: Optional[float] = None
+    r"""Track peak amplitude."""
+
+    perfect_match: Annotated[Optional[bool], pydantic.Field(alias="perfectMatch")] = (
+        None
+    )
+    r"""Whether the subtitle is an exact match."""
+
     profile: Optional[str] = None
     r"""Video profile."""
+
+    provider: Optional[str] = None
+    r"""Lyric or subtitle provider name."""
+
+    provider_title: Annotated[Optional[str], pydantic.Field(alias="providerTitle")] = (
+        None
+    )
+    r"""Subtitle provider display name."""
 
     ref_frames: Annotated[Optional[int], pydantic.Field(alias="refFrames")] = None
     r"""Number of reference frames."""
@@ -378,29 +491,35 @@ class MediaContainerWithDecisionStream(BaseModel):
 
     scan_type: Annotated[Optional[str], pydantic.Field(alias="scanType")] = None
 
-    embedded_in_video: Annotated[
-        Optional[str], pydantic.Field(alias="embeddedInVideo")
-    ] = None
+    score: Optional[float] = None
+    r"""Subtitle match confidence score (0-100)."""
 
     selected: Optional[bool] = None
     r"""Indicates if this stream is selected (applicable for audio streams)."""
 
-    forced: Optional[bool] = None
+    source_key: Annotated[Optional[str], pydantic.Field(alias="sourceKey")] = None
+    r"""Source identifier for the subtitle."""
 
-    hearing_impaired: Annotated[
-        Optional[bool], pydantic.Field(alias="hearingImpaired")
-    ] = None
-    r"""Indicates if the stream is for the hearing impaired."""
-
-    dub: Optional[bool] = None
-    r"""Indicates if the stream is a dub."""
-
-    title: Optional[str] = None
-    r"""Optional title for the stream (e.g., language variant)."""
+    start_ramp: Annotated[Optional[str], pydantic.Field(alias="startRamp")] = None
+    r"""Loudness ramp start type."""
 
     stream_identifier: Annotated[
         Optional[int], pydantic.Field(alias="streamIdentifier")
     ] = None
+
+    timed: Optional[bool] = None
+    r"""Whether lyrics are timestamped."""
+
+    transient: Optional[bool] = None
+    r"""Whether the subtitle is temporary or downloaded."""
+
+    user_id: Annotated[Optional[int], pydantic.Field(alias="userID")] = None
+    r"""ID of the user who added the subtitle."""
+
+    visual_impaired: Annotated[
+        Optional[bool], pydantic.Field(alias="visualImpaired")
+    ] = None
+    r"""Whether this audio track is an audio description track."""
 
     width: Optional[int] = None
     r"""Width of the video stream."""
@@ -421,10 +540,27 @@ class MediaContainerWithDecisionStream(BaseModel):
     def serialize_model(self, handler):
         optional_fields = set(
             [
+                "title",
+                "format",
                 "default",
+                "albumGain",
+                "albumPeak",
+                "albumRange",
                 "audioChannelLayout",
-                "channels",
                 "bitDepth",
+                "bitrate",
+                "bitrateMode",
+                "canAutoSync",
+                "channels",
+                "chromaLocation",
+                "chromaSubsampling",
+                "closedCaptions",
+                "codedHeight",
+                "codedWidth",
+                "colorPrimaries",
+                "colorRange",
+                "colorSpace",
+                "colorTrc",
                 "DOVIBLCompatID",
                 "DOVIBLPresent",
                 "DOVIELPresent",
@@ -433,40 +569,43 @@ class MediaContainerWithDecisionStream(BaseModel):
                 "DOVIProfile",
                 "DOVIRPUPresent",
                 "DOVIVersion",
-                "bitrate",
-                "canAutoSync",
-                "chromaLocation",
-                "chromaSubsampling",
-                "codedHeight",
-                "codedWidth",
-                "closedCaptions",
-                "colorPrimaries",
-                "colorRange",
-                "colorSpace",
-                "colorTrc",
+                "dub",
+                "embeddedInVideo",
+                "endRamp",
                 "extendedDisplayTitle",
+                "forced",
                 "frameRate",
+                "gain",
                 "hasScalingMatrix",
+                "headerCompression",
+                "hearingImpaired",
                 "height",
                 "index",
                 "language",
                 "languageCode",
                 "languageTag",
-                "format",
-                "headerCompression",
                 "level",
+                "loudness",
+                "lra",
+                "minLines",
                 "original",
+                "peak",
+                "perfectMatch",
                 "profile",
+                "provider",
+                "providerTitle",
                 "refFrames",
                 "samplingRate",
                 "scanType",
-                "embeddedInVideo",
+                "score",
                 "selected",
-                "forced",
-                "hearingImpaired",
-                "dub",
-                "title",
+                "sourceKey",
+                "startRamp",
                 "streamIdentifier",
+                "timed",
+                "transient",
+                "userID",
+                "visualImpaired",
                 "width",
                 "decision",
                 "location",
@@ -506,6 +645,8 @@ class MediaContainerWithDecisionPartTypedDict(TypedDict):
     audio_profile: NotRequired[str]
     container: NotRequired[str]
     r"""The container of the media file, such as `mp4` or `mkv`"""
+    deep_analysis_version: NotRequired[int]
+    r"""Deep analysis version for this part."""
     duration: NotRequired[int]
     r"""The duration of the media item, in milliseconds"""
     exists: NotRequired[bool]
@@ -515,9 +656,19 @@ class MediaContainerWithDecisionPartTypedDict(TypedDict):
     has64bit_offsets: NotRequired[bool]
     indexes: NotRequired[str]
     optimized_for_streaming: NotRequired[bool]
+    packet_length: NotRequired[int]
+    r"""RTP packet length for streaming."""
+    protocol: NotRequired[str]
+    r"""Streaming protocol (e.g. dash, hls, direct)."""
+    required_bandwidths: NotRequired[str]
+    r"""Comma-separated list of bandwidth requirements."""
     size: NotRequired[int]
     r"""The size of the media, in bytes"""
     stream: NotRequired[List[MediaContainerWithDecisionStreamTypedDict]]
+    sync_item_id: NotRequired[int]
+    r"""Mobile sync item association ID."""
+    sync_state: NotRequired[str]
+    r"""Sync state (e.g. pending, downloaded, processing)."""
     video_profile: NotRequired[str]
     decision: NotRequired[Decision]
     selected: NotRequired[bool]
@@ -544,6 +695,11 @@ class MediaContainerWithDecisionPart(BaseModel):
     container: Optional[str] = None
     r"""The container of the media file, such as `mp4` or `mkv`"""
 
+    deep_analysis_version: Annotated[
+        Optional[int], pydantic.Field(alias="deepAnalysisVersion")
+    ] = None
+    r"""Deep analysis version for this part."""
+
     duration: Optional[int] = None
     r"""The duration of the media item, in milliseconds"""
 
@@ -563,12 +719,29 @@ class MediaContainerWithDecisionPart(BaseModel):
         Optional[bool], pydantic.Field(alias="optimizedForStreaming")
     ] = None
 
+    packet_length: Annotated[Optional[int], pydantic.Field(alias="packetLength")] = None
+    r"""RTP packet length for streaming."""
+
+    protocol: Optional[str] = None
+    r"""Streaming protocol (e.g. dash, hls, direct)."""
+
+    required_bandwidths: Annotated[
+        Optional[str], pydantic.Field(alias="requiredBandwidths")
+    ] = None
+    r"""Comma-separated list of bandwidth requirements."""
+
     size: Optional[int] = None
     r"""The size of the media, in bytes"""
 
     stream: Annotated[
         Optional[List[MediaContainerWithDecisionStream]], pydantic.Field(alias="Stream")
     ] = None
+
+    sync_item_id: Annotated[Optional[int], pydantic.Field(alias="syncItemId")] = None
+    r"""Mobile sync item association ID."""
+
+    sync_state: Annotated[Optional[str], pydantic.Field(alias="syncState")] = None
+    r"""Sync state (e.g. pending, downloaded, processing)."""
 
     video_profile: Annotated[Optional[str], pydantic.Field(alias="videoProfile")] = None
 
@@ -591,14 +764,20 @@ class MediaContainerWithDecisionPart(BaseModel):
                 "accessible",
                 "audioProfile",
                 "container",
+                "deepAnalysisVersion",
                 "duration",
                 "exists",
                 "file",
                 "has64bitOffsets",
                 "indexes",
                 "optimizedForStreaming",
+                "packetLength",
+                "protocol",
+                "requiredBandwidths",
                 "size",
                 "Stream",
+                "syncItemId",
+                "syncState",
                 "videoProfile",
                 "decision",
                 "selected",
@@ -636,13 +815,15 @@ class MediaContainerWithDecisionMediaTypedDict(TypedDict):
     has_voice_activity: NotRequired[MediaContainerWithDecisionHasVoiceActivityTypedDict]
     r"""Voice activity detection availability flag returned by PMS.
     PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
-
     """
     height: NotRequired[int]
     optimized_for_streaming: NotRequired[
         MediaContainerWithDecisionOptimizedForStreaming
     ]
     part: NotRequired[List[MediaContainerWithDecisionPartTypedDict]]
+    selected: NotRequired[bool]
+    uuid: NotRequired[str]
+    r"""Unique identifier for this media instance."""
     video_codec: NotRequired[str]
     video_frame_rate: NotRequired[str]
     video_profile: NotRequired[str]
@@ -650,7 +831,6 @@ class MediaContainerWithDecisionMediaTypedDict(TypedDict):
     width: NotRequired[int]
     abr: NotRequired[bool]
     resource_session: NotRequired[str]
-    selected: NotRequired[bool]
 
 
 class MediaContainerWithDecisionMedia(BaseModel):
@@ -689,7 +869,6 @@ class MediaContainerWithDecisionMedia(BaseModel):
     ] = None
     r"""Voice activity detection availability flag returned by PMS.
     PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
-
     """
 
     height: Optional[int] = None
@@ -702,6 +881,11 @@ class MediaContainerWithDecisionMedia(BaseModel):
     part: Annotated[
         Optional[List[MediaContainerWithDecisionPart]], pydantic.Field(alias="Part")
     ] = None
+
+    selected: Optional[bool] = None
+
+    uuid: Optional[str] = None
+    r"""Unique identifier for this media instance."""
 
     video_codec: Annotated[Optional[str], pydantic.Field(alias="videoCodec")] = None
 
@@ -722,8 +906,6 @@ class MediaContainerWithDecisionMedia(BaseModel):
     resource_session: Annotated[
         Optional[str], pydantic.Field(alias="resourceSession")
     ] = None
-
-    selected: Optional[bool] = None
 
     @property
     def additional_properties(self):
@@ -749,6 +931,8 @@ class MediaContainerWithDecisionMedia(BaseModel):
                 "height",
                 "optimizedForStreaming",
                 "Part",
+                "selected",
+                "uuid",
                 "videoCodec",
                 "videoFrameRate",
                 "videoProfile",
@@ -756,7 +940,6 @@ class MediaContainerWithDecisionMedia(BaseModel):
                 "width",
                 "abr",
                 "resourceSession",
-                "selected",
             ]
         )
         serialized = handler(self)
@@ -820,7 +1003,6 @@ class MediaContainerWithDecisionMetadataTypedDict(TypedDict):
     Note that when a metadata item has multiple media items, those media items should be isomorphic. That is, a 4K version and 1080p version of a movie are different versions of the same movie. They have the same duration, same summary, same rating, etc. and they can generally be considered interchangeable. A theatrical release vs. director's cut vs. unrated version on the other hand would be separate metadata items.
 
     Metadata items can often live in a hierarchy with relationships between them.  For example, the metadata item for an episodes is associated with a season metadata item which is associated with a show metadata item.  A similar hierarchy exists with track, album, and artist and photos and photo album.  The relationships may be expressed via relative terms and absolute terms.  For example, \"leaves\" refer to metadata items which has associated media (there is no media for a season nor show).  A show will have \"children\" in the form of seasons and a season will have \"children\" in the form of episodes and episodes have \"parent\" in the form of a season which has a \"parent\" in the form of a show.  Similarly, a show has \"grandchildren\" in the form of episodse and an episode has a \"grandparent\" in the form of a show.
-
     """
 
     title: str
@@ -835,6 +1017,8 @@ class MediaContainerWithDecisionMetadataTypedDict(TypedDict):
     r"""When present, contains the disc number for a track on multi-disc albums."""
     art: NotRequired[str]
     r"""When present, the URL for the background artwork for the item."""
+    art_blur_hash: NotRequired[str]
+    r"""Blur hash for background art."""
     audience_rating: NotRequired[float]
     r"""Some rating systems separate reviewer ratings from audience ratings"""
     audience_rating_image: NotRequired[str]
@@ -852,8 +1036,14 @@ class MediaContainerWithDecisionMetadataTypedDict(TypedDict):
     r"""If known, the content rating (e.g. MPAA) for an item."""
     country: NotRequired[List[TagTypedDict]]
     director: NotRequired[List[TagTypedDict]]
+    distance: NotRequired[int]
+    r"""Levenshtein distance for voice search results."""
     duration: NotRequired[int]
     r"""When present, the duration for the item, in units of milliseconds."""
+    edition_title: NotRequired[str]
+    r"""Edition string (e.g. \"Director's Cut\")."""
+    enable_credits_marker_generation: NotRequired[bool]
+    r"""Whether credits marker generation is enabled for this item."""
     filter_: NotRequired[List[FilterTypedDict]]
     r"""Typically only seen in metadata at a library's top level"""
     genre: NotRequired[List[TagTypedDict]]
@@ -881,10 +1071,16 @@ class MediaContainerWithDecisionMetadataTypedDict(TypedDict):
     image: NotRequired[List[ImageTypedDict]]
     index: NotRequired[int]
     r"""When present, this represents the episode number for episodes, season number for seasons, or track number for audio tracks."""
+    language_override: NotRequired[str]
+    r"""Per-item language override."""
+    last_rated_at: NotRequired[int]
+    r"""Timestamp of the last user rating."""
     last_viewed_at: NotRequired[int]
     leaf_count: NotRequired[int]
     r"""For shows and seasons, contains the number of total episodes."""
     media: NotRequired[List[MediaContainerWithDecisionMediaTypedDict]]
+    music_analysis_version: NotRequired[int]
+    r"""Analysis version for music items."""
     originally_available_at: NotRequired[date]
     r"""When present, in the format YYYY-MM-DD [HH:MM:SS] (the hours/minutes/seconds part is not always present). The air date, or a higher resolution release date for an item, depending on type. For example, episodes usually have air date like 1979-08-10 (we don't use epoch seconds because media existed prior to 1970). In some cases, recorded over-the-air content has higher resolution air date which includes a time component. Albums and movies may have day-resolution release dates as well."""
     original_title: NotRequired[str]
@@ -903,6 +1099,8 @@ class MediaContainerWithDecisionMetadataTypedDict(TypedDict):
     r"""The `thumb` of the parent"""
     parent_title: NotRequired[str]
     r"""The `title` of the parent"""
+    playlist_item_id: NotRequired[int]
+    r"""Item ID within a playlist."""
     primary_extra_key: NotRequired[str]
     r"""Indicates that the item has a primary extra; for a movie, this is a trailer, and for a music track it is a music video. The URL points to the metadata details endpoint for the item."""
     prompt: NotRequired[str]
@@ -923,10 +1121,16 @@ class MediaContainerWithDecisionMetadataTypedDict(TypedDict):
     r"""Used by old clients to provide nested menus allowing for primative (but structured) navigation."""
     skip_children: NotRequired[MediaContainerWithDecisionSkipChildrenTypedDict]
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
+    skip_count: NotRequired[int]
+    r"""Number of times this track has been skipped."""
     skip_parent: NotRequired[MediaContainerWithDecisionSkipParentTypedDict]
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
+    slug: NotRequired[str]
+    r"""URL-friendly slug for the item."""
     sort: NotRequired[List[SortTypedDict]]
     r"""Typically only seen in metadata at a library's top level"""
+    source_uri: NotRequired[str]
+    r"""Remote or shared server item URI."""
     studio: NotRequired[str]
     r"""When present, the studio or label which produced an item (e.g. movie studio for movies, record label for albums)."""
     subtype: NotRequired[str]
@@ -939,10 +1143,14 @@ class MediaContainerWithDecisionMetadataTypedDict(TypedDict):
     r"""When present, the URL for theme music for the item (usually only for TV shows)."""
     thumb: NotRequired[str]
     r"""When present, the URL for the poster or thumbnail for the item. When available for types like movie, it will be the poster graphic, but fall-back to the extracted media thumbnail."""
+    thumb_blur_hash: NotRequired[str]
+    r"""Blur hash for thumbnail."""
     title_sort: NotRequired[str]
     r"""Whene present, this is the string used for sorting the item. It's usually the title with any leading articles removed (e.g. “Simpsons”)."""
     updated_at: NotRequired[int]
     r"""In units of seconds since the epoch, returns the time at which the item was last changed (e.g. had its metadata updated)."""
+    use_original_title: NotRequired[bool]
+    r"""Whether to display the original title."""
     user_rating: NotRequired[float]
     r"""When the user has rated an item, this contains the user rating"""
     view_count: NotRequired[int]
@@ -962,7 +1170,6 @@ class MediaContainerWithDecisionMetadata(BaseModel):
     Note that when a metadata item has multiple media items, those media items should be isomorphic. That is, a 4K version and 1080p version of a movie are different versions of the same movie. They have the same duration, same summary, same rating, etc. and they can generally be considered interchangeable. A theatrical release vs. director's cut vs. unrated version on the other hand would be separate metadata items.
 
     Metadata items can often live in a hierarchy with relationships between them.  For example, the metadata item for an episodes is associated with a season metadata item which is associated with a show metadata item.  A similar hierarchy exists with track, album, and artist and photos and photo album.  The relationships may be expressed via relative terms and absolute terms.  For example, \"leaves\" refer to metadata items which has associated media (there is no media for a season nor show).  A show will have \"children\" in the form of seasons and a season will have \"children\" in the form of episodes and episodes have \"parent\" in the form of a season which has a \"parent\" in the form of a show.  Similarly, a show has \"grandchildren\" in the form of episodse and an episode has a \"grandparent\" in the form of a show.
-
     """
 
     model_config = ConfigDict(
@@ -989,6 +1196,9 @@ class MediaContainerWithDecisionMetadata(BaseModel):
 
     art: Optional[str] = None
     r"""When present, the URL for the background artwork for the item."""
+
+    art_blur_hash: Annotated[Optional[str], pydantic.Field(alias="artBlurHash")] = None
+    r"""Blur hash for background art."""
 
     audience_rating: Annotated[
         Optional[float], pydantic.Field(alias="audienceRating")
@@ -1025,8 +1235,19 @@ class MediaContainerWithDecisionMetadata(BaseModel):
 
     director: Annotated[Optional[List[Tag]], pydantic.Field(alias="Director")] = None
 
+    distance: Optional[int] = None
+    r"""Levenshtein distance for voice search results."""
+
     duration: Optional[int] = None
     r"""When present, the duration for the item, in units of milliseconds."""
+
+    edition_title: Annotated[Optional[str], pydantic.Field(alias="editionTitle")] = None
+    r"""Edition string (e.g. \"Director's Cut\")."""
+
+    enable_credits_marker_generation: Annotated[
+        Optional[bool], pydantic.Field(alias="enableCreditsMarkerGeneration")
+    ] = None
+    r"""Whether credits marker generation is enabled for this item."""
 
     filter_: Annotated[Optional[List[Filter]], pydantic.Field(alias="Filter")] = None
     r"""Typically only seen in metadata at a library's top level"""
@@ -1088,6 +1309,14 @@ class MediaContainerWithDecisionMetadata(BaseModel):
     index: Optional[int] = None
     r"""When present, this represents the episode number for episodes, season number for seasons, or track number for audio tracks."""
 
+    language_override: Annotated[
+        Optional[str], pydantic.Field(alias="languageOverride")
+    ] = None
+    r"""Per-item language override."""
+
+    last_rated_at: Annotated[Optional[int], pydantic.Field(alias="lastRatedAt")] = None
+    r"""Timestamp of the last user rating."""
+
     last_viewed_at: Annotated[Optional[int], pydantic.Field(alias="lastViewedAt")] = (
         None
     )
@@ -1098,6 +1327,11 @@ class MediaContainerWithDecisionMetadata(BaseModel):
     media: Annotated[
         Optional[List[MediaContainerWithDecisionMedia]], pydantic.Field(alias="Media")
     ] = None
+
+    music_analysis_version: Annotated[
+        Optional[int], pydantic.Field(alias="musicAnalysisVersion")
+    ] = None
+    r"""Analysis version for music items."""
 
     originally_available_at: Annotated[
         Optional[date], pydantic.Field(alias="originallyAvailableAt")
@@ -1131,6 +1365,11 @@ class MediaContainerWithDecisionMetadata(BaseModel):
 
     parent_title: Annotated[Optional[str], pydantic.Field(alias="parentTitle")] = None
     r"""The `title` of the parent"""
+
+    playlist_item_id: Annotated[
+        Optional[int], pydantic.Field(alias="playlistItemID")
+    ] = None
+    r"""Item ID within a playlist."""
 
     primary_extra_key: Annotated[
         Optional[str], pydantic.Field(alias="primaryExtraKey")
@@ -1168,14 +1407,23 @@ class MediaContainerWithDecisionMetadata(BaseModel):
     ] = None
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
 
+    skip_count: Annotated[Optional[int], pydantic.Field(alias="skipCount")] = None
+    r"""Number of times this track has been skipped."""
+
     skip_parent: Annotated[
         Optional[MediaContainerWithDecisionSkipParent],
         pydantic.Field(alias="skipParent"),
     ] = None
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
 
+    slug: Optional[str] = None
+    r"""URL-friendly slug for the item."""
+
     sort: Annotated[Optional[List[Sort]], pydantic.Field(alias="Sort")] = None
     r"""Typically only seen in metadata at a library's top level"""
+
+    source_uri: Annotated[Optional[str], pydantic.Field(alias="sourceURI")] = None
+    r"""Remote or shared server item URI."""
 
     studio: Optional[str] = None
     r"""When present, the studio or label which produced an item (e.g. movie studio for movies, record label for albums)."""
@@ -1195,11 +1443,21 @@ class MediaContainerWithDecisionMetadata(BaseModel):
     thumb: Optional[str] = None
     r"""When present, the URL for the poster or thumbnail for the item. When available for types like movie, it will be the poster graphic, but fall-back to the extracted media thumbnail."""
 
+    thumb_blur_hash: Annotated[Optional[str], pydantic.Field(alias="thumbBlurHash")] = (
+        None
+    )
+    r"""Blur hash for thumbnail."""
+
     title_sort: Annotated[Optional[str], pydantic.Field(alias="titleSort")] = None
     r"""Whene present, this is the string used for sorting the item. It's usually the title with any leading articles removed (e.g. “Simpsons”)."""
 
     updated_at: Annotated[Optional[int], pydantic.Field(alias="updatedAt")] = None
     r"""In units of seconds since the epoch, returns the time at which the item was last changed (e.g. had its metadata updated)."""
+
+    use_original_title: Annotated[
+        Optional[bool], pydantic.Field(alias="useOriginalTitle")
+    ] = None
+    r"""Whether to display the original title."""
 
     user_rating: Annotated[Optional[float], pydantic.Field(alias="userRating")] = None
     r"""When the user has rated an item, this contains the user rating"""
@@ -1234,6 +1492,7 @@ class MediaContainerWithDecisionMetadata(BaseModel):
             [
                 "absoluteIndex",
                 "art",
+                "artBlurHash",
                 "audienceRating",
                 "audienceRatingImage",
                 "Autotag",
@@ -1244,7 +1503,10 @@ class MediaContainerWithDecisionMetadata(BaseModel):
                 "contentRating",
                 "Country",
                 "Director",
+                "distance",
                 "duration",
+                "editionTitle",
+                "enableCreditsMarkerGeneration",
                 "Filter",
                 "Genre",
                 "grandparentArt",
@@ -1260,9 +1522,12 @@ class MediaContainerWithDecisionMetadata(BaseModel):
                 "hero",
                 "Image",
                 "index",
+                "languageOverride",
+                "lastRatedAt",
                 "lastViewedAt",
                 "leafCount",
                 "Media",
+                "musicAnalysisVersion",
                 "originallyAvailableAt",
                 "originalTitle",
                 "parentGuid",
@@ -1272,6 +1537,7 @@ class MediaContainerWithDecisionMetadata(BaseModel):
                 "parentRatingKey",
                 "parentThumb",
                 "parentTitle",
+                "playlistItemID",
                 "primaryExtraKey",
                 "prompt",
                 "rating",
@@ -1283,16 +1549,21 @@ class MediaContainerWithDecisionMetadata(BaseModel):
                 "search",
                 "secondary",
                 "skipChildren",
+                "skipCount",
                 "skipParent",
+                "slug",
                 "Sort",
+                "sourceURI",
                 "studio",
                 "subtype",
                 "summary",
                 "tagline",
                 "theme",
                 "thumb",
+                "thumbBlurHash",
                 "titleSort",
                 "updatedAt",
+                "useOriginalTitle",
                 "userRating",
                 "viewCount",
                 "viewedLeafCount",
@@ -1322,19 +1593,14 @@ class MediaContainerWithDecisionMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
     available_bandwidth: NotRequired[int]
     r"""The maximum available bitrate when the decision was rendered."""
     direct_play_decision_code: NotRequired[int]
@@ -1355,22 +1621,17 @@ class MediaContainerWithDecisionMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     available_bandwidth: Annotated[
         Optional[int], pydantic.Field(alias="availableBandwidth")
@@ -1455,7 +1716,6 @@ class MediaContainerWithDecisionTypedDict(TypedDict):
     r"""`MediaContainer` is commonly found as the root of a response and is a pretty generic container. Common attributes include `identifier` and things related to paging (`offset`, `size`, `totalSize`).
 
     It is also common for a `MediaContainer` to contain attributes \"hoisted\" from its children. If every element in the container would have had the same attribute, then that attribute can be present on the container instead of being repeated on every element. For example, an album's list of tracks might include `parentTitle` on the container since all of the tracks have the same album title. A container may have a `source` attribute when all of the items came from the same source. Generally speaking, when looking for an attribute on an item, if the attribute wasn't found then the container should be checked for that attribute as well.
-
     """
 
     media_container: NotRequired[MediaContainerWithDecisionMediaContainerTypedDict]
@@ -1465,7 +1725,6 @@ class MediaContainerWithDecision(BaseModel):
     r"""`MediaContainer` is commonly found as the root of a response and is a pretty generic container. Common attributes include `identifier` and things related to paging (`offset`, `size`, `totalSize`).
 
     It is also common for a `MediaContainer` to contain attributes \"hoisted\" from its children. If every element in the container would have had the same attribute, then that attribute can be present on the container instead of being repeated on every element. For example, an album's list of tracks might include `parentTitle` on the container since all of the tracks have the same album title. A container may have a `source` attribute when all of the items came from the same source. Generally speaking, when looking for an attribute on an item, if the attribute wasn't found then the container should be checked for that attribute as well.
-
     """
 
     media_container: Annotated[

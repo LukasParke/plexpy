@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 import httpx
+from plex_api_client.models.components import butlertask as components_butlertask
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
 from pydantic import model_serializer
@@ -9,75 +10,14 @@ from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
-class GetTasksButlerTaskTypedDict(TypedDict):
-    description: NotRequired[str]
-    r"""A user-friendly description of the task"""
-    enabled: NotRequired[bool]
-    r"""Whether this task is enabled or not"""
-    interval: NotRequired[int]
-    r"""The interval (in days) of when this task is run.  A value of 1 is run every day, 7 is every week, etc."""
-    name: NotRequired[str]
-    r"""The name of the task"""
-    schedule_randomized: NotRequired[bool]
-    r"""Indicates whether the timing of the task is randomized within the butler interval"""
-    title: NotRequired[str]
-    r"""A user-friendly title of the task"""
-
-
-class GetTasksButlerTask(BaseModel):
-    description: Optional[str] = None
-    r"""A user-friendly description of the task"""
-
-    enabled: Optional[bool] = None
-    r"""Whether this task is enabled or not"""
-
-    interval: Optional[int] = None
-    r"""The interval (in days) of when this task is run.  A value of 1 is run every day, 7 is every week, etc."""
-
-    name: Optional[str] = None
-    r"""The name of the task"""
-
-    schedule_randomized: Annotated[
-        Optional[bool], pydantic.Field(alias="scheduleRandomized")
-    ] = None
-    r"""Indicates whether the timing of the task is randomized within the butler interval"""
-
-    title: Optional[str] = None
-    r"""A user-friendly title of the task"""
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(
-            [
-                "description",
-                "enabled",
-                "interval",
-                "name",
-                "scheduleRandomized",
-                "title",
-            ]
-        )
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class ButlerTasksTypedDict(TypedDict):
-    butler_task: NotRequired[List[GetTasksButlerTaskTypedDict]]
+    butler_task: NotRequired[List[components_butlertask.ButlerTaskTypedDict]]
 
 
 class ButlerTasks(BaseModel):
     butler_task: Annotated[
-        Optional[List[GetTasksButlerTask]], pydantic.Field(alias="ButlerTask")
+        Optional[List[components_butlertask.ButlerTask]],
+        pydantic.Field(alias="ButlerTask"),
     ] = None
 
     @model_serializer(mode="wrap")
@@ -168,10 +108,6 @@ class GetTasksResponse(BaseModel):
         return m
 
 
-try:
-    GetTasksButlerTask.model_rebuild()
-except NameError:
-    pass
 try:
     ButlerTasks.model_rebuild()
 except NameError:

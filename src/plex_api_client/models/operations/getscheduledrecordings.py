@@ -3,111 +3,12 @@
 from __future__ import annotations
 import httpx
 from plex_api_client.models.components import (
-    mediagraboperation as components_mediagraboperation,
+    mediacontainerwithmediagraboperation as components_mediacontainerwithmediagraboperation,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
-import pydantic
 from pydantic import model_serializer
 from typing import Dict, List, Optional
-from typing_extensions import Annotated, NotRequired, TypedDict
-
-
-class GetScheduledRecordingsMediaContainerTypedDict(TypedDict):
-    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
-    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
-    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
-    """
-
-    identifier: NotRequired[str]
-    offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
-    size: NotRequired[int]
-    total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    media_grab_operation: NotRequired[
-        List[components_mediagraboperation.MediaGrabOperationTypedDict]
-    ]
-
-
-class GetScheduledRecordingsMediaContainer(BaseModel):
-    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
-    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
-    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
-    """
-
-    identifier: Optional[str] = None
-
-    offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
-
-    size: Optional[int] = None
-
-    total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-
-    media_grab_operation: Annotated[
-        Optional[List[components_mediagraboperation.MediaGrabOperation]],
-        pydantic.Field(alias="MediaGrabOperation"),
-    ] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(
-            ["identifier", "offset", "size", "totalSize", "MediaGrabOperation"]
-        )
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
-class GetScheduledRecordingsResponseBodyTypedDict(TypedDict):
-    r"""OK"""
-
-    media_container: NotRequired[GetScheduledRecordingsMediaContainerTypedDict]
-
-
-class GetScheduledRecordingsResponseBody(BaseModel):
-    r"""OK"""
-
-    media_container: Annotated[
-        Optional[GetScheduledRecordingsMediaContainer],
-        pydantic.Field(alias="MediaContainer"),
-    ] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["MediaContainer"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
+from typing_extensions import NotRequired, TypedDict
 
 
 class GetScheduledRecordingsResponseTypedDict(TypedDict):
@@ -118,7 +19,9 @@ class GetScheduledRecordingsResponseTypedDict(TypedDict):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
     headers: Dict[str, List[str]]
-    object: NotRequired[GetScheduledRecordingsResponseBodyTypedDict]
+    media_container_with_media_grab_operation: NotRequired[
+        components_mediacontainerwithmediagraboperation.MediaContainerWithMediaGrabOperationTypedDict
+    ]
     r"""OK"""
 
 
@@ -134,12 +37,14 @@ class GetScheduledRecordingsResponse(BaseModel):
 
     headers: Dict[str, List[str]]
 
-    object: Optional[GetScheduledRecordingsResponseBody] = None
+    media_container_with_media_grab_operation: Optional[
+        components_mediacontainerwithmediagraboperation.MediaContainerWithMediaGrabOperation
+    ] = None
     r"""OK"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["object"])
+        optional_fields = set(["MediaContainerWithMediaGrabOperation"])
         serialized = handler(self)
         m = {}
 
@@ -152,13 +57,3 @@ class GetScheduledRecordingsResponse(BaseModel):
                     m[k] = val
 
         return m
-
-
-try:
-    GetScheduledRecordingsMediaContainer.model_rebuild()
-except NameError:
-    pass
-try:
-    GetScheduledRecordingsResponseBody.model_rebuild()
-except NameError:
-    pass

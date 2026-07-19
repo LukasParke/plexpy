@@ -10,13 +10,42 @@
 <!-- Start Summary [summary] -->
 ## Summary
 
+Plex Media Server: OpenAPI specification for the Plex Media Server (PMS) API and the plex.tv cloud API.
 
+## Base URLs
+
+- **PMS (local server)**: `http(s)://{host}:{port}` — Most endpoints in this spec target the local PMS.
+- **plex.tv v2**: `https://plex.tv/api/v2` — Authentication, account, and social endpoints.
+- **plex.tv v1 (legacy)**: `https://plex.tv/api` — Legacy XML endpoints (friends, home users, claims).
+- **Cloud providers**: `https://discover.provider.plex.tv`, `https://metadata.provider.plex.tv`, etc.
+
+Endpoints that target plex.tv or cloud providers declare an override `servers` array.
+
+## Authentication
+
+- **X-Plex-Token**: Pass via the `X-Plex-Token` header on every request. It may also be passed as a query parameter (`?X-Plex-Token=...`) on all endpoints.
+- **X-Plex-Client-Identifier**: Mandatory for OAuth PIN flow (`/pins`) and JWT device registration. Must be a unique, persistent identifier for the client application.
+- **OAuth PIN Flow**: `POST /pins` → user visits `https://plex.tv/link` → `GET /pins/{pinId}` → obtain `authToken`.
+
+## Response Formats
+
+- **PMS endpoints**: Return XML by default. Send `Accept: application/json` to receive JSON.
+- **plex.tv v2**: Returns JSON by default.
+- **Legacy v1 endpoints** (`/pins.xml`, `/api/resources`, `/api/users/`): Return XML only.
+
+## Rate Limiting
+
+plex.tv auth endpoints (PIN creation, sign-in) enforce rate limits. Clients should implement exponential backoff and reuse tokens rather than re-authenticating on every request.
 <!-- End Summary [summary] -->
 
 <!-- Start Table of Contents [toc] -->
 ## Table of Contents
 <!-- $toc-max-depth=2 -->
 * [plexpy](#plexpy)
+  * [Base URLs](#base-urls)
+  * [Authentication](#authentication)
+  * [Response Formats](#response-formats)
+  * [Rate Limiting](#rate-limiting)
   * [SDK Installation](#sdk-installation)
   * [IDE Support](#ide-support)
   * [SDK Example Usage](#sdk-example-usage)
@@ -26,7 +55,7 @@
   * [Error Handling](#error-handling)
   * [Server Selection](#server-selection)
   * [Custom HTTP Client](#custom-http-client)
-  * [Authentication](#authentication)
+  * [Authentication](#authentication-1)
   * [Resource Management](#resource-management)
   * [Debugging](#debugging)
 * [Development](#development)
@@ -139,8 +168,8 @@ with PlexAPI(
 
     res = plex_api.transcoder.start_transcode_session(request=operations.StartTranscodeSessionRequest(
         transcode_type=components.TranscodeType.MUSIC,
-        extension=operations.Extension.MPD,
         advanced_subtitles=components.AdvancedSubtitles.BURN,
+        extension=operations.Extension.MPD,
         audio_boost=50,
         audio_channel_count=5,
         auto_adjust_quality=components.BoolInt.TRUE,
@@ -162,17 +191,19 @@ with PlexAPI(
         protocol=operations.StartTranscodeSessionQueryParamProtocol.DASH,
         seconds_per_segment=5,
         subtitle_size=50,
+        subtitles=operations.StartTranscodeSessionQueryParamSubtitles.BURN,
+        video_resolution="1080x1080",
+        copyts=components.BoolInt.TRUE,
         video_bitrate=12000,
         video_quality=50,
-        video_resolution="1080x1080",
         x_plex_client_profile_extra="add-limitation(scope=videoCodec&scopeName=*&type=upperBound&name=video.frameRate&value=60&replace=true)+append-transcode-target-codec(type=videoProfile&context=streaming&videoCodec=h264%2Chevc&audioCodec=aac&protocol=dash)",
         x_plex_client_profile_name="generic",
     ))
 
-    assert res.response_stream is not None
+    assert res.two_hundred_application_vnd_apple_mpegurl_binary_response is not None
 
     # Handle response
-    print(res.response_stream)
+    print(res.two_hundred_application_vnd_apple_mpegurl_binary_response)
 ```
 
 </br>
@@ -204,8 +235,8 @@ async def main():
 
         res = await plex_api.transcoder.start_transcode_session_async(request=operations.StartTranscodeSessionRequest(
             transcode_type=components.TranscodeType.MUSIC,
-            extension=operations.Extension.MPD,
             advanced_subtitles=components.AdvancedSubtitles.BURN,
+            extension=operations.Extension.MPD,
             audio_boost=50,
             audio_channel_count=5,
             auto_adjust_quality=components.BoolInt.TRUE,
@@ -227,17 +258,19 @@ async def main():
             protocol=operations.StartTranscodeSessionQueryParamProtocol.DASH,
             seconds_per_segment=5,
             subtitle_size=50,
+            subtitles=operations.StartTranscodeSessionQueryParamSubtitles.BURN,
+            video_resolution="1080x1080",
+            copyts=components.BoolInt.TRUE,
             video_bitrate=12000,
             video_quality=50,
-            video_resolution="1080x1080",
             x_plex_client_profile_extra="add-limitation(scope=videoCodec&scopeName=*&type=upperBound&name=video.frameRate&value=60&replace=true)+append-transcode-target-codec(type=videoProfile&context=streaming&videoCodec=h264%2Chevc&audioCodec=aac&protocol=dash)",
             x_plex_client_profile_name="generic",
         ))
 
-        assert res.response_stream is not None
+        assert res.two_hundred_application_vnd_apple_mpegurl_binary_response is not None
 
         # Handle response
-        print(res.response_stream)
+        print(res.two_hundred_application_vnd_apple_mpegurl_binary_response)
 
 asyncio.run(main())
 ```
@@ -256,8 +289,23 @@ asyncio.run(main())
 
 ### [Authentication](docs/sdks/authentication/README.md)
 
+* [register_device_jwk](docs/sdks/authentication/README.md#register_device_jwk) - Register Device JWK
+* [get_auth_keys](docs/sdks/authentication/README.md#get_auth_keys) - Get Auth Keys
+* [get_auth_nonce](docs/sdks/authentication/README.md#get_auth_nonce) - Get Auth Nonce
+* [exchange_jwt_token](docs/sdks/authentication/README.md#exchange_jwt_token) - Exchange JWT Token
+* [get_claim_token](docs/sdks/authentication/README.md#get_claim_token) - Get Claim Token
+* [get_features](docs/sdks/authentication/README.md#get_features) - Get Features
+* [ping](docs/sdks/authentication/README.md#ping) - Ping the server
+* [create_o_auth_pin](docs/sdks/authentication/README.md#create_o_auth_pin) - Create OAuth PIN
+* [create_legacy_pin](docs/sdks/authentication/README.md#create_legacy_pin) - Create Legacy PIN
+* [link_o_auth_pin](docs/sdks/authentication/README.md#link_o_auth_pin) - Link OAuth PIN
+* [get_server_access_tokens](docs/sdks/authentication/README.md#get_server_access_tokens) - Get Server Access Tokens
 * [get_token_details](docs/sdks/authentication/README.md#get_token_details) - Get Token Details
+* [change_password](docs/sdks/authentication/README.md#change_password) - Change Password
 * [post_users_sign_in_data](docs/sdks/authentication/README.md#post_users_sign_in_data) - Get User Sign In Data
+* [sign_out](docs/sdks/authentication/README.md#sign_out) - Sign Out
+* [switch_home_user](docs/sdks/authentication/README.md#switch_home_user) - Switch Home User
+* [get_o_auth_pin](docs/sdks/authentication/README.md#get_o_auth_pin) - Get OAuth PIN Status
 
 ### [Butler](docs/sdks/butler/README.md)
 
@@ -321,6 +369,10 @@ asyncio.run(main())
 * [create_dvr](docs/sdks/dvrs/README.md#create_dvr) - Create a DVR
 * [delete_dvr](docs/sdks/dvrs/README.md#delete_dvr) - Delete a single DVR
 * [get_dvr](docs/sdks/dvrs/README.md#get_dvr) - Get a single DVR
+* [patch_dvr_settings](docs/sdks/dvrs/README.md#patch_dvr_settings) - Update DVR Settings
+* [update_dvr_settings](docs/sdks/dvrs/README.md#update_dvr_settings) - Update DVR Settings
+* [get_dvr_channels](docs/sdks/dvrs/README.md#get_dvr_channels) - Get DVR Channels
+* [get_dvr_guide](docs/sdks/dvrs/README.md#get_dvr_guide) - Get DVR Guide
 * [delete_lineup](docs/sdks/dvrs/README.md#delete_lineup) - Delete a DVR Lineup
 * [add_lineup](docs/sdks/dvrs/README.md#add_lineup) - Add a DVR Lineup
 * [set_dvr_preferences](docs/sdks/dvrs/README.md#set_dvr_preferences) - Set DVR preferences
@@ -335,9 +387,11 @@ asyncio.run(main())
 * [compute_channel_map](docs/sdks/epg/README.md#compute_channel_map) - Compute the best channel map
 * [get_channels](docs/sdks/epg/README.md#get_channels) - Get channels for a lineup
 * [get_countries](docs/sdks/epg/README.md#get_countries) - Get all countries
+* [get_epg_guide](docs/sdks/epg/README.md#get_epg_guide) - Get EPG Guide
 * [get_all_languages](docs/sdks/epg/README.md#get_all_languages) - Get all languages
 * [get_lineup](docs/sdks/epg/README.md#get_lineup) - Compute the best lineup
-* [get_lineup_channels](docs/sdks/epg/README.md#get_lineup_channels) - Get the channels for mulitple lineups
+* [get_lineup_channels](docs/sdks/epg/README.md#get_lineup_channels) - Get the channels for multiple lineups
+* [search_epg](docs/sdks/epg/README.md#search_epg) - Search EPG
 * [get_countries_lineups](docs/sdks/epg/README.md#get_countries_lineups) - Get lineups for a country via postal code
 * [get_country_regions](docs/sdks/epg/README.md#get_country_regions) - Get regions for a country
 * [list_lineups](docs/sdks/epg/README.md#list_lineups) - Get lineups for a region
@@ -346,18 +400,53 @@ asyncio.run(main())
 
 * [get_notifications](docs/sdks/events/README.md#get_notifications) - Connect to Eventsource
 * [connect_web_socket](docs/sdks/events/README.md#connect_web_socket) - Connect to WebSocket
+* [get_websocket_notifications](docs/sdks/events/README.md#get_websocket_notifications) - Get WebSocket Notifications
 
 ### [General](docs/sdks/general/README.md)
 
 * [get_server_info](docs/sdks/general/README.md#get_server_info) - Get PMS info
+* [get_system_accounts](docs/sdks/general/README.md#get_system_accounts) - Get System Accounts
+* [get_user_webhooks](docs/sdks/general/README.md#get_user_webhooks) - User Webhooks
+* [add_user_webhook](docs/sdks/general/README.md#add_user_webhook) - Add User Webhook
+* [get_clients](docs/sdks/general/README.md#get_clients) - Get Clients
+* [get_cloud_server](docs/sdks/general/README.md#get_cloud_server) - Get Cloud Server
+* [get_system_devices](docs/sdks/general/README.md#get_system_devices) - Get System Devices
+* [get_diagnostics](docs/sdks/general/README.md#get_diagnostics) - Get Diagnostics
+* [download_database_diagnostics](docs/sdks/general/README.md#download_database_diagnostics) - Download Database Diagnostics
+* [download_log_bundle](docs/sdks/general/README.md#download_log_bundle) - Download Log Bundle
+* [get_geo_ip](docs/sdks/general/README.md#get_geo_ip) - Get GeoIP
 * [get_identity](docs/sdks/general/README.md#get_identity) - Get PMS identity
+* [get_ip](docs/sdks/general/README.md#get_ip) - Get IP
+* [claim_server](docs/sdks/general/README.md#claim_server) - Claim Server
+* [refresh_reachability](docs/sdks/general/README.md#refresh_reachability) - Refresh Reachability
 * [get_source_connection_information](docs/sdks/general/README.md#get_source_connection_information) - Get Source Connection Information
-* [get_transient_token](docs/sdks/general/README.md#get_transient_token) - Get Transient Tokens
+* [create_transient_token](docs/sdks/general/README.md#create_transient_token) - Get Transient Tokens
+* [get_local_servers](docs/sdks/general/README.md#get_local_servers) - Get Local Servers
+* [browse_filesystem](docs/sdks/general/README.md#browse_filesystem) - Browse Filesystem
+* [get_bandwidth_statistics](docs/sdks/general/README.md#get_bandwidth_statistics) - Get Bandwidth Statistics
+* [get_resource_statistics](docs/sdks/general/README.md#get_resource_statistics) - Get Resource Statistics
+* [get_sync_status](docs/sdks/general/README.md#get_sync_status) - Get Sync Status
+* [get_sync_items](docs/sdks/general/README.md#get_sync_items) - Get Sync Items
+* [get_sync_queue](docs/sdks/general/README.md#get_sync_queue) - Get Sync Queue
+* [refresh_sync_content](docs/sdks/general/README.md#refresh_sync_content) - Refresh Sync Content
+* [refresh_sync_lists](docs/sdks/general/README.md#refresh_sync_lists) - Refresh Sync Lists
+* [get_sync_transcode_queue](docs/sdks/general/README.md#get_sync_transcode_queue) - Get Sync Transcode Queue
+* [get_metadata_agents](docs/sdks/general/README.md#get_metadata_agents) - Get Metadata Agents
+* [get_system_settings](docs/sdks/general/README.md#get_system_settings) - Get System Settings
+* [check_for_system_updates](docs/sdks/general/README.md#check_for_system_updates) - Check for System Updates
+* [get_webhooks](docs/sdks/general/README.md#get_webhooks) - Get Webhooks
+* [add_webhook](docs/sdks/general/README.md#add_webhook) - Add Webhook
+* [get_plex_downloads](docs/sdks/general/README.md#get_plex_downloads) - Get Plex Downloads
+* [browse_filesystem_path](docs/sdks/general/README.md#browse_filesystem_path) - Browse Filesystem Path
+* [get_sync_item](docs/sdks/general/README.md#get_sync_item) - Get Sync Item
+* [get_metadata_agent_details](docs/sdks/general/README.md#get_metadata_agent_details) - Get Metadata Agent Details
 
 ### [Hubs](docs/sdks/hubs/README.md)
 
 * [get_all_hubs](docs/sdks/hubs/README.md#get_all_hubs) - Get global hubs
 * [get_continue_watching](docs/sdks/hubs/README.md#get_continue_watching) - Get the continue watching hub
+* [get_continue_watching_items](docs/sdks/hubs/README.md#get_continue_watching_items) - Get Continue Watching Items
+* [get_home_recently_added](docs/sdks/hubs/README.md#get_home_recently_added) - Get home hubs Recently Added
 * [get_hub_items](docs/sdks/hubs/README.md#get_hub_items) - Get a hub's items
 * [get_promoted_hubs](docs/sdks/hubs/README.md#get_promoted_hubs) - Get the hubs which are promoted
 * [get_metadata_hubs](docs/sdks/hubs/README.md#get_metadata_hubs) - Get hubs for section by metadata item
@@ -373,19 +462,34 @@ asyncio.run(main())
 
 ### [Library](docs/sdks/library/README.md)
 
+* [get_root_library](docs/sdks/library/README.md#get_root_library) - Get Root Library
 * [get_library_items](docs/sdks/library/README.md#get_library_items) - Get all items in library
 * [delete_caches](docs/sdks/library/README.md#delete_caches) - Delete library caches
 * [clean_bundles](docs/sdks/library/README.md#clean_bundles) - Clean bundles
 * [ingest_transient_item](docs/sdks/library/README.md#ingest_transient_item) - Ingest a transient item
 * [get_library_matches](docs/sdks/library/README.md#get_library_matches) - Get library matches
+* [optimize_library](docs/sdks/library/README.md#optimize_library) - Get Optimize Library
+* [optimize_library_post](docs/sdks/library/README.md#optimize_library_post) - Optimize Library
 * [optimize_database](docs/sdks/library/README.md#optimize_database) - Optimize the Database
 * [get_random_artwork](docs/sdks/library/README.md#get_random_artwork) - Get random artwork
+* [get_recently_added_global](docs/sdks/library/README.md#get_recently_added_global) - Get Global Recently Added
+* [get_library_sections_fallback](docs/sdks/library/README.md#get_library_sections_fallback) - Get Library Sections (Fallback)
 * [get_sections](docs/sdks/library/README.md#get_sections) - Get library sections (main Media Provider Only)
 * [add_section](docs/sdks/library/README.md#add_section) - Add a library section
 * [stop_all_refreshes](docs/sdks/library/README.md#stop_all_refreshes) - Stop refresh
 * [get_sections_prefs](docs/sdks/library/README.md#get_sections_prefs) - Get section prefs
 * [refresh_sections_metadata](docs/sdks/library/README.md#refresh_sections_metadata) - Refresh all sections
 * [get_tags](docs/sdks/library/README.md#get_tags) - Get all library tags of a type
+* [upload_art](docs/sdks/library/README.md#upload_art) - Upload media art Art
+* [get_metadata_children](docs/sdks/library/README.md#get_metadata_children) - Get Metadata Children
+* [compute_sonic_path](docs/sdks/library/README.md#compute_sonic_path) - Compute Sonic Path
+* [get_metadata_grandchildren](docs/sdks/library/README.md#get_metadata_grandchildren) - Get Metadata Grandchildren
+* [get_metadata_grandparent](docs/sdks/library/README.md#get_metadata_grandparent) - Get Metadata Grandparent
+* [get_nearest_metadata](docs/sdks/library/README.md#get_nearest_metadata) - Get Nearest Metadata
+* [get_metadata_on_deck](docs/sdks/library/README.md#get_metadata_on_deck) - Get Metadata On Deck
+* [get_metadata_parent](docs/sdks/library/README.md#get_metadata_parent) - Get Metadata Parent
+* [upload_poster](docs/sdks/library/README.md#upload_poster) - Upload media art Poster
+* [get_metadata_reviews](docs/sdks/library/README.md#get_metadata_reviews) - Get Metadata Reviews
 * [delete_metadata_item](docs/sdks/library/README.md#delete_metadata_item) - Delete a metadata item
 * [edit_metadata_item](docs/sdks/library/README.md#edit_metadata_item) - Edit a metadata item
 * [detect_ads](docs/sdks/library/README.md#detect_ads) - Ad-detect an item
@@ -402,13 +506,12 @@ asyncio.run(main())
 * [match_item](docs/sdks/library/README.md#match_item) - Match a metadata item
 * [list_matches](docs/sdks/library/README.md#list_matches) - Get metadata matches for an item
 * [merge_items](docs/sdks/library/README.md#merge_items) - Merge a metadata item
-* [list_sonically_similar](docs/sdks/library/README.md#list_sonically_similar) - Get nearest tracks to metadata item
 * [set_item_preferences](docs/sdks/library/README.md#set_item_preferences) - Set metadata preferences
 * [refresh_items_metadata](docs/sdks/library/README.md#refresh_items_metadata) - Refresh a metadata item
 * [get_related_items](docs/sdks/library/README.md#get_related_items) - Get related items
 * [list_similar](docs/sdks/library/README.md#list_similar) - Get similar items
 * [split_item](docs/sdks/library/README.md#split_item) - Split a metadata item
-* [add_subtitles](docs/sdks/library/README.md#add_subtitles) - Add subtitles
+* [get_subtitles](docs/sdks/library/README.md#get_subtitles) - Get subtitles
 * [get_item_tree](docs/sdks/library/README.md#get_item_tree) - Get metadata items as a tree
 * [unmatch](docs/sdks/library/README.md#unmatch) - Unmatch a metadata item
 * [list_top_users](docs/sdks/library/README.md#list_top_users) - Get metadata top users
@@ -420,21 +523,54 @@ asyncio.run(main())
 * [delete_library_section](docs/sdks/library/README.md#delete_library_section) - Delete a library section
 * [get_library_details](docs/sdks/library/README.md#get_library_details) - Get a library section by id
 * [edit_section](docs/sdks/library/README.md#edit_section) - Edit a library section
+* [get_section_agents](docs/sdks/library/README.md#get_section_agents) - Get Section Agents
 * [update_items](docs/sdks/library/README.md#update_items) - Set the fields of the filtered items
 * [start_analysis](docs/sdks/library/README.md#start_analysis) - Analyze a section
+* [get_section_artists](docs/sdks/library/README.md#get_section_artists) - Get Section Artists
 * [autocomplete](docs/sdks/library/README.md#autocomplete) - Get autocompletions for search
+* [get_by_content_rating](docs/sdks/library/README.md#get_by_content_rating) - Get By Content Rating
+* [get_by_decade](docs/sdks/library/README.md#get_by_decade) - Get By Decade
+* [get_by_folder](docs/sdks/library/README.md#get_by_folder) - Get By Folder
+* [get_by_resolution](docs/sdks/library/README.md#get_by_resolution) - Get By Resolution
+* [get_by_year](docs/sdks/library/README.md#get_by_year) - Get By Year
+* [get_section_clips](docs/sdks/library/README.md#get_section_clips) - Get Section Clips
 * [get_collections](docs/sdks/library/README.md#get_collections) - Get collections in a section
 * [get_common](docs/sdks/library/README.md#get_common) - Get common fields for items
-* [empty_trash](docs/sdks/library/README.md#empty_trash) - Empty section trash
+* [get_section_edit](docs/sdks/library/README.md#get_section_edit) - Edit Section
+* [edit_library_section](docs/sdks/library/README.md#edit_library_section) - Edit Section
+* [empty_trash](docs/sdks/library/README.md#empty_trash) - Get Empty Trash
+* [empty_trash_post](docs/sdks/library/README.md#empty_trash_post) - Empty Trash
+* [empty_trash_put](docs/sdks/library/README.md#empty_trash_put) - Empty section trash
+* [get_section_episodes](docs/sdks/library/README.md#get_section_episodes) - Get Section Episodes
 * [get_section_filters](docs/sdks/library/README.md#get_section_filters) - Get section filters
 * [get_first_characters](docs/sdks/library/README.md#get_first_characters) - Get list of first characters
+* [get_library_section_hubs](docs/sdks/library/README.md#get_library_section_hubs) - Get Section Hubs
 * [delete_indexes](docs/sdks/library/README.md#delete_indexes) - Delete section indexes
 * [delete_intros](docs/sdks/library/README.md#delete_intros) - Delete section intro markers
+* [get_section_labels](docs/sdks/library/README.md#get_section_labels) - Get Section Labels
+* [match_section_items](docs/sdks/library/README.md#match_section_items) - Match Section Items
+* [move_section](docs/sdks/library/README.md#move_section) - Move Section
+* [get_section_movies](docs/sdks/library/README.md#get_section_movies) - Get Section Movies
+* [get_newest_for_section](docs/sdks/library/README.md#get_newest_for_section) - Get Newest for Section
+* [get_on_deck_for_section](docs/sdks/library/README.md#get_on_deck_for_section) - Get On Deck for Section
+* [optimize_section](docs/sdks/library/README.md#optimize_section) - Get Optimize Section
+* [optimize_section_post](docs/sdks/library/README.md#optimize_section_post) - Optimize Section
+* [get_section_photos](docs/sdks/library/README.md#get_section_photos) - Get Section Photos
+* [get_section_playlists](docs/sdks/library/README.md#get_section_playlists) - Get Section Playlists
 * [get_section_preferences](docs/sdks/library/README.md#get_section_preferences) - Get section prefs
 * [set_section_preferences](docs/sdks/library/README.md#set_section_preferences) - Set section prefs
+* [get_recently_added_for_section](docs/sdks/library/README.md#get_recently_added_for_section) - Get Recently Added for Section
 * [cancel_refresh](docs/sdks/library/README.md#cancel_refresh) - Cancel section refresh
-* [refresh_section](docs/sdks/library/README.md#refresh_section) - Refresh section
+* [refresh_section](docs/sdks/library/README.md#refresh_section) - Get Refresh Section
+* [refresh_section_post](docs/sdks/library/README.md#refresh_section_post) - Refresh Section
+* [search_section](docs/sdks/library/README.md#search_section) - Search Section
+* [get_section_settings](docs/sdks/library/README.md#get_section_settings) - Get Section Settings
+* [get_section_shows](docs/sdks/library/README.md#get_section_shows) - Get Section Shows
 * [get_available_sorts](docs/sdks/library/README.md#get_available_sorts) - Get a section sorts
+* [get_section_tags](docs/sdks/library/README.md#get_section_tags) - Get Section Tags
+* [get_section_timeline](docs/sdks/library/README.md#get_section_timeline) - Get Section Timeline
+* [unmatch_section_items](docs/sdks/library/README.md#unmatch_section_items) - Unmatch Section Items
+* [get_unwatched_for_section](docs/sdks/library/README.md#get_unwatched_for_section) - Get Unwatched for Section
 * [get_stream_levels](docs/sdks/library/README.md#get_stream_levels) - Get loudness about a stream in json
 * [get_stream_loudness](docs/sdks/library/README.md#get_stream_loudness) - Get loudness about a stream
 * [get_chapter_image](docs/sdks/library/README.md#get_chapter_image) - Get a chapter image
@@ -456,13 +592,13 @@ asyncio.run(main())
 ### [LibraryCollections](docs/sdks/librarycollections/README.md)
 
 * [add_collection_items](docs/sdks/librarycollections/README.md#add_collection_items) - Add items to a collection
-* [delete_collection_item](docs/sdks/librarycollections/README.md#delete_collection_item) - Delete an item from a collection
+* [update_collection_item](docs/sdks/librarycollections/README.md#update_collection_item) - Update an item in a collection
 * [move_collection_item](docs/sdks/librarycollections/README.md#move_collection_item) - Reorder an item in the collection
 
 ### [LibraryPlaylists](docs/sdks/libraryplaylists/README.md)
 
 * [create_playlist](docs/sdks/libraryplaylists/README.md#create_playlist) - Create a Playlist
-* [upload_playlist](docs/sdks/libraryplaylists/README.md#upload_playlist) - Upload
+* [upload_playlist](docs/sdks/libraryplaylists/README.md#upload_playlist) - Upload media art
 * [delete_playlist](docs/sdks/libraryplaylists/README.md#delete_playlist) - Delete a Playlist
 * [update_playlist](docs/sdks/libraryplaylists/README.md#update_playlist) - Editing a Playlist
 * [get_playlist_generators](docs/sdks/libraryplaylists/README.md#get_playlist_generators) - Get a playlist's generators
@@ -477,7 +613,10 @@ asyncio.run(main())
 
 ### [LiveTV](docs/sdks/livetv/README.md)
 
+* [get_dvr_recordings](docs/sdks/livetv/README.md#get_dvr_recordings) - Get DVR Recordings
 * [get_sessions](docs/sdks/livetv/README.md#get_sessions) - Get all sessions
+* [get_dvr_recordings_by_dvr](docs/sdks/livetv/README.md#get_dvr_recordings_by_dvr) - Get DVR Recordings by DVR
+* [delete_live_tv_session](docs/sdks/livetv/README.md#delete_live_tv_session) - Delete Live TV Session
 * [get_live_tv_session](docs/sdks/livetv/README.md#get_live_tv_session) - Get a single session
 * [get_session_playlist_index](docs/sdks/livetv/README.md#get_session_playlist_index) - Get a session playlist index
 * [get_session_segment](docs/sdks/livetv/README.md#get_session_segment) - Get a single session segment
@@ -500,11 +639,44 @@ asyncio.run(main())
 * [delete_play_queue_item](docs/sdks/playqueue/README.md#delete_play_queue_item) - Delete an item from a play queue
 * [move_play_queue_item](docs/sdks/playqueue/README.md#move_play_queue_item) - Move an item in a play queue
 
+### [Playback](docs/sdks/playback/README.md)
+
+* [get_progress](docs/sdks/playback/README.md#get_progress) - Get Progress
+* [remove_from_continue_watching](docs/sdks/playback/README.md#remove_from_continue_watching) - Remove From Continue Watching
+* [player_audio_stream](docs/sdks/playback/README.md#player_audio_stream) - Player Audio Stream
+* [player_mute](docs/sdks/playback/README.md#player_mute) - Player Mute
+* [player_pause](docs/sdks/playback/README.md#player_pause) - Player Pause
+* [player_play](docs/sdks/playback/README.md#player_play) - Player Play
+* [player_play_media](docs/sdks/playback/README.md#player_play_media) - Player Play Media
+* [player_refreshplayqueue](docs/sdks/playback/README.md#player_refreshplayqueue) - Player Refresh Play Queue
+* [player_seek](docs/sdks/playback/README.md#player_seek) - Player Seek
+* [player_set_parameters](docs/sdks/playback/README.md#player_set_parameters) - Player Set Parameters
+* [player_set_rating](docs/sdks/playback/README.md#player_set_rating) - Player Set Rating
+* [player_set_state](docs/sdks/playback/README.md#player_set_state) - Player Set State
+* [player_set_streams](docs/sdks/playback/README.md#player_set_streams) - Player Set Streams
+* [player_set_text_stream](docs/sdks/playback/README.md#player_set_text_stream) - Player Set Text Stream
+* [player_set_view_offset](docs/sdks/playback/README.md#player_set_view_offset) - Player Set View Offset
+* [player_skip_by](docs/sdks/playback/README.md#player_skip_by) - Player Skip By
+* [player_skip_to](docs/sdks/playback/README.md#player_skip_to) - Player Skip To
+* [player_stepback](docs/sdks/playback/README.md#player_stepback) - Player Step Back
+* [player_stepforward](docs/sdks/playback/README.md#player_stepforward) - Player Step Forward
+* [player_stop](docs/sdks/playback/README.md#player_stop) - Player Stop
+* [player_subtitle_stream](docs/sdks/playback/README.md#player_subtitle_stream) - Player Subtitle Stream
+* [player_unmute](docs/sdks/playback/README.md#player_unmute) - Player Unmute
+* [player_video_stream](docs/sdks/playback/README.md#player_video_stream) - Player Video Stream
+* [player_volume](docs/sdks/playback/README.md#player_volume) - Player Volume
+* [get_client_resources](docs/sdks/playback/README.md#get_client_resources) - Get Client Resources
+* [player_poll_timeline](docs/sdks/playback/README.md#player_poll_timeline) - Player Poll Timeline
+
 ### [Playlist](docs/sdks/playlist/README.md)
 
 * [list_playlists](docs/sdks/playlist/README.md#list_playlists) - List playlists
 * [get_playlist](docs/sdks/playlist/README.md#get_playlist) - Retrieve Playlist
 * [get_playlist_items](docs/sdks/playlist/README.md#get_playlist_items) - Retrieve Playlist Contents
+
+### [Playlists](docs/sdks/playlists/README.md)
+
+* [delete_playlist_by_rating_key](docs/sdks/playlists/README.md#delete_playlist_by_rating_key) - Delete Playlist
 
 ### [Plex](docs/sdks/plex/README.md)
 
@@ -518,6 +690,10 @@ asyncio.run(main())
 
 ### [Provider](docs/sdks/provider/README.md)
 
+* [add_to_watchlist](docs/sdks/provider/README.md#add_to_watchlist) - Add to Watchlist
+* [remove_from_watchlist](docs/sdks/provider/README.md#remove_from_watchlist) - Remove from Watchlist
+* [search_discover](docs/sdks/provider/README.md#search_discover) - Search Discover
+* [get_watchlist](docs/sdks/provider/README.md#get_watchlist) - Get Watchlist
 * [list_providers](docs/sdks/provider/README.md#list_providers) - Get the list of available media providers
 * [add_provider](docs/sdks/provider/README.md#add_provider) - Add a media provider
 * [refresh_providers](docs/sdks/provider/README.md#refresh_providers) - Refresh media providers
@@ -559,14 +735,19 @@ asyncio.run(main())
 * [mark_played](docs/sdks/timeline/README.md#mark_played) - Mark an item as played
 * [report](docs/sdks/timeline/README.md#report) - Report media timeline
 * [unscrobble](docs/sdks/timeline/README.md#unscrobble) - Mark an item as unplayed
+* [get_conversion_queue](docs/sdks/timeline/README.md#get_conversion_queue) - Get Conversion Queue
 
 ### [Transcoder](docs/sdks/transcoder/README.md)
 
+* [transcode_music](docs/sdks/transcoder/README.md#transcode_music) - Transcode Music
 * [transcode_image](docs/sdks/transcoder/README.md#transcode_image) - Transcode an image
+* [get_transcode_sessions](docs/sdks/transcoder/README.md#get_transcode_sessions) - Get Transcode Sessions
 * [make_decision](docs/sdks/transcoder/README.md#make_decision) - Make a decision on media playback
 * [trigger_fallback](docs/sdks/transcoder/README.md#trigger_fallback) - Manually trigger a transcoder fallback
 * [transcode_subtitles](docs/sdks/transcoder/README.md#transcode_subtitles) - Transcode subtitles
 * [start_transcode_session](docs/sdks/transcoder/README.md#start_transcode_session) - Start A Transcoding Session
+* [get_dash_segment](docs/sdks/transcoder/README.md#get_dash_segment) - Get DASH Segment
+* [get_hls_segment](docs/sdks/transcoder/README.md#get_hls_segment) - Get HLS Segment
 
 ### [UltraBlur](docs/sdks/ultrablur/README.md)
 
@@ -581,7 +762,28 @@ asyncio.run(main())
 
 ### [Users](docs/sdks/users/README.md)
 
+* [get_legacy_resources](docs/sdks/users/README.md#get_legacy_resources) - Get Legacy Resources
+* [get_legacy_users](docs/sdks/users/README.md#get_legacy_users) - Get Legacy Users
+* [get_friends](docs/sdks/users/README.md#get_friends) - Get Friends
+* [get_home](docs/sdks/users/README.md#get_home) - Get home hubs
+* [get_home_users](docs/sdks/users/README.md#get_home_users) - Get home hubs Users
+* [create_home_user](docs/sdks/users/README.md#create_home_user) - Create Home User
+* [get_my_plex_account](docs/sdks/users/README.md#get_my_plex_account) - Get MyPlex Account
+* [get_user_server](docs/sdks/users/README.md#get_user_server) - Get User Server Association
+* [get_server_user_features](docs/sdks/users/README.md#get_server_user_features) - Get Server User Features
+* [share_server](docs/sdks/users/README.md#share_server) - Share Server
+* [update_view_state_sync](docs/sdks/users/README.md#update_view_state_sync) - Update View State Sync
 * [get_users](docs/sdks/users/README.md#get_users) - Get list of all connected users
+* [get_account_xml](docs/sdks/users/README.md#get_account_xml) - Get Account (XML)
+* [get_account_json](docs/sdks/users/README.md#get_account_json) - Get Account (JSON)
+* [delete_home_user](docs/sdks/users/README.md#delete_home_user) - Delete Home User
+* [update_home_user](docs/sdks/users/README.md#update_home_user) - Update Home User
+* [update_restricted_user](docs/sdks/users/README.md#update_restricted_user) - Update Restricted User
+* [get_server_details](docs/sdks/users/README.md#get_server_details) - Get Server Details
+* [share_server_legacy](docs/sdks/users/README.md#share_server_legacy) - Share Server (Legacy v1)
+* [remove_share](docs/sdks/users/README.md#remove_share) - Remove Share
+* [update_share](docs/sdks/users/README.md#update_share) - Update Share
+* [get_user_opt_outs](docs/sdks/users/README.md#get_user_opt_outs) - Get User Opt-Outs
 
 </details>
 <!-- End Available Resources and Operations [operations] -->
@@ -598,18 +800,38 @@ Certain SDK methods accept file objects as part of a request body or multi-part 
 
 ```python
 from plex_api_client import PlexAPI
+from plex_api_client.models import components
 
 
 with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
     token="<YOUR_API_KEY_HERE>",
 ) as plex_api:
 
-    res = plex_api.log.write_log(request=open("example.file", "rb"))
+    res = plex_api.library.upload_art(request={
+        "id": 996758,
+        "request_body": {
+            "file": {
+                "file_name": "example.file",
+                "content": open("example.file", "rb"),
+            },
+        },
+    })
 
-    assert res is not None
+    assert res.success_response is not None
 
     # Handle response
-    print(res)
+    print(res.success_response)
 
 ```
 <!-- End File uploads [file-upload] -->
@@ -644,10 +866,10 @@ with PlexAPI(
     res = plex_api.general.get_server_info(request={},
         RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False))
 
-    assert res.media_container_with_directory is not None
+    assert res.object is not None
 
     # Handle response
-    print(res.media_container_with_directory)
+    print(res.object)
 
 ```
 
@@ -676,10 +898,10 @@ with PlexAPI(
 
     res = plex_api.general.get_server_info(request={})
 
-    assert res.media_container_with_directory is not None
+    assert res.object is not None
 
     # Handle response
-    print(res.media_container_with_directory)
+    print(res.object)
 
 ```
 <!-- End Retries [retries] -->
@@ -721,12 +943,12 @@ with PlexAPI(
     res = None
     try:
 
-        res = plex_api.authentication.get_token_details(request={})
+        res = plex_api.general.get_server_info(request={})
 
-        assert res.user_plex_account is not None
+        assert res.object is not None
 
         # Handle response
-        print(res.user_plex_account)
+        print(res.object)
 
 
     except errors.PlexAPIError as e:
@@ -738,16 +960,15 @@ with PlexAPI(
         print(e.raw_response)
 
         # Depending on the method different errors may be thrown
-        if isinstance(e, errors.GetTokenDetailsBadRequest):
+        if isinstance(e, errors.Error):
             print(e.data.errors)  # Optional[List[errors.Errors]]
-            print(e.data.raw_response)  # Optional[httpx.Response]
 ```
 
 ### Error Classes
 **Primary error:**
 * [`PlexAPIError`](./src/plex_api_client/models/errors/plexapierror.py): The base class for HTTP error responses.
 
-<details><summary>Less common errors (12)</summary>
+<details><summary>Less common errors (8)</summary>
 
 <br />
 
@@ -758,13 +979,9 @@ with PlexAPI(
 
 
 **Inherit from [`PlexAPIError`](./src/plex_api_client/models/errors/plexapierror.py)**:
-* [`GetTokenDetailsBadRequest`](./src/plex_api_client/models/errors/gettokendetailsbadrequest.py): Bad Request - A parameter was not specified, or was specified incorrectly. Status code `400`. Applicable to 1 of 241 methods.*
-* [`PostUsersSignInDataBadRequest`](./src/plex_api_client/models/errors/postuserssignindatabadrequest.py): Bad Request - A parameter was not specified, or was specified incorrectly. Status code `400`. Applicable to 1 of 241 methods.*
-* [`GetUsersBadRequest`](./src/plex_api_client/models/errors/getusersbadrequest.py): Bad Request - A parameter was not specified, or was specified incorrectly. Status code `400`. Applicable to 1 of 241 methods.*
-* [`GetTokenDetailsUnauthorized`](./src/plex_api_client/models/errors/gettokendetailsunauthorized.py): Unauthorized - Returned if the X-Plex-Token is missing from the header or query. Status code `401`. Applicable to 1 of 241 methods.*
-* [`PostUsersSignInDataUnauthorized`](./src/plex_api_client/models/errors/postuserssignindataunauthorized.py): Unauthorized - Returned if the X-Plex-Token is missing from the header or query. Status code `401`. Applicable to 1 of 241 methods.*
-* [`GetUsersUnauthorized`](./src/plex_api_client/models/errors/getusersunauthorized.py): Unauthorized - Returned if the X-Plex-Token is missing from the header or query. Status code `401`. Applicable to 1 of 241 methods.*
-* [`GetServerResourcesUnauthorized`](./src/plex_api_client/models/errors/getserverresourcesunauthorized.py): Unauthorized - Returned if the X-Plex-Token is missing from the header or query. Status code `401`. Applicable to 1 of 241 methods.*
+* [`Error`](./src/plex_api_client/models/errors/error.py): Unauthorized. Status code `401`. Applicable to 276 of 404 methods.*
+* [`Unauthorized`](./src/plex_api_client/models/errors/unauthorized.py): Unauthorized - Returned if the X-Plex-Token is missing from the header or query. Status code `401`. Applicable to 4 of 404 methods.*
+* [`BadRequest`](./src/plex_api_client/models/errors/badrequest.py): Bad Request - A parameter was not specified, or was specified incorrectly. Status code `400`. Applicable to 3 of 404 methods.*
 * [`ResponseValidationError`](./src/plex_api_client/models/errors/responsevalidationerror.py): Type mismatch between the response data and the expected Pydantic model. Provides access to the Pydantic validation error via the `cause` attribute.
 
 </details>
@@ -782,19 +999,19 @@ You can override the default server globally by passing a server index to the `s
 | #   | Server                                                     | Variables                                    | Description |
 | --- | ---------------------------------------------------------- | -------------------------------------------- | ----------- |
 | 0   | `https://{IP-description}.{identifier}.plex.direct:{port}` | `identifier`<br/>`IP-description`<br/>`port` |             |
-| 1   | `{protocol}://{host}:{port}`                               | `protocol`<br/>`host`<br/>`port`             |             |
+| 1   | `{protocol}://{host}:{port}`                               | `host`<br/>`port`<br/>`protocol`             |             |
 | 2   | `https://{full_server_url}`                                | `full_server_url`                            |             |
 
 If the selected server has variables, you may override its default values through the additional parameters made available in the SDK constructor:
 
-| Variable          | Parameter              | Default                              | Description                                                                                                                                                                                                                                                                                                                                                                          |
-| ----------------- | ---------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `identifier`      | `identifier: str`      | `"0123456789abcdef0123456789abcdef"` | The unique identifier of this particular PMS                                                                                                                                                                                                                                                                                                                                         |
-| `IP-description`  | `ip_description: str`  | `"1-2-3-4"`                          | A `-` separated string of the IPv4 or IPv6 address components                                                                                                                                                                                                                                                                                                                        |
-| `port`            | `port: str`            | `"32400"`                            | The Port number configured on the PMS. Typically (`32400`). <br/>If using a reverse proxy, this would be the port number configured on the proxy.<br/>                                                                                                                                                                                                                               |
-| `protocol`        | `protocol: str`        | `"http"`                             | The network protocol to use. Typically (`http` or `https`)                                                                                                                                                                                                                                                                                                                           |
-| `host`            | `host: str`            | `"localhost"`                        | The Host of the PMS.<br/>If using on a local network, this is the internal IP address of the server hosting the PMS.<br/>If using on an external network, this is the external IP address for your network, and requires port forwarding.<br/>If using a reverse proxy, this would be the external DNS domain for your network, and requires the proxy handle port forwarding. <br/> |
-| `full_server_url` | `full_server_url: str` | `"http://localhost:32400"`           | The full manual URL to access the PMS                                                                                                                                                                                                                                                                                                                                                |
+| Variable          | Parameter              | Default                              | Description                                                                                                                                                                                                                                                                                                                                                                    |
+| ----------------- | ---------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `identifier`      | `identifier: str`      | `"0123456789abcdef0123456789abcdef"` | The unique identifier of this particular PMS                                                                                                                                                                                                                                                                                                                                   |
+| `IP-description`  | `ip_description: str`  | `"1-2-3-4"`                          | A `-` separated string of the IPv4 or IPv6 address components                                                                                                                                                                                                                                                                                                                  |
+| `port`            | `port: str`            | `"32400"`                            | The Port number configured on the PMS. Typically (`32400`). <br/>If using a reverse proxy, this would be the port number configured on the proxy.                                                                                                                                                                                                                              |
+| `host`            | `host: str`            | `"localhost"`                        | The Host of the PMS.<br/>If using on a local network, this is the internal IP address of the server hosting the PMS.<br/>If using on an external network, this is the external IP address for your network, and requires port forwarding.<br/>If using a reverse proxy, this would be the external DNS domain for your network, and requires the proxy handle port forwarding. |
+| `protocol`        | `protocol: str`        | `"http"`                             | The network protocol to use. Typically (`http` or `https`)                                                                                                                                                                                                                                                                                                                     |
+| `full_server_url` | `full_server_url: str` | `"http://localhost:32400"`           | The full manual URL to access the PMS                                                                                                                                                                                                                                                                                                                                          |
 
 #### Example
 
@@ -824,10 +1041,10 @@ with PlexAPI(
 
     res = plex_api.general.get_server_info(request={})
 
-    assert res.media_container_with_directory is not None
+    assert res.object is not None
 
     # Handle response
-    print(res.media_container_with_directory)
+    print(res.object)
 
 ```
 
@@ -857,10 +1074,10 @@ with PlexAPI(
 
     res = plex_api.general.get_server_info(request={})
 
-    assert res.media_container_with_directory is not None
+    assert res.object is not None
 
     # Handle response
-    print(res.media_container_with_directory)
+    print(res.object)
 
 ```
 
@@ -869,30 +1086,18 @@ with PlexAPI(
 The server URL can also be overridden on a per-operation basis, provided a server list was specified for the operation. For example:
 ```python
 from plex_api_client import PlexAPI
-from plex_api_client.models import components
 
 
 with PlexAPI(
-    accepts=components.Accepts.APPLICATION_XML,
-    client_identifier="abc123",
-    product="Plex for Roku",
-    version="2.4.1",
-    platform="Roku",
-    platform_version="4.3 build 1057",
-    device="Roku 3",
-    model="4200X",
-    device_vendor="Roku",
-    device_name="Living Room TV",
-    marketplace="googlePlay",
     token="<YOUR_API_KEY_HERE>",
 ) as plex_api:
 
-    res = plex_api.authentication.get_token_details(request={}, server_url="https://plex.tv/api/v2")
+    res = plex_api.general.get_user_webhooks(server_url="https://plex.tv/api/v2")
 
-    assert res.user_plex_account is not None
+    assert res.webhook_payload is not None
 
     # Handle response
-    print(res.user_plex_account)
+    print(res.webhook_payload)
 
 ```
 <!-- End Server Selection [server] -->
@@ -1012,10 +1217,43 @@ with PlexAPI(
 
     res = plex_api.general.get_server_info(request={})
 
-    assert res.media_container_with_directory is not None
+    assert res.object is not None
 
     # Handle response
-    print(res.media_container_with_directory)
+    print(res.object)
+
+```
+
+### Per-Operation Security Schemes
+
+Some operations in this SDK require the security scheme to be specified at the request level. For example:
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components, operations
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+) as plex_api:
+
+    res = plex_api.authentication.create_o_auth_pin(security=operations.CreateOAuthPinSecurity(
+        client_identifier="<YOUR_API_KEY_HERE>",
+    ), request={})
+
+    assert res.object is not None
+
+    # Handle response
+    print(res.object)
 
 ```
 <!-- End Authentication [security] -->

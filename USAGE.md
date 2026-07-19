@@ -22,8 +22,8 @@ with PlexAPI(
 
     res = plex_api.transcoder.start_transcode_session(request=operations.StartTranscodeSessionRequest(
         transcode_type=components.TranscodeType.MUSIC,
-        extension=operations.Extension.MPD,
         advanced_subtitles=components.AdvancedSubtitles.BURN,
+        extension=operations.Extension.MPD,
         audio_boost=50,
         audio_channel_count=5,
         auto_adjust_quality=components.BoolInt.TRUE,
@@ -45,17 +45,19 @@ with PlexAPI(
         protocol=operations.StartTranscodeSessionQueryParamProtocol.DASH,
         seconds_per_segment=5,
         subtitle_size=50,
+        subtitles=operations.StartTranscodeSessionQueryParamSubtitles.BURN,
+        video_resolution="1080x1080",
+        copyts=components.BoolInt.TRUE,
         video_bitrate=12000,
         video_quality=50,
-        video_resolution="1080x1080",
         x_plex_client_profile_extra="add-limitation(scope=videoCodec&scopeName=*&type=upperBound&name=video.frameRate&value=60&replace=true)+append-transcode-target-codec(type=videoProfile&context=streaming&videoCodec=h264%2Chevc&audioCodec=aac&protocol=dash)",
         x_plex_client_profile_name="generic",
     ))
 
-    assert res.response_stream is not None
+    assert res.two_hundred_application_vnd_apple_mpegurl_binary_response is not None
 
     # Handle response
-    print(res.response_stream)
+    print(res.two_hundred_application_vnd_apple_mpegurl_binary_response)
 ```
 
 </br>
@@ -87,8 +89,8 @@ async def main():
 
         res = await plex_api.transcoder.start_transcode_session_async(request=operations.StartTranscodeSessionRequest(
             transcode_type=components.TranscodeType.MUSIC,
-            extension=operations.Extension.MPD,
             advanced_subtitles=components.AdvancedSubtitles.BURN,
+            extension=operations.Extension.MPD,
             audio_boost=50,
             audio_channel_count=5,
             auto_adjust_quality=components.BoolInt.TRUE,
@@ -110,17 +112,19 @@ async def main():
             protocol=operations.StartTranscodeSessionQueryParamProtocol.DASH,
             seconds_per_segment=5,
             subtitle_size=50,
+            subtitles=operations.StartTranscodeSessionQueryParamSubtitles.BURN,
+            video_resolution="1080x1080",
+            copyts=components.BoolInt.TRUE,
             video_bitrate=12000,
             video_quality=50,
-            video_resolution="1080x1080",
             x_plex_client_profile_extra="add-limitation(scope=videoCodec&scopeName=*&type=upperBound&name=video.frameRate&value=60&replace=true)+append-transcode-target-codec(type=videoProfile&context=streaming&videoCodec=h264%2Chevc&audioCodec=aac&protocol=dash)",
             x_plex_client_profile_name="generic",
         ))
 
-        assert res.response_stream is not None
+        assert res.two_hundred_application_vnd_apple_mpegurl_binary_response is not None
 
         # Handle response
-        print(res.response_stream)
+        print(res.two_hundred_application_vnd_apple_mpegurl_binary_response)
 
 asyncio.run(main())
 ```

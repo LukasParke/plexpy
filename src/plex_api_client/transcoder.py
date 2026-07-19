@@ -7,7 +7,7 @@ from plex_api_client._hooks import HookContext
 from plex_api_client.models import components, errors, operations
 from plex_api_client.types import BaseModel, OptionalNullable, UNSET
 from plex_api_client.utils.unmarshal_json_response import unmarshal_json_response
-from typing import Mapping, Optional, Union, cast
+from typing import Any, Mapping, Optional, Union, cast
 
 
 class TranscodeImageAcceptEnum(str, Enum):
@@ -16,8 +16,248 @@ class TranscodeImageAcceptEnum(str, Enum):
     IMAGE_X_PORTABLE_PIXMAP = "image/x-portable-pixmap"
 
 
+class StartTranscodeSessionAcceptEnum(str, Enum):
+    APPLICATION_VND_APPLE_MPEGURL = "application/vnd.apple.mpegurl"
+    TEXT_HTML = "text/html"
+    VIDEO_X_MATROSKA = "video/x-matroska"
+
+
 class Transcoder(BaseSDK):
     r"""API Operations against the Transcoder"""
+
+    def transcode_music(
+        self,
+        *,
+        request: Union[
+            operations.TranscodeMusicRequest, operations.TranscodeMusicRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.TranscodeMusicResponse:
+        r"""Transcode Music
+
+        Audio transcode endpoint for music playback.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.TranscodeMusicRequest)
+        request = cast(operations.TranscodeMusicRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/music/:/transcode",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.TranscodeMusicGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="transcodeMusic",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.TranscodeMusicResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def transcode_music_async(
+        self,
+        *,
+        request: Union[
+            operations.TranscodeMusicRequest, operations.TranscodeMusicRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.TranscodeMusicResponse:
+        r"""Transcode Music
+
+        Audio transcode endpoint for music playback.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.TranscodeMusicRequest)
+        request = cast(operations.TranscodeMusicRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/music/:/transcode",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.TranscodeMusicGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="transcodeMusic",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.TranscodeMusicResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
 
     def transcode_image(
         self,
@@ -27,8 +267,8 @@ class Transcoder(BaseSDK):
         ],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
         accept_header_override: Optional[TranscodeImageAcceptEnum] = None,
+        timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> operations.TranscodeImageResponse:
         r"""Transcode an image
@@ -91,10 +331,14 @@ class Transcoder(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -103,6 +347,8 @@ class Transcoder(BaseSDK):
                 operation_id="transcodeImage",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -149,8 +395,8 @@ class Transcoder(BaseSDK):
         ],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
         accept_header_override: Optional[TranscodeImageAcceptEnum] = None,
+        timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> operations.TranscodeImageResponse:
         r"""Transcode an image
@@ -213,10 +459,14 @@ class Transcoder(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -225,6 +475,8 @@ class Transcoder(BaseSDK):
                 operation_id="transcodeImage",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -262,6 +514,196 @@ class Transcoder(BaseSDK):
 
         http_res_text = await utils.stream_to_text_async(http_res)
         raise errors.SDKError("Unexpected response received", http_res, http_res_text)
+
+    def get_transcode_sessions(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetTranscodeSessionsResponse:
+        r"""Get Transcode Sessions
+
+        Get active transcode sessions.
+
+        If set, this operation will use `token` from the global security.
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request(
+            method="GET",
+            path="/transcode/sessions",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getTranscodeSessions",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetTranscodeSessionsResponse(
+                media_container_with_metadata=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMetadata], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_transcode_sessions_async(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetTranscodeSessionsResponse:
+        r"""Get Transcode Sessions
+
+        Get active transcode sessions.
+
+        If set, this operation will use `token` from the global security.
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request_async(
+            method="GET",
+            path="/transcode/sessions",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getTranscodeSessions",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetTranscodeSessionsResponse(
+                media_container_with_metadata=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMetadata], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
 
     def make_decision(
         self,
@@ -331,10 +773,14 @@ class Transcoder(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -343,12 +789,15 @@ class Transcoder(BaseSDK):
                 operation_id="makeDecision",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.MakeDecisionResponse(
                 media_container_with_decision=unmarshal_json_response(
@@ -358,7 +807,10 @@ class Transcoder(BaseSDK):
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -435,10 +887,14 @@ class Transcoder(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -447,12 +903,15 @@ class Transcoder(BaseSDK):
                 operation_id="makeDecision",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.MakeDecisionResponse(
                 media_container_with_decision=unmarshal_json_response(
@@ -462,7 +921,10 @@ class Transcoder(BaseSDK):
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -540,10 +1002,14 @@ class Transcoder(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -552,6 +1018,8 @@ class Transcoder(BaseSDK):
                 operation_id="triggerFallback",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -642,10 +1110,14 @@ class Transcoder(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -654,6 +1126,8 @@ class Transcoder(BaseSDK):
                 operation_id="triggerFallback",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -721,7 +1195,7 @@ class Transcoder(BaseSDK):
             request_has_path_params=True,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="text/srt",
             http_headers=http_headers,
             _globals=operations.TranscodeSubtitlesGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
@@ -744,10 +1218,14 @@ class Transcoder(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -756,14 +1234,18 @@ class Transcoder(BaseSDK):
                 operation_id="transcodeSubtitles",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            stream=True,
             retry_config=retry_config,
         )
 
-        if utils.match_response(http_res, "200", "*"):
+        if utils.match_response(http_res, "200", "text/srt"):
             return operations.TranscodeSubtitlesResponse(
+                binary_response=http_res,
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
@@ -775,7 +1257,8 @@ class Transcoder(BaseSDK):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
 
-        raise errors.SDKError("Unexpected response received", http_res)
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.SDKError("Unexpected response received", http_res, http_res_text)
 
     async def transcode_subtitles_async(
         self,
@@ -823,7 +1306,7 @@ class Transcoder(BaseSDK):
             request_has_path_params=True,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="text/srt",
             http_headers=http_headers,
             _globals=operations.TranscodeSubtitlesGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
@@ -846,10 +1329,14 @@ class Transcoder(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -858,14 +1345,18 @@ class Transcoder(BaseSDK):
                 operation_id="transcodeSubtitles",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            stream=True,
             retry_config=retry_config,
         )
 
-        if utils.match_response(http_res, "200", "*"):
+        if utils.match_response(http_res, "200", "text/srt"):
             return operations.TranscodeSubtitlesResponse(
+                binary_response=http_res,
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
@@ -877,7 +1368,8 @@ class Transcoder(BaseSDK):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
 
-        raise errors.SDKError("Unexpected response received", http_res)
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.SDKError("Unexpected response received", http_res, http_res_text)
 
     def start_transcode_session(
         self,
@@ -888,6 +1380,7 @@ class Transcoder(BaseSDK):
         ],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
+        accept_header_override: Optional[StartTranscodeSessionAcceptEnum] = None,
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> operations.StartTranscodeSessionResponse:
@@ -899,6 +1392,7 @@ class Transcoder(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
         :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
@@ -925,7 +1419,9 @@ class Transcoder(BaseSDK):
             request_has_path_params=True,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="video/x-matroska",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/vnd.apple.mpegurl;q=1, text/html;q=0.7, video/x-matroska;q=0",
             http_headers=http_headers,
             _globals=operations.StartTranscodeSessionGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
@@ -948,10 +1444,14 @@ class Transcoder(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -960,6 +1460,8 @@ class Transcoder(BaseSDK):
                 operation_id="startTranscodeSession",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -967,9 +1469,23 @@ class Transcoder(BaseSDK):
             retry_config=retry_config,
         )
 
+        if utils.match_response(http_res, "200", "application/vnd.apple.mpegurl"):
+            return operations.StartTranscodeSessionResponse(
+                two_hundred_application_vnd_apple_mpegurl_binary_response=http_res,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "200", "text/html"):
+            return operations.StartTranscodeSessionResponse(
+                two_hundred_text_html_binary_response=http_res,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
         if utils.match_response(http_res, "200", "video/x-matroska"):
             return operations.StartTranscodeSessionResponse(
-                response_stream=http_res,
+                two_hundred_video_x_matroska_response_stream=http_res,
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
@@ -993,6 +1509,7 @@ class Transcoder(BaseSDK):
         ],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
+        accept_header_override: Optional[StartTranscodeSessionAcceptEnum] = None,
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> operations.StartTranscodeSessionResponse:
@@ -1004,6 +1521,7 @@ class Transcoder(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
         :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
@@ -1030,7 +1548,9 @@ class Transcoder(BaseSDK):
             request_has_path_params=True,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="video/x-matroska",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/vnd.apple.mpegurl;q=1, text/html;q=0.7, video/x-matroska;q=0",
             http_headers=http_headers,
             _globals=operations.StartTranscodeSessionGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
@@ -1053,10 +1573,14 @@ class Transcoder(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1065,6 +1589,8 @@ class Transcoder(BaseSDK):
                 operation_id="startTranscodeSession",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1072,14 +1598,508 @@ class Transcoder(BaseSDK):
             retry_config=retry_config,
         )
 
+        if utils.match_response(http_res, "200", "application/vnd.apple.mpegurl"):
+            return operations.StartTranscodeSessionResponse(
+                two_hundred_application_vnd_apple_mpegurl_binary_response=http_res,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "200", "text/html"):
+            return operations.StartTranscodeSessionResponse(
+                two_hundred_text_html_binary_response=http_res,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
         if utils.match_response(http_res, "200", "video/x-matroska"):
             return operations.StartTranscodeSessionResponse(
-                response_stream=http_res,
+                two_hundred_video_x_matroska_response_stream=http_res,
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
         if utils.match_response(http_res, ["400", "403", "404", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.SDKError("Unexpected response received", http_res, http_res_text)
+
+    def get_dash_segment(
+        self,
+        *,
+        request: Union[
+            operations.GetDASHSegmentRequest, operations.GetDASHSegmentRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetDASHSegmentResponse:
+        r"""Get DASH Segment
+
+        DASH segment delivery for adaptive streaming.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetDASHSegmentRequest)
+        request = cast(operations.GetDASHSegmentRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/{transcodeType}/:/transcode/universal/session/{sessionId}/{segmentId}.m4s",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="video/mp4",
+            http_headers=http_headers,
+            _globals=operations.GetDASHSegmentGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getDASHSegment",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            stream=True,
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "video/mp4"):
+            return operations.GetDASHSegmentResponse(
+                response_stream=http_res,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            http_res_text = utils.stream_to_text(http_res)
+            response_data = unmarshal_json_response(
+                errors.ErrorData, http_res, http_res_text
+            )
+            raise errors.Error(response_data, http_res, http_res_text)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.SDKError("Unexpected response received", http_res, http_res_text)
+
+    async def get_dash_segment_async(
+        self,
+        *,
+        request: Union[
+            operations.GetDASHSegmentRequest, operations.GetDASHSegmentRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetDASHSegmentResponse:
+        r"""Get DASH Segment
+
+        DASH segment delivery for adaptive streaming.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetDASHSegmentRequest)
+        request = cast(operations.GetDASHSegmentRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/{transcodeType}/:/transcode/universal/session/{sessionId}/{segmentId}.m4s",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="video/mp4",
+            http_headers=http_headers,
+            _globals=operations.GetDASHSegmentGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getDASHSegment",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            stream=True,
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "video/mp4"):
+            return operations.GetDASHSegmentResponse(
+                response_stream=http_res,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            response_data = unmarshal_json_response(
+                errors.ErrorData, http_res, http_res_text
+            )
+            raise errors.Error(response_data, http_res, http_res_text)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.SDKError("Unexpected response received", http_res, http_res_text)
+
+    def get_hls_segment(
+        self,
+        *,
+        request: Union[
+            operations.GetHLSSegmentRequest, operations.GetHLSSegmentRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetHLSSegmentResponse:
+        r"""Get HLS Segment
+
+        HLS TS segment delivery for adaptive streaming.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetHLSSegmentRequest)
+        request = cast(operations.GetHLSSegmentRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/{transcodeType}/:/transcode/universal/session/{sessionId}/{segmentId}.ts",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="video/mp2t",
+            http_headers=http_headers,
+            _globals=operations.GetHLSSegmentGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getHLSSegment",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            stream=True,
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "video/mp2t"):
+            return operations.GetHLSSegmentResponse(
+                response_stream=http_res,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            http_res_text = utils.stream_to_text(http_res)
+            response_data = unmarshal_json_response(
+                errors.ErrorData, http_res, http_res_text
+            )
+            raise errors.Error(response_data, http_res, http_res_text)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.SDKError("Unexpected response received", http_res, http_res_text)
+
+    async def get_hls_segment_async(
+        self,
+        *,
+        request: Union[
+            operations.GetHLSSegmentRequest, operations.GetHLSSegmentRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetHLSSegmentResponse:
+        r"""Get HLS Segment
+
+        HLS TS segment delivery for adaptive streaming.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetHLSSegmentRequest)
+        request = cast(operations.GetHLSSegmentRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/{transcodeType}/:/transcode/universal/session/{sessionId}/{segmentId}.ts",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="video/mp2t",
+            http_headers=http_headers,
+            _globals=operations.GetHLSSegmentGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getHLSSegment",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Transcoder"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            stream=True,
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "video/mp2t"):
+            return operations.GetHLSSegmentResponse(
+                response_stream=http_res,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            response_data = unmarshal_json_response(
+                errors.ErrorData, http_res, http_res_text
+            )
+            raise errors.Error(response_data, http_res, http_res_text)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):

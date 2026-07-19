@@ -3,13 +3,2353 @@
 from .basesdk import BaseSDK
 from plex_api_client import utils
 from plex_api_client._hooks import HookContext
-from plex_api_client.models import errors, operations
+from plex_api_client.models import components, errors, operations
 from plex_api_client.types import BaseModel, OptionalNullable, UNSET
 from plex_api_client.utils.unmarshal_json_response import unmarshal_json_response
 from typing import Any, Mapping, Optional, Union, cast
 
 
 class Users(BaseSDK):
+    r"""Plex Users operations"""
+
+    def get_legacy_resources(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetLegacyResourcesResponse:
+        r"""Get Legacy Resources
+
+        Get legacy published server connections (XML).
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_LEGACY_RESOURCES_SERVERS[0]
+        req = self._build_request(
+            method="GET",
+            path="/api/resources",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/xml",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getLegacyResources",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/xml"):
+            http_res_bytes = utils.stream_to_bytes(http_res)
+            return operations.GetLegacyResourcesResponse(
+                body=http_res_bytes,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_legacy_resources_async(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetLegacyResourcesResponse:
+        r"""Get Legacy Resources
+
+        Get legacy published server connections (XML).
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_LEGACY_RESOURCES_SERVERS[0]
+        req = self._build_request_async(
+            method="GET",
+            path="/api/resources",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/xml",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getLegacyResources",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/xml"):
+            http_res_bytes = await utils.stream_to_bytes_async(http_res)
+            return operations.GetLegacyResourcesResponse(
+                body=http_res_bytes,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_legacy_users(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetLegacyUsersResponse:
+        r"""Get Legacy Users
+
+        Get legacy friends list (XML).
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_LEGACY_USERS_SERVERS[0]
+        req = self._build_request(
+            method="GET",
+            path="/api/users/",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/xml",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getLegacyUsers",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/xml"):
+            http_res_bytes = utils.stream_to_bytes(http_res)
+            return operations.GetLegacyUsersResponse(
+                body=http_res_bytes,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_legacy_users_async(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetLegacyUsersResponse:
+        r"""Get Legacy Users
+
+        Get legacy friends list (XML).
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_LEGACY_USERS_SERVERS[0]
+        req = self._build_request_async(
+            method="GET",
+            path="/api/users/",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/xml",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getLegacyUsers",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/xml"):
+            http_res_bytes = await utils.stream_to_bytes_async(http_res)
+            return operations.GetLegacyUsersResponse(
+                body=http_res_bytes,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_friends(
+        self,
+        *,
+        request: Union[
+            operations.GetFriendsRequest, operations.GetFriendsRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetFriendsResponse:
+        r"""Get Friends
+
+        Get the list of friends and shared users.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_FRIENDS_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetFriendsRequest)
+        request = cast(operations.GetFriendsRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/friends",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetFriendsGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getFriends",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetFriendsResponse(
+                object=unmarshal_json_response(
+                    Optional[operations.GetFriendsResponseBody], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_friends_async(
+        self,
+        *,
+        request: Union[
+            operations.GetFriendsRequest, operations.GetFriendsRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetFriendsResponse:
+        r"""Get Friends
+
+        Get the list of friends and shared users.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_FRIENDS_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetFriendsRequest)
+        request = cast(operations.GetFriendsRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/friends",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetFriendsGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getFriends",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetFriendsResponse(
+                object=unmarshal_json_response(
+                    Optional[operations.GetFriendsResponseBody], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_home(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetHomeResponse:
+        r"""Get home hubs
+
+        Get Plex Home user list.
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_HOME_SERVERS[0]
+        req = self._build_request(
+            method="GET",
+            path="/home",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getHome",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetHomeResponse(
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_home_async(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetHomeResponse:
+        r"""Get home hubs
+
+        Get Plex Home user list.
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_HOME_SERVERS[0]
+        req = self._build_request_async(
+            method="GET",
+            path="/home",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getHome",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetHomeResponse(
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_home_users(
+        self,
+        *,
+        request: Union[
+            operations.GetHomeUsersRequest, operations.GetHomeUsersRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetHomeUsersResponse:
+        r"""Get home hubs Users
+
+        Get the list of Plex Home users.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_HOME_USERS_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetHomeUsersRequest)
+        request = cast(operations.GetHomeUsersRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/home/users",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetHomeUsersGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getHomeUsers",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetHomeUsersResponse(
+                media_container_with_directory=unmarshal_json_response(
+                    Optional[components.MediaContainerWithDirectory], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_home_users_async(
+        self,
+        *,
+        request: Union[
+            operations.GetHomeUsersRequest, operations.GetHomeUsersRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetHomeUsersResponse:
+        r"""Get home hubs Users
+
+        Get the list of Plex Home users.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_HOME_USERS_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetHomeUsersRequest)
+        request = cast(operations.GetHomeUsersRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/home/users",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetHomeUsersGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getHomeUsers",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetHomeUsersResponse(
+                media_container_with_directory=unmarshal_json_response(
+                    Optional[components.MediaContainerWithDirectory], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def create_home_user(
+        self,
+        *,
+        request: Union[
+            operations.CreateHomeUserRequest, operations.CreateHomeUserRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.CreateHomeUserResponse:
+        r"""Create Home User
+
+        Create a new Plex Home user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.CREATE_HOME_USER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.CreateHomeUserRequest)
+        request = cast(operations.CreateHomeUserRequest, request)
+
+        req = self._build_request(
+            method="POST",
+            path="/home/users",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.CreateHomeUserGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="createHomeUser",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.CreateHomeUserResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def create_home_user_async(
+        self,
+        *,
+        request: Union[
+            operations.CreateHomeUserRequest, operations.CreateHomeUserRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.CreateHomeUserResponse:
+        r"""Create Home User
+
+        Create a new Plex Home user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.CREATE_HOME_USER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.CreateHomeUserRequest)
+        request = cast(operations.CreateHomeUserRequest, request)
+
+        req = self._build_request_async(
+            method="POST",
+            path="/home/users",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.CreateHomeUserGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="createHomeUser",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.CreateHomeUserResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_my_plex_account(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetMyPlexAccountResponse:
+        r"""Get MyPlex Account
+
+        Get linked MyPlex account info on PMS.
+
+        If set, this operation will use `token` from the global security.
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request(
+            method="GET",
+            path="/myplex/account",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getMyPlexAccount",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetMyPlexAccountResponse(
+                user_plex_account=unmarshal_json_response(
+                    Optional[components.UserPlexAccount], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_my_plex_account_async(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetMyPlexAccountResponse:
+        r"""Get MyPlex Account
+
+        Get linked MyPlex account info on PMS.
+
+        If set, this operation will use `token` from the global security.
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request_async(
+            method="GET",
+            path="/myplex/account",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getMyPlexAccount",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetMyPlexAccountResponse(
+                user_plex_account=unmarshal_json_response(
+                    Optional[components.UserPlexAccount], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_user_server(
+        self,
+        *,
+        request: Union[
+            operations.GetUserServerRequest, operations.GetUserServerRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetUserServerResponse:
+        r"""Get User Server Association
+
+        Get server association information for the logged-in user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_USER_SERVER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetUserServerRequest)
+        request = cast(operations.GetUserServerRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/server",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetUserServerGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getUserServer",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetUserServerResponse(
+                connection_info=unmarshal_json_response(
+                    Optional[components.ConnectionInfo], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_user_server_async(
+        self,
+        *,
+        request: Union[
+            operations.GetUserServerRequest, operations.GetUserServerRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetUserServerResponse:
+        r"""Get User Server Association
+
+        Get server association information for the logged-in user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_USER_SERVER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetUserServerRequest)
+        request = cast(operations.GetUserServerRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/server",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetUserServerGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getUserServer",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetUserServerResponse(
+                connection_info=unmarshal_json_response(
+                    Optional[components.ConnectionInfo], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_server_user_features(
+        self,
+        *,
+        request: Union[
+            operations.GetServerUserFeaturesRequest,
+            operations.GetServerUserFeaturesRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetServerUserFeaturesResponse:
+        r"""Get Server User Features
+
+        Get features enabled per shared user for the server.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_SERVER_USER_FEATURES_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetServerUserFeaturesRequest)
+        request = cast(operations.GetServerUserFeaturesRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/server/users/features",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetServerUserFeaturesGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getServerUserFeatures",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetServerUserFeaturesResponse(
+                server_user_features_response=unmarshal_json_response(
+                    Optional[components.ServerUserFeaturesResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_server_user_features_async(
+        self,
+        *,
+        request: Union[
+            operations.GetServerUserFeaturesRequest,
+            operations.GetServerUserFeaturesRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetServerUserFeaturesResponse:
+        r"""Get Server User Features
+
+        Get features enabled per shared user for the server.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_SERVER_USER_FEATURES_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetServerUserFeaturesRequest)
+        request = cast(operations.GetServerUserFeaturesRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/server/users/features",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetServerUserFeaturesGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getServerUserFeatures",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetServerUserFeaturesResponse(
+                server_user_features_response=unmarshal_json_response(
+                    Optional[components.ServerUserFeaturesResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def share_server(
+        self,
+        *,
+        request: Union[
+            operations.ShareServerRequest, operations.ShareServerRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.ShareServerResponse:
+        r"""Share Server
+
+        Share a server with a friend or managed user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.SHARE_SERVER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.ShareServerRequest)
+        request = cast(operations.ShareServerRequest, request)
+
+        req = self._build_request(
+            method="POST",
+            path="/shared_servers",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.ShareServerGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="shareServer",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.ShareServerResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def share_server_async(
+        self,
+        *,
+        request: Union[
+            operations.ShareServerRequest, operations.ShareServerRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.ShareServerResponse:
+        r"""Share Server
+
+        Share a server with a friend or managed user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.SHARE_SERVER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.ShareServerRequest)
+        request = cast(operations.ShareServerRequest, request)
+
+        req = self._build_request_async(
+            method="POST",
+            path="/shared_servers",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.ShareServerGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="shareServer",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.ShareServerResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def update_view_state_sync(
+        self,
+        *,
+        request: Union[
+            operations.UpdateViewStateSyncRequest,
+            operations.UpdateViewStateSyncRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.UpdateViewStateSyncResponse:
+        r"""Update View State Sync
+
+        Enable or disable watch-state sync consent for the logged-in user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.UPDATE_VIEW_STATE_SYNC_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.UpdateViewStateSyncRequest)
+        request = cast(operations.UpdateViewStateSyncRequest, request)
+
+        req = self._build_request(
+            method="PUT",
+            path="/user/view_state_sync",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.UpdateViewStateSyncGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="updateViewStateSync",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.UpdateViewStateSyncResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def update_view_state_sync_async(
+        self,
+        *,
+        request: Union[
+            operations.UpdateViewStateSyncRequest,
+            operations.UpdateViewStateSyncRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.UpdateViewStateSyncResponse:
+        r"""Update View State Sync
+
+        Enable or disable watch-state sync consent for the logged-in user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.UPDATE_VIEW_STATE_SYNC_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.UpdateViewStateSyncRequest)
+        request = cast(operations.UpdateViewStateSyncRequest, request)
+
+        req = self._build_request_async(
+            method="PUT",
+            path="/user/view_state_sync",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.UpdateViewStateSyncGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="updateViewStateSync",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.UpdateViewStateSyncResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
     def get_users(
         self,
         *,
@@ -22,8 +2362,6 @@ class Users(BaseSDK):
         r"""Get list of all connected users
 
         Get list of all users that are friends and have library access with the provided Plex authentication token
-
-        If set, this operation will use `token` from the global security.
 
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
@@ -72,25 +2410,30 @@ class Users(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
-            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
                 config=self.sdk_configuration,
                 base_url=base_url or "",
-                operation_id="get-users",
+                operation_id="getUsers",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -108,17 +2451,11 @@ class Users(BaseSDK):
                 raw_response=http_res,
             )
         if utils.match_response(http_res, "400", "application/json"):
-            response_data = unmarshal_json_response(
-                errors.GetUsersBadRequestData, http_res
-            )
-            response_data.raw_response = http_res
-            raise errors.GetUsersBadRequest(response_data, http_res)
+            response_data = unmarshal_json_response(errors.BadRequestData, http_res)
+            raise errors.BadRequest(response_data, http_res)
         if utils.match_response(http_res, "401", "application/json"):
-            response_data = unmarshal_json_response(
-                errors.GetUsersUnauthorizedData, http_res
-            )
-            response_data.raw_response = http_res
-            raise errors.GetUsersUnauthorized(response_data, http_res)
+            response_data = unmarshal_json_response(errors.UnauthorizedData, http_res)
+            raise errors.Unauthorized(response_data, http_res)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
@@ -140,8 +2477,6 @@ class Users(BaseSDK):
         r"""Get list of all connected users
 
         Get list of all users that are friends and have library access with the provided Plex authentication token
-
-        If set, this operation will use `token` from the global security.
 
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
@@ -190,25 +2525,30 @@ class Users(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
-            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
                 config=self.sdk_configuration,
                 base_url=base_url or "",
-                operation_id="get-users",
+                operation_id="getUsers",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -226,18 +2566,2296 @@ class Users(BaseSDK):
                 raw_response=http_res,
             )
         if utils.match_response(http_res, "400", "application/json"):
-            response_data = unmarshal_json_response(
-                errors.GetUsersBadRequestData, http_res
-            )
-            response_data.raw_response = http_res
-            raise errors.GetUsersBadRequest(response_data, http_res)
+            response_data = unmarshal_json_response(errors.BadRequestData, http_res)
+            raise errors.BadRequest(response_data, http_res)
         if utils.match_response(http_res, "401", "application/json"):
-            response_data = unmarshal_json_response(
-                errors.GetUsersUnauthorizedData, http_res
-            )
-            response_data.raw_response = http_res
-            raise errors.GetUsersUnauthorized(response_data, http_res)
+            response_data = unmarshal_json_response(errors.UnauthorizedData, http_res)
+            raise errors.Unauthorized(response_data, http_res)
         if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_account_xml(
+        self,
+        *,
+        request: Union[
+            operations.GetAccountXMLRequest, operations.GetAccountXMLRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetAccountXMLResponse:
+        r"""Get Account (XML)
+
+        Get the logged-in user's account details in XML format (legacy v1 endpoint).
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_ACCOUNT_XML_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetAccountXMLRequest)
+        request = cast(operations.GetAccountXMLRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/users/account",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/xml",
+            http_headers=http_headers,
+            _globals=operations.GetAccountXMLGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getAccountXML",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/xml"):
+            http_res_bytes = utils.stream_to_bytes(http_res)
+            return operations.GetAccountXMLResponse(
+                body=http_res_bytes,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_account_xml_async(
+        self,
+        *,
+        request: Union[
+            operations.GetAccountXMLRequest, operations.GetAccountXMLRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetAccountXMLResponse:
+        r"""Get Account (XML)
+
+        Get the logged-in user's account details in XML format (legacy v1 endpoint).
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_ACCOUNT_XML_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetAccountXMLRequest)
+        request = cast(operations.GetAccountXMLRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/users/account",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/xml",
+            http_headers=http_headers,
+            _globals=operations.GetAccountXMLGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getAccountXML",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/xml"):
+            http_res_bytes = await utils.stream_to_bytes_async(http_res)
+            return operations.GetAccountXMLResponse(
+                body=http_res_bytes,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_account_json(
+        self,
+        *,
+        request: Union[
+            operations.GetAccountJSONRequest, operations.GetAccountJSONRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetAccountJSONResponse:
+        r"""Get Account (JSON)
+
+        Get the logged-in user's account details in JSON format (legacy v1 endpoint).
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_ACCOUNT_JSON_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetAccountJSONRequest)
+        request = cast(operations.GetAccountJSONRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/users/account.json",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetAccountJSONGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getAccountJSON",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetAccountJSONResponse(
+                user_plex_account=unmarshal_json_response(
+                    Optional[components.UserPlexAccount], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_account_json_async(
+        self,
+        *,
+        request: Union[
+            operations.GetAccountJSONRequest, operations.GetAccountJSONRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetAccountJSONResponse:
+        r"""Get Account (JSON)
+
+        Get the logged-in user's account details in JSON format (legacy v1 endpoint).
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_ACCOUNT_JSON_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetAccountJSONRequest)
+        request = cast(operations.GetAccountJSONRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/users/account.json",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetAccountJSONGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getAccountJSON",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetAccountJSONResponse(
+                user_plex_account=unmarshal_json_response(
+                    Optional[components.UserPlexAccount], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def delete_home_user(
+        self,
+        *,
+        request: Union[
+            operations.DeleteHomeUserRequest, operations.DeleteHomeUserRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.DeleteHomeUserResponse:
+        r"""Delete Home User
+
+        Remove a Plex Home user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.DELETE_HOME_USER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.DeleteHomeUserRequest)
+        request = cast(operations.DeleteHomeUserRequest, request)
+
+        req = self._build_request(
+            method="DELETE",
+            path="/home/users/{userId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.DeleteHomeUserGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="deleteHomeUser",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.DeleteHomeUserResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def delete_home_user_async(
+        self,
+        *,
+        request: Union[
+            operations.DeleteHomeUserRequest, operations.DeleteHomeUserRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.DeleteHomeUserResponse:
+        r"""Delete Home User
+
+        Remove a Plex Home user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.DELETE_HOME_USER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.DeleteHomeUserRequest)
+        request = cast(operations.DeleteHomeUserRequest, request)
+
+        req = self._build_request_async(
+            method="DELETE",
+            path="/home/users/{userId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.DeleteHomeUserGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="deleteHomeUser",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.DeleteHomeUserResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def update_home_user(
+        self,
+        *,
+        request: Union[
+            operations.UpdateHomeUserRequest, operations.UpdateHomeUserRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.UpdateHomeUserResponse:
+        r"""Update Home User
+
+        Update a Plex Home user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.UPDATE_HOME_USER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.UpdateHomeUserRequest)
+        request = cast(operations.UpdateHomeUserRequest, request)
+
+        req = self._build_request(
+            method="PUT",
+            path="/home/users/{userId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.UpdateHomeUserGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="updateHomeUser",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.UpdateHomeUserResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def update_home_user_async(
+        self,
+        *,
+        request: Union[
+            operations.UpdateHomeUserRequest, operations.UpdateHomeUserRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.UpdateHomeUserResponse:
+        r"""Update Home User
+
+        Update a Plex Home user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.UPDATE_HOME_USER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.UpdateHomeUserRequest)
+        request = cast(operations.UpdateHomeUserRequest, request)
+
+        req = self._build_request_async(
+            method="PUT",
+            path="/home/users/{userId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.UpdateHomeUserGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="updateHomeUser",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.UpdateHomeUserResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def update_restricted_user(
+        self,
+        *,
+        request: Union[
+            operations.UpdateRestrictedUserRequest,
+            operations.UpdateRestrictedUserRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.UpdateRestrictedUserResponse:
+        r"""Update Restricted User
+
+        Update restricted (managed) home user settings.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.UPDATE_RESTRICTED_USER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.UpdateRestrictedUserRequest)
+        request = cast(operations.UpdateRestrictedUserRequest, request)
+
+        req = self._build_request(
+            method="PUT",
+            path="/home/users/restricted/{userId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.UpdateRestrictedUserGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="updateRestrictedUser",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.UpdateRestrictedUserResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def update_restricted_user_async(
+        self,
+        *,
+        request: Union[
+            operations.UpdateRestrictedUserRequest,
+            operations.UpdateRestrictedUserRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.UpdateRestrictedUserResponse:
+        r"""Update Restricted User
+
+        Update restricted (managed) home user settings.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.UPDATE_RESTRICTED_USER_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.UpdateRestrictedUserRequest)
+        request = cast(operations.UpdateRestrictedUserRequest, request)
+
+        req = self._build_request_async(
+            method="PUT",
+            path="/home/users/restricted/{userId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.UpdateRestrictedUserGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="updateRestrictedUser",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.UpdateRestrictedUserResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_server_details(
+        self,
+        *,
+        request: Union[
+            operations.GetServerDetailsRequest,
+            operations.GetServerDetailsRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetServerDetailsResponse:
+        r"""Get Server Details
+
+        Get server details for sharing.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_SERVER_DETAILS_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetServerDetailsRequest)
+        request = cast(operations.GetServerDetailsRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/servers/{machineId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetServerDetailsGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getServerDetails",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetServerDetailsResponse(
+                server_configuration=unmarshal_json_response(
+                    Optional[components.ServerConfiguration], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_server_details_async(
+        self,
+        *,
+        request: Union[
+            operations.GetServerDetailsRequest,
+            operations.GetServerDetailsRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetServerDetailsResponse:
+        r"""Get Server Details
+
+        Get server details for sharing.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_SERVER_DETAILS_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetServerDetailsRequest)
+        request = cast(operations.GetServerDetailsRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/servers/{machineId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetServerDetailsGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getServerDetails",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetServerDetailsResponse(
+                server_configuration=unmarshal_json_response(
+                    Optional[components.ServerConfiguration], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def share_server_legacy(
+        self,
+        *,
+        request: Union[
+            operations.ShareServerLegacyRequest,
+            operations.ShareServerLegacyRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.ShareServerLegacyResponse:
+        r"""Share Server (Legacy v1)
+
+        Share a library with a friend (legacy v1 XML endpoint).
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.SHARE_SERVER_LEGACY_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.ShareServerLegacyRequest)
+        request = cast(operations.ShareServerLegacyRequest, request)
+
+        req = self._build_request(
+            method="POST",
+            path="/servers/{machineId}/shared_servers",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.ShareServerLegacyGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="shareServerLegacy",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.ShareServerLegacyResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def share_server_legacy_async(
+        self,
+        *,
+        request: Union[
+            operations.ShareServerLegacyRequest,
+            operations.ShareServerLegacyRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.ShareServerLegacyResponse:
+        r"""Share Server (Legacy v1)
+
+        Share a library with a friend (legacy v1 XML endpoint).
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.SHARE_SERVER_LEGACY_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.ShareServerLegacyRequest)
+        request = cast(operations.ShareServerLegacyRequest, request)
+
+        req = self._build_request_async(
+            method="POST",
+            path="/servers/{machineId}/shared_servers",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.ShareServerLegacyGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="shareServerLegacy",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.ShareServerLegacyResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def remove_share(
+        self,
+        *,
+        request: Union[
+            operations.RemoveShareRequest, operations.RemoveShareRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.RemoveShareResponse:
+        r"""Remove Share
+
+        Remove a share / friend.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.REMOVE_SHARE_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.RemoveShareRequest)
+        request = cast(operations.RemoveShareRequest, request)
+
+        req = self._build_request(
+            method="DELETE",
+            path="/sharings/{userId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.RemoveShareGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="removeShare",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.RemoveShareResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def remove_share_async(
+        self,
+        *,
+        request: Union[
+            operations.RemoveShareRequest, operations.RemoveShareRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.RemoveShareResponse:
+        r"""Remove Share
+
+        Remove a share / friend.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.REMOVE_SHARE_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.RemoveShareRequest)
+        request = cast(operations.RemoveShareRequest, request)
+
+        req = self._build_request_async(
+            method="DELETE",
+            path="/sharings/{userId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.RemoveShareGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="removeShare",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.RemoveShareResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def update_share(
+        self,
+        *,
+        request: Union[
+            operations.UpdateShareRequest, operations.UpdateShareRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.UpdateShareResponse:
+        r"""Update Share
+
+        Update friend filters (allowSync, filterMovies, etc.).
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.UPDATE_SHARE_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.UpdateShareRequest)
+        request = cast(operations.UpdateShareRequest, request)
+
+        req = self._build_request(
+            method="PUT",
+            path="/sharings/{userId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.UpdateShareGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="updateShare",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.UpdateShareResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def update_share_async(
+        self,
+        *,
+        request: Union[
+            operations.UpdateShareRequest, operations.UpdateShareRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.UpdateShareResponse:
+        r"""Update Share
+
+        Update friend filters (allowSync, filterMovies, etc.).
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.UPDATE_SHARE_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.UpdateShareRequest)
+        request = cast(operations.UpdateShareRequest, request)
+
+        req = self._build_request_async(
+            method="PUT",
+            path="/sharings/{userId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.UpdateShareGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="updateShare",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.UpdateShareResponse(
+                success_response=unmarshal_json_response(
+                    Optional[components.SuccessResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_user_opt_outs(
+        self,
+        *,
+        request: Union[
+            operations.GetUserOptOutsRequest, operations.GetUserOptOutsRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetUserOptOutsResponse:
+        r"""Get User Opt-Outs
+
+        Get online media source opt-out settings for a user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_USER_OPT_OUTS_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetUserOptOutsRequest)
+        request = cast(operations.GetUserOptOutsRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/user/{uuid}/settings/opt_outs",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetUserOptOutsGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getUserOptOuts",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetUserOptOutsResponse(
+                user_opt_outs_response=unmarshal_json_response(
+                    Optional[components.UserOptOutsResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_user_opt_outs_async(
+        self,
+        *,
+        request: Union[
+            operations.GetUserOptOutsRequest, operations.GetUserOptOutsRequestTypedDict
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetUserOptOutsResponse:
+        r"""Get User Opt-Outs
+
+        Get online media source opt-out settings for a user.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = operations.GET_USER_OPT_OUTS_SERVERS[0]
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetUserOptOutsRequest)
+        request = cast(operations.GetUserOptOutsRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/user/{uuid}/settings/opt_outs",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetUserOptOutsGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getUserOptOuts",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Users"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetUserOptOutsResponse(
+                user_opt_outs_response=unmarshal_json_response(
+                    Optional[components.UserOptOutsResponse], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):

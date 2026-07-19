@@ -174,7 +174,6 @@ class ConnectWebSocketRequestTypedDict(TypedDict):
     - `filters=foo,bar`: Only the foo and bar event types.
     - `filters=`: All events types.
     - `filters=-foo,bar`: All event types except foo and bar.
-
     """
 
 
@@ -266,7 +265,6 @@ class ConnectWebSocketRequest(BaseModel):
     - `filters=foo,bar`: Only the foo and bar event types.
     - `filters=`: All events types.
     - `filters=-foo,bar`: All event types except foo and bar.
-
     """
 
     @model_serializer(mode="wrap")

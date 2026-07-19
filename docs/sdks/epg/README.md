@@ -4,15 +4,16 @@
 
 The EPG (Electronic Program Guide) is responsible for obtaining metadata for what is airing on each channel and when
 
-
 ### Available Operations
 
 * [compute_channel_map](#compute_channel_map) - Compute the best channel map
 * [get_channels](#get_channels) - Get channels for a lineup
 * [get_countries](#get_countries) - Get all countries
+* [get_epg_guide](#get_epg_guide) - Get EPG Guide
 * [get_all_languages](#get_all_languages) - Get all languages
 * [get_lineup](#get_lineup) - Compute the best lineup
-* [get_lineup_channels](#get_lineup_channels) - Get the channels for mulitple lineups
+* [get_lineup_channels](#get_lineup_channels) - Get the channels for multiple lineups
+* [search_epg](#search_epg) - Search EPG
 * [get_countries_lineups](#get_countries_lineups) - Get lineups for a country via postal code
 * [get_country_regions](#get_country_regions) - Get regions for a country
 * [list_lineups](#list_lineups) - Get lineups for a region
@@ -104,10 +105,10 @@ with PlexAPI(
         "lineup": "<value>",
     })
 
-    assert res.object is not None
+    assert res.channel_response is not None
 
     # Handle response
-    print(res.object)
+    print(res.channel_response)
 
 ```
 
@@ -164,9 +165,51 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_epg_guide
+
+Fetch the global electronic program guide.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getEPGGuide" method="get" path="/livetv/epg/guide" -->
+```python
+from plex_api_client import PlexAPI
+
+
+with PlexAPI(
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.epg.get_epg_guide()
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[operations.GetEPGGuideResponse](../../models/operations/getepgguideresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_all_languages
 
@@ -204,9 +247,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_lineup
 
@@ -240,10 +284,10 @@ with PlexAPI(
         "lineup_group": "<value>",
     })
 
-    assert res is not None
+    assert res.media_container_with_lineup is not None
 
     # Handle response
-    print(res)
+    print(res.media_container_with_lineup)
 
 ```
 
@@ -321,6 +365,60 @@ with PlexAPI(
 | Error Type      | Status Code     | Content Type    |
 | --------------- | --------------- | --------------- |
 | errors.SDKError | 4XX, 5XX        | \*/\*           |
+
+## search_epg
+
+Search the electronic program guide for upcoming airings.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="searchEPG" method="get" path="/livetv/epg/search" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.epg.search_epg(request={})
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                  | Type                                                                       | Required                                                                   | Description                                                                |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `request`                                                                  | [operations.SearchEPGRequest](../../models/operations/searchepgrequest.md) | :heavy_check_mark:                                                         | The request object to use for the request.                                 |
+| `retries`                                                                  | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)           | :heavy_minus_sign:                                                         | Configuration to override the default retry behavior of the client.        |
+
+### Response
+
+**[operations.SearchEPGResponse](../../models/operations/searchepgresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_countries_lineups
 

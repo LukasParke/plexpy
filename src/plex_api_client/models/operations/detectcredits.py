@@ -154,6 +154,7 @@ class DetectCreditsGlobals(BaseModel):
 
 class DetectCreditsRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -177,13 +178,16 @@ class DetectCreditsRequestTypedDict(TypedDict):
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
     force: NotRequired[components_boolint.BoolInt]
+    r"""Force the operation even if conditions are not met"""
     manual: NotRequired[components_boolint.BoolInt]
+    r"""Whether to perform the operation manually"""
 
 
 class DetectCreditsRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -265,11 +269,13 @@ class DetectCreditsRequest(BaseModel):
         Optional[components_boolint.BoolInt],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = components_boolint.BoolInt.FALSE
+    r"""Force the operation even if conditions are not met"""
 
     manual: Annotated[
         Optional[components_boolint.BoolInt],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = components_boolint.BoolInt.FALSE
+    r"""Whether to perform the operation manually"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

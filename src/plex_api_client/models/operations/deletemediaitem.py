@@ -154,7 +154,9 @@ class DeleteMediaItemGlobals(BaseModel):
 
 class DeleteMediaItemRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     media_item: str
+    r"""The mediaItem"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -185,12 +187,14 @@ class DeleteMediaItemRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     media_item: Annotated[
         str,
         pydantic.Field(alias="mediaItem"),
         FieldMetadata(path=PathParamMetadata(style="simple", explode=False)),
     ]
+    r"""The mediaItem"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],

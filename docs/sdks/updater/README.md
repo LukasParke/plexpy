@@ -5,7 +5,6 @@
 This describes the API for searching and applying updates to the Plex Media Server.
 Updates to the status can be observed via the Event API.
 
-
 ### Available Operations
 
 * [apply_updates](#apply_updates) - Applying updates
@@ -44,10 +43,10 @@ with PlexAPI(
         skip=components.BoolInt.TRUE,
     ))
 
-    assert res is not None
+    assert res.body is not None
 
     # Handle response
-    print(res)
+    print(res.body)
 
 ```
 
@@ -119,9 +118,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_updates_status
 
@@ -159,6 +159,7 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |

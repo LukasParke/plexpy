@@ -6,7 +6,8 @@ from plex_api_client import utils
 from plex_api_client._hooks import HookContext
 from plex_api_client.models import errors, operations
 from plex_api_client.types import BaseModel, OptionalNullable, UNSET
-from typing import IO, Mapping, Optional, Union, cast
+from plex_api_client.utils.unmarshal_json_response import unmarshal_json_response
+from typing import Any, IO, Mapping, Optional, Union, cast
 
 
 class Log(BaseSDK):
@@ -15,7 +16,7 @@ class Log(BaseSDK):
     def write_log(
         self,
         *,
-        request: Union[bytes, IO[bytes], io.BufferedReader],
+        request: Union[bytes, IO[bytes], io.IOBase],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -24,7 +25,6 @@ class Log(BaseSDK):
         r"""Logging a multi-line message to the Plex Media Server log
 
         This endpoint will write multiple lines to the main Plex Media Server log in a single request. It takes a set of query strings as would normally sent to the above PUT endpoint as a linefeed-separated block of POST data. The parameters for each query string match as above.
-
 
         If set, this operation will use `token` from the global security.
 
@@ -58,7 +58,7 @@ class Log(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             get_serialized_body=lambda: utils.serialize_request_body(
-                request, False, False, "raw", Union[bytes, IO[bytes], io.BufferedReader]
+                request, False, False, "raw", Union[bytes, IO[bytes], io.IOBase]
             ),
             allow_empty_value=None,
             allowed_fields=["token"],
@@ -68,10 +68,14 @@ class Log(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -80,6 +84,8 @@ class Log(BaseSDK):
                 operation_id="writeLog",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Log"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -104,7 +110,7 @@ class Log(BaseSDK):
     async def write_log_async(
         self,
         *,
-        request: Union[bytes, IO[bytes], io.BufferedReader],
+        request: Union[bytes, IO[bytes], io.IOBase],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -113,7 +119,6 @@ class Log(BaseSDK):
         r"""Logging a multi-line message to the Plex Media Server log
 
         This endpoint will write multiple lines to the main Plex Media Server log in a single request. It takes a set of query strings as would normally sent to the above PUT endpoint as a linefeed-separated block of POST data. The parameters for each query string match as above.
-
 
         If set, this operation will use `token` from the global security.
 
@@ -147,7 +152,7 @@ class Log(BaseSDK):
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             get_serialized_body=lambda: utils.serialize_request_body(
-                request, False, False, "raw", Union[bytes, IO[bytes], io.BufferedReader]
+                request, False, False, "raw", Union[bytes, IO[bytes], io.IOBase]
             ),
             allow_empty_value=None,
             allowed_fields=["token"],
@@ -157,10 +162,14 @@ class Log(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -169,6 +178,8 @@ class Log(BaseSDK):
                 operation_id="writeLog",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Log"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -207,7 +218,6 @@ class Log(BaseSDK):
 
         Note: This endpoint responds to all HTTP verbs **except POST** but PUT is preferred
 
-
         If set, this operation will use `token` from the global security.
 
         :param request: The request object to send.
@@ -240,7 +250,7 @@ class Log(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="application/json",
             http_headers=http_headers,
             _globals=operations.WriteMessageGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
@@ -264,10 +274,14 @@ class Log(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -276,19 +290,25 @@ class Log(BaseSDK):
                 operation_id="writeMessage",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Log"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "*"):
             return operations.WriteMessageResponse(
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -313,7 +333,6 @@ class Log(BaseSDK):
         This endpoint will write a single-line log message, including a level and source to the main Plex Media Server log.
 
         Note: This endpoint responds to all HTTP verbs **except POST** but PUT is preferred
-
 
         If set, this operation will use `token` from the global security.
 
@@ -347,7 +366,7 @@ class Log(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="application/json",
             http_headers=http_headers,
             _globals=operations.WriteMessageGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
@@ -371,10 +390,14 @@ class Log(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -383,19 +406,25 @@ class Log(BaseSDK):
                 operation_id="writeMessage",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Log"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "*"):
             return operations.WriteMessageResponse(
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -421,7 +450,6 @@ class Log(BaseSDK):
         This endpoint will enable all Plex Media Server logs to be sent to the Papertrail networked logging site for a period of time
 
         Note: This endpoint responds to all HTTP verbs but POST is preferred
-
 
         If set, this operation will use `token` from the global security.
 
@@ -479,10 +507,14 @@ class Log(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -491,6 +523,8 @@ class Log(BaseSDK):
                 operation_id="enablePapertrail",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Log"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -530,7 +564,6 @@ class Log(BaseSDK):
 
         Note: This endpoint responds to all HTTP verbs but POST is preferred
 
-
         If set, this operation will use `token` from the global security.
 
         :param request: The request object to send.
@@ -587,10 +620,14 @@ class Log(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -599,6 +636,8 @@ class Log(BaseSDK):
                 operation_id="enablePapertrail",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Log"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),

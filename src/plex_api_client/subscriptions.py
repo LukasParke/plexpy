@@ -81,10 +81,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -93,6 +97,8 @@ class Subscriptions(BaseSDK):
                 operation_id="getAllSubscriptions",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -187,10 +193,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -199,6 +209,8 @@ class Subscriptions(BaseSDK):
                 operation_id="getAllSubscriptions",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -293,10 +305,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -305,6 +321,8 @@ class Subscriptions(BaseSDK):
                 operation_id="createSubscription",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -399,10 +417,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -411,6 +433,8 @@ class Subscriptions(BaseSDK):
                 operation_id="createSubscription",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -472,7 +496,7 @@ class Subscriptions(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="text/html",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
@@ -482,10 +506,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -494,14 +522,18 @@ class Subscriptions(BaseSDK):
                 operation_id="processSubscriptions",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
-        if utils.match_response(http_res, "200", "*"):
+        if utils.match_response(http_res, "200", "text/html"):
+            http_res_bytes = utils.stream_to_bytes(http_res)
             return operations.ProcessSubscriptionsResponse(
+                body=http_res_bytes,
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
@@ -552,7 +584,7 @@ class Subscriptions(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="text/html",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
@@ -562,10 +594,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -574,14 +610,18 @@ class Subscriptions(BaseSDK):
                 operation_id="processSubscriptions",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
-        if utils.match_response(http_res, "200", "*"):
+        if utils.match_response(http_res, "200", "text/html"):
+            http_res_bytes = await utils.stream_to_bytes_async(http_res)
             return operations.ProcessSubscriptionsResponse(
+                body=http_res_bytes,
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
@@ -642,10 +682,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -654,6 +698,8 @@ class Subscriptions(BaseSDK):
                 operation_id="getScheduledRecordings",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -662,8 +708,8 @@ class Subscriptions(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetScheduledRecordingsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetScheduledRecordingsResponseBody], http_res
+                media_container_with_media_grab_operation=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMediaGrabOperation], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -725,10 +771,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -737,6 +787,8 @@ class Subscriptions(BaseSDK):
                 operation_id="getScheduledRecordings",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -745,8 +797,8 @@ class Subscriptions(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetScheduledRecordingsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetScheduledRecordingsResponseBody], http_res
+                media_container_with_media_grab_operation=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMediaGrabOperation], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -830,10 +882,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -842,6 +898,8 @@ class Subscriptions(BaseSDK):
                 operation_id="getTemplate",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -935,10 +993,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -947,6 +1009,8 @@ class Subscriptions(BaseSDK):
                 operation_id="getTemplate",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1041,10 +1105,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1053,6 +1121,8 @@ class Subscriptions(BaseSDK):
                 operation_id="cancelGrab",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1143,10 +1213,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1155,6 +1229,8 @@ class Subscriptions(BaseSDK):
                 operation_id="cancelGrab",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1245,10 +1321,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1257,6 +1337,8 @@ class Subscriptions(BaseSDK):
                 operation_id="deleteSubscription",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1347,10 +1429,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1359,6 +1445,8 @@ class Subscriptions(BaseSDK):
                 operation_id="deleteSubscription",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1449,10 +1537,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1461,6 +1553,8 @@ class Subscriptions(BaseSDK):
                 operation_id="getSubscription",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1554,10 +1648,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1566,6 +1664,8 @@ class Subscriptions(BaseSDK):
                 operation_id="getSubscription",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1661,10 +1761,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1673,6 +1777,8 @@ class Subscriptions(BaseSDK):
                 operation_id="editSubscriptionPreferences",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1768,10 +1874,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1780,6 +1890,8 @@ class Subscriptions(BaseSDK):
                 operation_id="editSubscriptionPreferences",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1876,10 +1988,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1888,6 +2004,8 @@ class Subscriptions(BaseSDK):
                 operation_id="reorderSubscription",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1984,10 +2102,14 @@ class Subscriptions(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1996,6 +2118,8 @@ class Subscriptions(BaseSDK):
                 operation_id="reorderSubscription",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Subscriptions"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),

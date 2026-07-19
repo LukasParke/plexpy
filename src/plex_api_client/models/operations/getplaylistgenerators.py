@@ -292,7 +292,6 @@ class GetPlaylistGeneratorsType(int, Enum):
 
     - -1: A smart playlist generator
     - 42: A optimized version generator
-
     """
 
     MINUS_1 = -1
@@ -300,23 +299,29 @@ class GetPlaylistGeneratorsType(int, Enum):
 
 
 class PlayQueueGeneratorTypedDict(TypedDict):
-    changed_at: NotRequired[int]
-    created_at: NotRequired[int]
-    id: NotRequired[int]
-    playlist_id: NotRequired[int]
     type: NotRequired[GetPlaylistGeneratorsType]
     r"""The type of playlist generator.
 
     - -1: A smart playlist generator
     - 42: A optimized version generator
-
     """
+    changed_at: NotRequired[int]
+    created_at: NotRequired[int]
+    id: NotRequired[int]
+    playlist_id: NotRequired[int]
     updated_at: NotRequired[int]
     uri: NotRequired[str]
     r"""The URI indicating the search for this generator"""
 
 
 class PlayQueueGenerator(BaseModel):
+    type: Optional[GetPlaylistGeneratorsType] = None
+    r"""The type of playlist generator.
+
+    - -1: A smart playlist generator
+    - 42: A optimized version generator
+    """
+
     changed_at: Annotated[Optional[int], pydantic.Field(alias="changedAt")] = None
 
     created_at: Annotated[Optional[int], pydantic.Field(alias="createdAt")] = None
@@ -324,14 +329,6 @@ class PlayQueueGenerator(BaseModel):
     id: Optional[int] = None
 
     playlist_id: Annotated[Optional[int], pydantic.Field(alias="playlistID")] = None
-
-    type: Optional[GetPlaylistGeneratorsType] = None
-    r"""The type of playlist generator.
-
-    - -1: A smart playlist generator
-    - 42: A optimized version generator
-
-    """
 
     updated_at: Annotated[Optional[int], pydantic.Field(alias="updatedAt")] = None
 
@@ -341,7 +338,7 @@ class PlayQueueGenerator(BaseModel):
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
-            ["changedAt", "createdAt", "id", "playlistID", "type", "updatedAt", "uri"]
+            ["type", "changedAt", "createdAt", "id", "playlistID", "updatedAt", "uri"]
         )
         serialized = handler(self)
         m = {}
@@ -361,19 +358,14 @@ class GetPlaylistGeneratorsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
     play_queue_generator: NotRequired[List[PlayQueueGeneratorTypedDict]]
 
 
@@ -381,22 +373,17 @@ class GetPlaylistGeneratorsMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     play_queue_generator: Annotated[
         Optional[List[PlayQueueGenerator]], pydantic.Field(alias="PlayQueueGenerator")

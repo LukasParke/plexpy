@@ -4,13 +4,13 @@ from __future__ import annotations
 import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
-    directory as components_directory,
+    mediacontainerwithdirectory as components_mediacontainerwithdirectory,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
 from pydantic import model_serializer
-from typing import List, Optional
+from typing import Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
@@ -289,102 +289,6 @@ class GetSectionFiltersRequest(BaseModel):
         return m
 
 
-class GetSectionFiltersMediaContainerTypedDict(TypedDict):
-    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
-    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
-    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
-    """
-
-    identifier: NotRequired[str]
-    offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
-    size: NotRequired[int]
-    total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    directory: NotRequired[List[components_directory.DirectoryTypedDict]]
-
-
-class GetSectionFiltersMediaContainer(BaseModel):
-    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
-    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
-    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
-    """
-
-    identifier: Optional[str] = None
-
-    offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
-
-    size: Optional[int] = None
-
-    total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-
-    directory: Annotated[
-        Optional[List[components_directory.Directory]],
-        pydantic.Field(alias="Directory"),
-    ] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(
-            ["identifier", "offset", "size", "totalSize", "Directory"]
-        )
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
-class GetSectionFiltersResponseBodyTypedDict(TypedDict):
-    r"""The filters on the section"""
-
-    media_container: NotRequired[GetSectionFiltersMediaContainerTypedDict]
-
-
-class GetSectionFiltersResponseBody(BaseModel):
-    r"""The filters on the section"""
-
-    media_container: Annotated[
-        Optional[GetSectionFiltersMediaContainer],
-        pydantic.Field(alias="MediaContainer"),
-    ] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["MediaContainer"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class GetSectionFiltersResponseTypedDict(TypedDict):
     content_type: str
     r"""HTTP response content type for this operation"""
@@ -392,7 +296,9 @@ class GetSectionFiltersResponseTypedDict(TypedDict):
     r"""HTTP response status code for this operation"""
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
-    object: NotRequired[GetSectionFiltersResponseBodyTypedDict]
+    media_container_with_directory: NotRequired[
+        components_mediacontainerwithdirectory.MediaContainerWithDirectoryTypedDict
+    ]
     r"""The filters on the section"""
 
 
@@ -406,12 +312,14 @@ class GetSectionFiltersResponse(BaseModel):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
 
-    object: Optional[GetSectionFiltersResponseBody] = None
+    media_container_with_directory: Optional[
+        components_mediacontainerwithdirectory.MediaContainerWithDirectory
+    ] = None
     r"""The filters on the section"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["object"])
+        optional_fields = set(["MediaContainerWithDirectory"])
         serialized = handler(self)
         m = {}
 
@@ -424,13 +332,3 @@ class GetSectionFiltersResponse(BaseModel):
                     m[k] = val
 
         return m
-
-
-try:
-    GetSectionFiltersMediaContainer.model_rebuild()
-except NameError:
-    pass
-try:
-    GetSectionFiltersResponseBody.model_rebuild()
-except NameError:
-    pass

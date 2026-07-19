@@ -177,7 +177,7 @@ class GetPlaylistItemsRequestTypedDict(TypedDict):
     r"""A friendly name for the client"""
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
-    type: NotRequired[List[int]]
+    media_type: NotRequired[List[int]]
     r"""The metadata types of the item to return.  Values past the first are only used in fetching items from the background processing playlist."""
 
 
@@ -265,8 +265,9 @@ class GetPlaylistItemsRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
-    type: Annotated[
+    media_type: Annotated[
         Optional[List[int]],
+        pydantic.Field(alias="type"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=False)),
     ] = None
     r"""The metadata types of the item to return.  Values past the first are only used in fetching items from the background processing playlist."""
@@ -286,7 +287,7 @@ class GetPlaylistItemsRequest(BaseModel):
                 "Device-Vendor",
                 "Device-Name",
                 "Marketplace",
-                "type",
+                "mediaType",
             ]
         )
         serialized = handler(self)

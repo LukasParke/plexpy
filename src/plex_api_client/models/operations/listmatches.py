@@ -155,6 +155,7 @@ class ListMatchesGlobals(BaseModel):
 
 class ListMatchesRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -178,17 +179,24 @@ class ListMatchesRequestTypedDict(TypedDict):
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
     title: NotRequired[str]
+    r"""The title to filter by"""
     parent_title: NotRequired[str]
+    r"""The parentTitle"""
     agent: NotRequired[str]
+    r"""The identifier of the metadata agent to use"""
     language: NotRequired[str]
+    r"""The language code to use"""
     year: NotRequired[int]
+    r"""The year to filter by"""
     manual: NotRequired[components_boolint.BoolInt]
+    r"""Whether to perform the operation manually"""
 
 
 class ListMatchesRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -270,32 +278,38 @@ class ListMatchesRequest(BaseModel):
         Optional[str],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The title to filter by"""
 
     parent_title: Annotated[
         Optional[str],
         pydantic.Field(alias="parentTitle"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The parentTitle"""
 
     agent: Annotated[
         Optional[str],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The identifier of the metadata agent to use"""
 
     language: Annotated[
         Optional[str],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The language code to use"""
 
     year: Annotated[
         Optional[int],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The year to filter by"""
 
     manual: Annotated[
         Optional[components_boolint.BoolInt],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = components_boolint.BoolInt.FALSE
+    r"""Whether to perform the operation manually"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

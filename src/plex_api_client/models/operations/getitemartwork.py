@@ -146,6 +146,8 @@ class GetItemArtworkGlobals(BaseModel):
 
 
 class GetItemArtworkPathParamElement(str, Enum):
+    r"""The type of artwork element (e.g., art, poster, thumb)"""
+
     THUMB = "thumb"
     ART = "art"
     CLEAR_LOGO = "clearLogo"
@@ -156,7 +158,9 @@ class GetItemArtworkPathParamElement(str, Enum):
 
 class GetItemArtworkRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     element: GetItemArtworkPathParamElement
+    r"""The type of artwork element (e.g., art, poster, thumb)"""
     timestamp: int
     r"""A timestamp on the element used for cache management in the client"""
     accepts: NotRequired[components_accepts.Accepts]
@@ -187,11 +191,13 @@ class GetItemArtworkRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     element: Annotated[
         GetItemArtworkPathParamElement,
         FieldMetadata(path=PathParamMetadata(style="simple", explode=False)),
     ]
+    r"""The type of artwork element (e.g., art, poster, thumb)"""
 
     timestamp: Annotated[
         int, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))

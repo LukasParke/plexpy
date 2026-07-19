@@ -5,4 +5,4 @@
 
 | Field                                                            | Type                                                             | Required                                                         | Description                                                      |
 | ---------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `activity`                                                       | List[[operations.Activity](../../models/operations/activity.md)] | :heavy_minus_sign:                                               | N/A                                                              |
+| `activity`                                                       | List[[components.Activity](../../models/components/activity.md)] | :heavy_minus_sign:                                               | N/A                                                              |

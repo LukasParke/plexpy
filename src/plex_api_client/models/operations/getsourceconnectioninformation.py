@@ -5,12 +5,13 @@ import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
     boolint as components_boolint,
+    connectioninfo as components_connectioninfo,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
 import pydantic
 from pydantic import model_serializer
-from typing import List, Optional
+from typing import Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
@@ -296,128 +297,41 @@ class GetSourceConnectionInformationRequest(BaseModel):
         return m
 
 
-class ConnectionTypedDict(TypedDict):
-    address: NotRequired[str]
-    local: NotRequired[bool]
-    r"""Indicates if the connection is the server's LAN address"""
-    port: NotRequired[int]
-    protocol: NotRequired[str]
-    relay: NotRequired[bool]
-    r"""Indicates the connection is over a relayed connection"""
-    uri: NotRequired[str]
-
-
-class Connection(BaseModel):
-    address: Optional[str] = None
-
-    local: Optional[bool] = None
-    r"""Indicates if the connection is the server's LAN address"""
-
-    port: Optional[int] = None
-
-    protocol: Optional[str] = None
-
-    relay: Optional[bool] = None
-    r"""Indicates the connection is over a relayed connection"""
-
-    uri: Optional[str] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["address", "local", "port", "protocol", "relay", "uri"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
-class DeviceTypedDict(TypedDict):
-    access_token: NotRequired[str]
-    client_identifier: NotRequired[str]
-    connection: NotRequired[List[ConnectionTypedDict]]
-    name: NotRequired[str]
-
-
-class Device(BaseModel):
-    access_token: Annotated[Optional[str], pydantic.Field(alias="accessToken")] = None
-
-    client_identifier: Annotated[
-        Optional[str], pydantic.Field(alias="clientIdentifier")
-    ] = None
-
-    connection: Annotated[
-        Optional[List[Connection]], pydantic.Field(alias="Connection")
-    ] = None
-
-    name: Optional[str] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["accessToken", "clientIdentifier", "Connection", "name"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class GetSourceConnectionInformationMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    device: NotRequired[DeviceTypedDict]
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+    device: NotRequired[components_connectioninfo.ConnectionInfoTypedDict]
 
 
 class GetSourceConnectionInformationMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
-    """
-
-    device: Annotated[Optional[Device], pydantic.Field(alias="Device")] = None
+    device: Annotated[
+        Optional[components_connectioninfo.ConnectionInfo],
+        pydantic.Field(alias="Device"),
+    ] = None
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -508,10 +422,6 @@ class GetSourceConnectionInformationResponse(BaseModel):
         return m
 
 
-try:
-    Device.model_rebuild()
-except NameError:
-    pass
 try:
     GetSourceConnectionInformationMediaContainer.model_rebuild()
 except NameError:

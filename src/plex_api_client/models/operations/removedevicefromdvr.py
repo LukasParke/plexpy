@@ -4,7 +4,7 @@ from __future__ import annotations
 import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
-    device as components_device,
+    dvr as components_dvr,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
@@ -302,19 +302,14 @@ class RemoveDeviceFromDVRDVRsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
     status: NotRequired[int]
     r"""A status indicator. If present and non-zero, indicates an error"""
 
@@ -323,22 +318,17 @@ class RemoveDeviceFromDVRDVRsMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     status: Optional[int] = None
     r"""A status indicator. If present and non-zero, indicates an error"""
@@ -360,47 +350,9 @@ class RemoveDeviceFromDVRDVRsMediaContainer(BaseModel):
         return m
 
 
-class RemoveDeviceFromDVRDVRTypedDict(TypedDict):
-    device: NotRequired[List[components_device.DeviceTypedDict]]
-    key: NotRequired[str]
-    language: NotRequired[str]
-    lineup: NotRequired[str]
-    uuid: NotRequired[str]
-
-
-class RemoveDeviceFromDVRDVR(BaseModel):
-    device: Annotated[
-        Optional[List[components_device.Device]], pydantic.Field(alias="Device")
-    ] = None
-
-    key: Optional[str] = None
-
-    language: Optional[str] = None
-
-    lineup: Optional[str] = None
-
-    uuid: Optional[str] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["Device", "key", "language", "lineup", "uuid"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class RemoveDeviceFromDVRMediaContainerTypedDict(TypedDict):
     media_container: NotRequired[RemoveDeviceFromDVRDVRsMediaContainerTypedDict]
-    dvr: NotRequired[List[RemoveDeviceFromDVRDVRTypedDict]]
+    dvr: NotRequired[List[components_dvr.DvrTypedDict]]
 
 
 class RemoveDeviceFromDVRMediaContainer(BaseModel):
@@ -409,9 +361,9 @@ class RemoveDeviceFromDVRMediaContainer(BaseModel):
         pydantic.Field(alias="MediaContainer"),
     ] = None
 
-    dvr: Annotated[
-        Optional[List[RemoveDeviceFromDVRDVR]], pydantic.Field(alias="DVR")
-    ] = None
+    dvr: Annotated[Optional[List[components_dvr.Dvr]], pydantic.Field(alias="DVR")] = (
+        None
+    )
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -507,10 +459,6 @@ class RemoveDeviceFromDVRResponse(BaseModel):
 
 try:
     RemoveDeviceFromDVRDVRsMediaContainer.model_rebuild()
-except NameError:
-    pass
-try:
-    RemoveDeviceFromDVRDVR.model_rebuild()
 except NameError:
     pass
 try:

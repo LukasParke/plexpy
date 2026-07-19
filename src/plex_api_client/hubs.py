@@ -6,7 +6,7 @@ from plex_api_client._hooks import HookContext
 from plex_api_client.models import components, errors, operations
 from plex_api_client.types import BaseModel, OptionalNullable, UNSET
 from plex_api_client.utils.unmarshal_json_response import unmarshal_json_response
-from typing import Mapping, Optional, Union, cast
+from typing import Any, Mapping, Optional, Union, cast
 
 
 class Hubs(BaseSDK):
@@ -80,10 +80,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -92,23 +96,29 @@ class Hubs(BaseSDK):
                 operation_id="getAllHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetAllHubsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetAllHubsResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -185,10 +195,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -197,23 +211,29 @@ class Hubs(BaseSDK):
                 operation_id="getAllHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetAllHubsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetAllHubsResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -291,10 +311,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -303,23 +327,29 @@ class Hubs(BaseSDK):
                 operation_id="getContinueWatching",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetContinueWatchingResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetContinueWatchingResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -397,10 +427,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -409,23 +443,505 @@ class Hubs(BaseSDK):
                 operation_id="getContinueWatching",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetContinueWatchingResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetContinueWatchingResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_continue_watching_items(
+        self,
+        *,
+        request: Union[
+            operations.GetContinueWatchingItemsRequest,
+            operations.GetContinueWatchingItemsRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetContinueWatchingItemsResponse:
+        r"""Get Continue Watching Items
+
+        Get direct access to Continue Watching items.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(
+                request, operations.GetContinueWatchingItemsRequest
+            )
+        request = cast(operations.GetContinueWatchingItemsRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/hubs/continueWatching/items",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetContinueWatchingItemsGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getContinueWatchingItems",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetContinueWatchingItemsResponse(
+                media_container_with_metadata=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMetadata], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_continue_watching_items_async(
+        self,
+        *,
+        request: Union[
+            operations.GetContinueWatchingItemsRequest,
+            operations.GetContinueWatchingItemsRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetContinueWatchingItemsResponse:
+        r"""Get Continue Watching Items
+
+        Get direct access to Continue Watching items.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(
+                request, operations.GetContinueWatchingItemsRequest
+            )
+        request = cast(operations.GetContinueWatchingItemsRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/hubs/continueWatching/items",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetContinueWatchingItemsGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getContinueWatchingItems",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetContinueWatchingItemsResponse(
+                media_container_with_metadata=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMetadata], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_home_recently_added(
+        self,
+        *,
+        request: Union[
+            operations.GetHomeRecentlyAddedRequest,
+            operations.GetHomeRecentlyAddedRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetHomeRecentlyAddedResponse:
+        r"""Get home hubs Recently Added
+
+        Get the recently added hub for the home screen.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetHomeRecentlyAddedRequest)
+        request = cast(operations.GetHomeRecentlyAddedRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/hubs/home/recentlyAdded",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetHomeRecentlyAddedGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getHomeRecentlyAdded",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetHomeRecentlyAddedResponse(
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_home_recently_added_async(
+        self,
+        *,
+        request: Union[
+            operations.GetHomeRecentlyAddedRequest,
+            operations.GetHomeRecentlyAddedRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetHomeRecentlyAddedResponse:
+        r"""Get home hubs Recently Added
+
+        Get the recently added hub for the home screen.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetHomeRecentlyAddedRequest)
+        request = cast(operations.GetHomeRecentlyAddedRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/hubs/home/recentlyAdded",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetHomeRecentlyAddedGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getHomeRecentlyAdded",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetHomeRecentlyAddedResponse(
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -502,10 +1018,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -514,6 +1034,8 @@ class Hubs(BaseSDK):
                 operation_id="getHubItems",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -607,10 +1129,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -619,6 +1145,8 @@ class Hubs(BaseSDK):
                 operation_id="getHubItems",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -713,10 +1241,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -725,23 +1257,29 @@ class Hubs(BaseSDK):
                 operation_id="getPromotedHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetPromotedHubsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetPromotedHubsResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -819,10 +1357,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -831,23 +1373,29 @@ class Hubs(BaseSDK):
                 operation_id="getPromotedHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetPromotedHubsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetPromotedHubsResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -925,10 +1473,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -937,6 +1489,8 @@ class Hubs(BaseSDK):
                 operation_id="getMetadataHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1031,10 +1585,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1043,6 +1601,8 @@ class Hubs(BaseSDK):
                 operation_id="getMetadataHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1137,10 +1697,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1149,6 +1713,8 @@ class Hubs(BaseSDK):
                 operation_id="getPostplayHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1243,10 +1809,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1255,6 +1825,8 @@ class Hubs(BaseSDK):
                 operation_id="getPostplayHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1348,10 +1920,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1360,6 +1936,8 @@ class Hubs(BaseSDK):
                 operation_id="getRelatedHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1453,10 +2031,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1465,6 +2047,8 @@ class Hubs(BaseSDK):
                 operation_id="getRelatedHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1558,10 +2142,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1570,6 +2158,8 @@ class Hubs(BaseSDK):
                 operation_id="getSectionHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1578,8 +2168,8 @@ class Hubs(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetSectionHubsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetSectionHubsResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -1663,10 +2253,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1675,6 +2269,8 @@ class Hubs(BaseSDK):
                 operation_id="getSectionHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1683,8 +2279,8 @@ class Hubs(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetSectionHubsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.GetSectionHubsResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -1772,10 +2368,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1784,6 +2384,8 @@ class Hubs(BaseSDK):
                 operation_id="resetSectionDefaults",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1877,10 +2479,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1889,6 +2495,8 @@ class Hubs(BaseSDK):
                 operation_id="resetSectionDefaults",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -1979,10 +2587,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1991,6 +2603,8 @@ class Hubs(BaseSDK):
                 operation_id="listHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -2085,10 +2699,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -2097,6 +2715,8 @@ class Hubs(BaseSDK):
                 operation_id="listHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -2194,10 +2814,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -2206,6 +2830,8 @@ class Hubs(BaseSDK):
                 operation_id="createCustomHub",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -2299,10 +2925,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -2311,6 +2941,8 @@ class Hubs(BaseSDK):
                 operation_id="createCustomHub",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -2401,10 +3033,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -2413,6 +3049,8 @@ class Hubs(BaseSDK):
                 operation_id="moveHub",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -2507,10 +3145,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -2519,6 +3161,8 @@ class Hubs(BaseSDK):
                 operation_id="moveHub",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -2616,10 +3260,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -2628,6 +3276,8 @@ class Hubs(BaseSDK):
                 operation_id="deleteCustomHub",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -2721,10 +3371,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -2733,6 +3387,8 @@ class Hubs(BaseSDK):
                 operation_id="deleteCustomHub",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -2826,10 +3482,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -2838,6 +3498,8 @@ class Hubs(BaseSDK):
                 operation_id="updateHubVisibility",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -2931,10 +3593,14 @@ class Hubs(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -2943,6 +3609,8 @@ class Hubs(BaseSDK):
                 operation_id="updateHubVisibility",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Hubs"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),

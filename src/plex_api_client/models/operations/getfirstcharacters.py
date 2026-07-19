@@ -177,10 +177,6 @@ class GetFirstCharactersRequestTypedDict(TypedDict):
     r"""A friendly name for the client"""
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
-    type: NotRequired[int]
-    r"""The metadata type to filter on"""
-    sort: NotRequired[int]
-    r"""The metadata type to filter on"""
     media_query: NotRequired[components_mediaquery.MediaQueryTypedDict]
     r"""A querystring-based filtering language used to select subsets of media. Can be provided as an object with typed properties for type safety, or as a string for complex queries with operators and boolean logic.
 
@@ -198,8 +194,11 @@ class GetFirstCharactersRequestTypedDict(TypedDict):
     - Complex: `push=1&index=1&or=1&rating=2&pop=1&duration=10` - (index = 1 OR rating = 2) AND duration = 10
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
-
     """
+    media_type: NotRequired[int]
+    r"""The metadata type to filter on"""
+    sort: NotRequired[int]
+    r"""The metadata type to filter on"""
 
 
 class GetFirstCharactersRequest(BaseModel):
@@ -286,18 +285,6 @@ class GetFirstCharactersRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
-    type: Annotated[
-        Optional[int],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""The metadata type to filter on"""
-
-    sort: Annotated[
-        Optional[int],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""The metadata type to filter on"""
-
     media_query: Annotated[
         Optional[components_mediaquery.MediaQuery],
         pydantic.Field(alias="mediaQuery"),
@@ -319,8 +306,20 @@ class GetFirstCharactersRequest(BaseModel):
     - Complex: `push=1&index=1&or=1&rating=2&pop=1&duration=10` - (index = 1 OR rating = 2) AND duration = 10
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
-
     """
+
+    media_type: Annotated[
+        Optional[int],
+        pydantic.Field(alias="type"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""The metadata type to filter on"""
+
+    sort: Annotated[
+        Optional[int],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""The metadata type to filter on"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -337,9 +336,9 @@ class GetFirstCharactersRequest(BaseModel):
                 "Device-Vendor",
                 "Device-Name",
                 "Marketplace",
-                "type",
-                "sort",
                 "mediaQuery",
+                "mediaType",
+                "sort",
             ]
         )
         serialized = handler(self)
@@ -357,23 +356,23 @@ class GetFirstCharactersRequest(BaseModel):
 
 
 class GetFirstCharactersDirectoryTypedDict(TypedDict):
+    title: NotRequired[str]
     key: NotRequired[str]
     size: NotRequired[int]
     r"""The number of items starting with this character"""
-    title: NotRequired[str]
 
 
 class GetFirstCharactersDirectory(BaseModel):
+    title: Optional[str] = None
+
     key: Optional[str] = None
 
     size: Optional[int] = None
     r"""The number of items starting with this character"""
 
-    title: Optional[str] = None
-
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["key", "size", "title"])
+        optional_fields = set(["title", "key", "size"])
         serialized = handler(self)
         m = {}
 
@@ -392,19 +391,14 @@ class GetFirstCharactersMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
     directory: NotRequired[List[GetFirstCharactersDirectoryTypedDict]]
 
 
@@ -412,22 +406,17 @@ class GetFirstCharactersMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     directory: Annotated[
         Optional[List[GetFirstCharactersDirectory]], pydantic.Field(alias="Directory")

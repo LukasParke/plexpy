@@ -153,15 +153,16 @@ class EditSubscriptionPreferencesGlobals(BaseModel):
 
 
 class EditSubscriptionPreferencesQueryParamPrefsTypedDict(TypedDict):
-    pass
+    r"""The preference key to retrieve or set"""
 
 
 class EditSubscriptionPreferencesQueryParamPrefs(BaseModel):
-    pass
+    r"""The preference key to retrieve or set"""
 
 
 class EditSubscriptionPreferencesRequestTypedDict(TypedDict):
     subscription_id: int
+    r"""The unique identifier of the subscription"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -185,6 +186,7 @@ class EditSubscriptionPreferencesRequestTypedDict(TypedDict):
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
     prefs: NotRequired[EditSubscriptionPreferencesQueryParamPrefsTypedDict]
+    r"""The preference key to retrieve or set"""
 
 
 class EditSubscriptionPreferencesRequest(BaseModel):
@@ -193,6 +195,7 @@ class EditSubscriptionPreferencesRequest(BaseModel):
         pydantic.Field(alias="subscriptionId"),
         FieldMetadata(path=PathParamMetadata(style="simple", explode=False)),
     ]
+    r"""The unique identifier of the subscription"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -274,6 +277,7 @@ class EditSubscriptionPreferencesRequest(BaseModel):
         Optional[EditSubscriptionPreferencesQueryParamPrefs],
         FieldMetadata(query=QueryParamMetadata(style="deepObject", explode=True)),
     ] = None
+    r"""The preference key to retrieve or set"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

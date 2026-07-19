@@ -4,7 +4,6 @@
 
 Subscriptions determine which media will be recorded and the criteria for selecting an airing when multiple are available
 
-
 ### Available Operations
 
 * [get_all_subscriptions](#get_all_subscriptions) - Get all subscriptions
@@ -104,7 +103,7 @@ with PlexAPI(
     res = plex_api.subscriptions.create_subscription(request={
         "target_library_section_id": 1,
         "target_section_location_id": 3,
-        "type": 2,
+        "media_type": 2,
         "hints": {},
         "prefs": {},
         "params": {},
@@ -151,10 +150,10 @@ with PlexAPI(
 
     res = plex_api.subscriptions.process_subscriptions()
 
-    assert res is not None
+    assert res.body is not None
 
     # Handle response
-    print(res)
+    print(res.body)
 
 ```
 
@@ -191,10 +190,10 @@ with PlexAPI(
 
     res = plex_api.subscriptions.get_scheduled_recordings()
 
-    assert res.object is not None
+    assert res.media_container_with_media_grab_operation is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_media_grab_operation)
 
 ```
 

@@ -325,7 +325,7 @@ class GetPostplayHubsResponseTypedDict(TypedDict):
     media_container_with_hubs: NotRequired[
         components_mediacontainerwithhubs.MediaContainerWithHubsTypedDict
     ]
-    r"""OK"""
+    r"""Successfully retrieved get postplay hubs"""
 
 
 class GetPostplayHubsResponse(BaseModel):
@@ -343,7 +343,7 @@ class GetPostplayHubsResponse(BaseModel):
     media_container_with_hubs: Optional[
         components_mediacontainerwithhubs.MediaContainerWithHubs
     ] = None
-    r"""OK"""
+    r"""Successfully retrieved get postplay hubs"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

@@ -3,7 +3,7 @@
 from .basesdk import BaseSDK
 from plex_api_client import utils
 from plex_api_client._hooks import HookContext
-from plex_api_client.models import errors, operations
+from plex_api_client.models import components, errors, operations
 from plex_api_client.types import BaseModel, OptionalNullable, UNSET
 from plex_api_client.utils.unmarshal_json_response import unmarshal_json_response
 from typing import Mapping, Optional, Union, cast
@@ -39,7 +39,6 @@ class Search(BaseSDK):
         - `reasonID`: The ID of the item associated with the reason for the result. This might be a section ID, a tag ID, an artist ID, or a show ID.
 
         This request is intended to be very fast, and called as the user types.
-
 
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
@@ -94,10 +93,14 @@ class Search(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -106,6 +109,8 @@ class Search(BaseSDK):
                 operation_id="searchHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Search"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -114,8 +119,8 @@ class Search(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.SearchHubsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.SearchHubsResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -159,7 +164,6 @@ class Search(BaseSDK):
 
         This request is intended to be very fast, and called as the user types.
 
-
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -213,10 +217,14 @@ class Search(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -225,6 +233,8 @@ class Search(BaseSDK):
                 operation_id="searchHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Search"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -233,8 +243,8 @@ class Search(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.SearchHubsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.SearchHubsResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -269,7 +279,6 @@ class Search(BaseSDK):
         This endpoint performs a search specifically tailored towards voice or other imprecise input which may work badly with the substring and spell-checking heuristics used by the `/hubs/search` endpoint. It uses a [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) heuristic to search titles, and as such is much slower than the other search endpoint. Whenever possible, clients should limit the search to the appropriate type.
 
         Results, as well as their containing per-type hubs, contain a `distance` attribute which can be used to judge result quality.
-
 
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
@@ -324,10 +333,14 @@ class Search(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -336,6 +349,8 @@ class Search(BaseSDK):
                 operation_id="voiceSearchHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Search"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -344,8 +359,8 @@ class Search(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.VoiceSearchHubsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.VoiceSearchHubsResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -380,7 +395,6 @@ class Search(BaseSDK):
         This endpoint performs a search specifically tailored towards voice or other imprecise input which may work badly with the substring and spell-checking heuristics used by the `/hubs/search` endpoint. It uses a [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) heuristic to search titles, and as such is much slower than the other search endpoint. Whenever possible, clients should limit the search to the appropriate type.
 
         Results, as well as their containing per-type hubs, contain a `distance` attribute which can be used to judge result quality.
-
 
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
@@ -435,10 +449,14 @@ class Search(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -447,6 +465,8 @@ class Search(BaseSDK):
                 operation_id="voiceSearchHubs",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Search"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -455,8 +475,8 @@ class Search(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.VoiceSearchHubsResponse(
-                object=unmarshal_json_response(
-                    Optional[operations.VoiceSearchHubsResponseBody], http_res
+                media_container_with_hubs=unmarshal_json_response(
+                    Optional[components.MediaContainerWithHubs], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",

@@ -10,6 +10,8 @@ from typing import Any, List, Mapping, Optional, Union, cast
 
 
 class Plex(BaseSDK):
+    r"""Plex Plex operations"""
+
     def get_server_resources(
         self,
         *,
@@ -25,8 +27,6 @@ class Plex(BaseSDK):
         r"""Get Server Resources
 
         Get Plex server access tokens and server connections
-
-        If set, this operation will use `token` from the global security.
 
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
@@ -66,25 +66,30 @@ class Plex(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
-            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
                 config=self.sdk_configuration,
                 base_url=base_url or "",
-                operation_id="get-server-resources",
+                operation_id="getServerResources",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Plex"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -102,11 +107,8 @@ class Plex(BaseSDK):
                 raw_response=http_res,
             )
         if utils.match_response(http_res, "401", "application/json"):
-            response_data = unmarshal_json_response(
-                errors.GetServerResourcesUnauthorizedData, http_res
-            )
-            response_data.raw_response = http_res
-            raise errors.GetServerResourcesUnauthorized(response_data, http_res)
+            response_data = unmarshal_json_response(errors.UnauthorizedData, http_res)
+            raise errors.Unauthorized(response_data, http_res)
         if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
@@ -131,8 +133,6 @@ class Plex(BaseSDK):
         r"""Get Server Resources
 
         Get Plex server access tokens and server connections
-
-        If set, this operation will use `token` from the global security.
 
         :param request: The request object to send.
         :param retries: Override the default retry configuration for this method
@@ -172,25 +172,30 @@ class Plex(BaseSDK):
             ),
             security=self.sdk_configuration.security,
             allow_empty_value=None,
-            allowed_fields=["token"],
             timeout_ms=timeout_ms,
         )
 
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
                 config=self.sdk_configuration,
                 base_url=base_url or "",
-                operation_id="get-server-resources",
+                operation_id="getServerResources",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Plex"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -208,11 +213,8 @@ class Plex(BaseSDK):
                 raw_response=http_res,
             )
         if utils.match_response(http_res, "401", "application/json"):
-            response_data = unmarshal_json_response(
-                errors.GetServerResourcesUnauthorizedData, http_res
-            )
-            response_data.raw_response = http_res
-            raise errors.GetServerResourcesUnauthorized(response_data, http_res)
+            response_data = unmarshal_json_response(errors.UnauthorizedData, http_res)
+            raise errors.Unauthorized(response_data, http_res)
         if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)

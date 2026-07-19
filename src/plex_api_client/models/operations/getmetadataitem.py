@@ -155,6 +155,7 @@ class GetMetadataItemGlobals(BaseModel):
 
 class GetMetadataItemRequestTypedDict(TypedDict):
     ids: List[str]
+    r"""Comma-separated list of IDs"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -193,12 +194,37 @@ class GetMetadataItemRequestTypedDict(TypedDict):
     r"""Add metadata augmentations.  An activity is created to indicate progress.  Option will be ignored if specified by non-admin or if multiple metadata items are requested.  Default is false."""
     augment_count: NotRequired[components_boolint.BoolInt]
     r"""Number of augmentations to add.  Requires `asyncAugmentMetadata` to be specified."""
+    include_markers: NotRequired[bool]
+    r"""Include intro/credits markers in the response"""
+    include_guids: NotRequired[bool]
+    r"""Include external GUIDs (e.g. TMDB, TVDB) in the response"""
+    include_chapters: NotRequired[bool]
+    r"""Include chapter data in the response"""
+    include_external_media: NotRequired[bool]
+    r"""Include external/online media in the response"""
+    include_extras: NotRequired[bool]
+    r"""Include trailers, behind-the-scenes, and other extras"""
+    include_related: NotRequired[bool]
+    r"""Include related items in the response"""
+    include_on_deck: NotRequired[bool]
+    r"""Include On Deck status in the response"""
+    include_popular_leaves: NotRequired[bool]
+    r"""Include popular episodes in the response"""
+    include_reviews: NotRequired[bool]
+    r"""Include user reviews in the response"""
+    include_stations: NotRequired[bool]
+    r"""Include radio station data in the response"""
+    exclude_elements: NotRequired[str]
+    r"""Comma-separated list of elements to exclude from the response"""
+    exclude_fields: NotRequired[str]
+    r"""Comma-separated list of fields to exclude from the response"""
 
 
 class GetMetadataItemRequest(BaseModel):
     ids: Annotated[
         List[str], FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -332,6 +358,90 @@ class GetMetadataItemRequest(BaseModel):
     ] = components_boolint.BoolInt.FALSE
     r"""Number of augmentations to add.  Requires `asyncAugmentMetadata` to be specified."""
 
+    include_markers: Annotated[
+        Optional[bool],
+        pydantic.Field(alias="includeMarkers"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Include intro/credits markers in the response"""
+
+    include_guids: Annotated[
+        Optional[bool],
+        pydantic.Field(alias="includeGuids"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Include external GUIDs (e.g. TMDB, TVDB) in the response"""
+
+    include_chapters: Annotated[
+        Optional[bool],
+        pydantic.Field(alias="includeChapters"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Include chapter data in the response"""
+
+    include_external_media: Annotated[
+        Optional[bool],
+        pydantic.Field(alias="includeExternalMedia"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Include external/online media in the response"""
+
+    include_extras: Annotated[
+        Optional[bool],
+        pydantic.Field(alias="includeExtras"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Include trailers, behind-the-scenes, and other extras"""
+
+    include_related: Annotated[
+        Optional[bool],
+        pydantic.Field(alias="includeRelated"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Include related items in the response"""
+
+    include_on_deck: Annotated[
+        Optional[bool],
+        pydantic.Field(alias="includeOnDeck"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Include On Deck status in the response"""
+
+    include_popular_leaves: Annotated[
+        Optional[bool],
+        pydantic.Field(alias="includePopularLeaves"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Include popular episodes in the response"""
+
+    include_reviews: Annotated[
+        Optional[bool],
+        pydantic.Field(alias="includeReviews"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Include user reviews in the response"""
+
+    include_stations: Annotated[
+        Optional[bool],
+        pydantic.Field(alias="includeStations"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Include radio station data in the response"""
+
+    exclude_elements: Annotated[
+        Optional[str],
+        pydantic.Field(alias="excludeElements"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Comma-separated list of elements to exclude from the response"""
+
+    exclude_fields: Annotated[
+        Optional[str],
+        pydantic.Field(alias="excludeFields"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Comma-separated list of fields to exclude from the response"""
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
@@ -355,6 +465,18 @@ class GetMetadataItemRequest(BaseModel):
                 "checkFileAvailability",
                 "asyncAugmentMetadata",
                 "augmentCount",
+                "includeMarkers",
+                "includeGuids",
+                "includeChapters",
+                "includeExternalMedia",
+                "includeExtras",
+                "includeRelated",
+                "includeOnDeck",
+                "includePopularLeaves",
+                "includeReviews",
+                "includeStations",
+                "excludeElements",
+                "excludeFields",
             ]
         )
         serialized = handler(self)

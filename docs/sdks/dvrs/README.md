@@ -4,13 +4,16 @@
 
 The DVR provides means to watch and record live TV.  This section of endpoints describes how to setup the DVR itself
 
-
 ### Available Operations
 
 * [list_dv_rs](#list_dv_rs) - Get DVRs
 * [create_dvr](#create_dvr) - Create a DVR
 * [delete_dvr](#delete_dvr) - Delete a single DVR
 * [get_dvr](#get_dvr) - Get a single DVR
+* [patch_dvr_settings](#patch_dvr_settings) - Update DVR Settings
+* [update_dvr_settings](#update_dvr_settings) - Update DVR Settings
+* [get_dvr_channels](#get_dvr_channels) - Get DVR Channels
+* [get_dvr_guide](#get_dvr_guide) - Get DVR Guide
 * [delete_lineup](#delete_lineup) - Delete a DVR Lineup
 * [add_lineup](#add_lineup) - Add a DVR Lineup
 * [set_dvr_preferences](#set_dvr_preferences) - Set DVR preferences
@@ -37,10 +40,10 @@ with PlexAPI(
 
     res = plex_api.dv_rs.list_dv_rs()
 
-    assert res.object is not None
+    assert res.dvr_response is not None
 
     # Handle response
-    print(res.object)
+    print(res.dvr_response)
 
 ```
 
@@ -48,6 +51,8 @@ with PlexAPI(
 
 | Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
 | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `uuid`                                                              | *Optional[str]*                                                     | :heavy_minus_sign:                                                  | Filter by DVR UUID.                                                 |
+| `lineup`                                                            | *Optional[str]*                                                     | :heavy_minus_sign:                                                  | Filter by lineup.                                                   |
 | `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
 
 ### Response
@@ -56,13 +61,14 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## create_dvr
 
-Creation of a DVR, after creation of a devcie and a lineup is selected
+Creation of a DVR, after creation of a device and a lineup is selected
 
 ### Example Usage
 
@@ -167,9 +173,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## delete_dvr
 
@@ -222,9 +229,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_dvr
 
@@ -257,10 +265,10 @@ with PlexAPI(
         "dvr_id": 973518,
     })
 
-    assert res.object is not None
+    assert res.dvr_response is not None
 
     # Handle response
-    print(res.object)
+    print(res.dvr_response)
 
 ```
 
@@ -277,9 +285,234 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## patch_dvr_settings
+
+Update DVR settings.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="patchDVRSettings" method="patch" path="/livetv/dvrs/{dvrId}" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.dv_rs.patch_dvr_settings(request={
+        "dvr_id": 537061,
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                                | Type                                                                                     | Required                                                                                 | Description                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `request`                                                                                | [operations.PatchDVRSettingsRequest](../../models/operations/patchdvrsettingsrequest.md) | :heavy_check_mark:                                                                       | The request object to use for the request.                                               |
+| `retries`                                                                                | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                         | :heavy_minus_sign:                                                                       | Configuration to override the default retry behavior of the client.                      |
+
+### Response
+
+**[operations.PatchDVRSettingsResponse](../../models/operations/patchdvrsettingsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## update_dvr_settings
+
+Update DVR settings.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="updateDVRSettings" method="put" path="/livetv/dvrs/{dvrId}" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.dv_rs.update_dvr_settings(request={
+        "dvr_id": 614847,
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                                  | Type                                                                                       | Required                                                                                   | Description                                                                                |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `request`                                                                                  | [operations.UpdateDVRSettingsRequest](../../models/operations/updatedvrsettingsrequest.md) | :heavy_check_mark:                                                                         | The request object to use for the request.                                                 |
+| `retries`                                                                                  | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                           | :heavy_minus_sign:                                                                         | Configuration to override the default retry behavior of the client.                        |
+
+### Response
+
+**[operations.UpdateDVRSettingsResponse](../../models/operations/updatedvrsettingsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_dvr_channels
+
+List channels directly associated with a DVR.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getDVRChannels" method="get" path="/livetv/dvrs/{dvrId}/channels" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.dv_rs.get_dvr_channels(request={
+        "dvr_id": 901521,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                            | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `request`                                                                            | [operations.GetDVRChannelsRequest](../../models/operations/getdvrchannelsrequest.md) | :heavy_check_mark:                                                                   | The request object to use for the request.                                           |
+| `retries`                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                     | :heavy_minus_sign:                                                                   | Configuration to override the default retry behavior of the client.                  |
+
+### Response
+
+**[operations.GetDVRChannelsResponse](../../models/operations/getdvrchannelsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_dvr_guide
+
+Fetch program guide/schedule for a DVR.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getDVRGuide" method="get" path="/livetv/dvrs/{dvrId}/guide" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.dv_rs.get_dvr_guide(request={
+        "dvr_id": 19054,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                      | Type                                                                           | Required                                                                       | Description                                                                    |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `request`                                                                      | [operations.GetDVRGuideRequest](../../models/operations/getdvrguiderequest.md) | :heavy_check_mark:                                                             | The request object to use for the request.                                     |
+| `retries`                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)               | :heavy_minus_sign:                                                             | Configuration to override the default retry behavior of the client.            |
+
+### Response
+
+**[operations.GetDVRGuideResponse](../../models/operations/getdvrguideresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## delete_lineup
 
@@ -313,10 +546,10 @@ with PlexAPI(
         "lineup": "<value>",
     })
 
-    assert res.object is not None
+    assert res.dvr_response is not None
 
     # Handle response
-    print(res.object)
+    print(res.dvr_response)
 
 ```
 
@@ -333,9 +566,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## add_lineup
 
@@ -369,10 +603,10 @@ with PlexAPI(
         "lineup": "<value>",
     })
 
-    assert res.object is not None
+    assert res.dvr_response is not None
 
     # Handle response
-    print(res.object)
+    print(res.dvr_response)
 
 ```
 
@@ -389,13 +623,14 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## set_dvr_preferences
 
-Set DVR preferences by name avd value
+Set DVR preferences by name and value
 
 ### Example Usage
 
@@ -424,10 +659,10 @@ with PlexAPI(
         "dvr_id": 116357,
     })
 
-    assert res.object is not None
+    assert res.dvr_response is not None
 
     # Handle response
-    print(res.object)
+    print(res.dvr_response)
 
 ```
 
@@ -444,9 +679,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## stop_dvr_reload
 
@@ -499,9 +735,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## reload_guide
 
@@ -534,10 +771,10 @@ with PlexAPI(
         "dvr_id": 140753,
     })
 
-    assert res is not None
+    assert res.body is not None
 
     # Handle response
-    print(res)
+    print(res.body)
 
 ```
 
@@ -554,9 +791,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## tune_channel
 
@@ -666,9 +904,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## add_device_to_dvr
 
@@ -722,6 +961,7 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |

@@ -296,11 +296,18 @@ class GetPlaylistGeneratorRequest(BaseModel):
         return m
 
 
-class GetPlaylistGeneratorDeviceTypedDict(TypedDict):
+class GetPlaylistGeneratorType(int, Enum):
+    r"""The type of this generator"""
+
+    MINUS_1 = -1
+    FORTY_TWO = 42
+
+
+class DeviceTypedDict(TypedDict):
     profile: NotRequired[str]
 
 
-class GetPlaylistGeneratorDevice(BaseModel):
+class Device(BaseModel):
     profile: Optional[str] = None
 
     @model_serializer(mode="wrap")
@@ -586,17 +593,13 @@ class GetPlaylistGeneratorStatus(BaseModel):
         return m
 
 
-class GetPlaylistGeneratorType(int, Enum):
-    r"""The type of this generator"""
-
-    MINUS_1 = -1
-    FORTY_TWO = 42
-
-
 class GetPlaylistGeneratorItemTypedDict(TypedDict):
+    title: NotRequired[str]
+    type: NotRequired[GetPlaylistGeneratorType]
+    r"""The type of this generator"""
     composite: NotRequired[str]
     r"""The composite thumbnail image path"""
-    device: NotRequired[GetPlaylistGeneratorDeviceTypedDict]
+    device: NotRequired[DeviceTypedDict]
     id: NotRequired[int]
     location: NotRequired[GetPlaylistGeneratorLocationTypedDict]
     media_settings: NotRequired[MediaSettingsTypedDict]
@@ -605,18 +608,18 @@ class GetPlaylistGeneratorItemTypedDict(TypedDict):
     target: NotRequired[str]
     target_tag_id: NotRequired[int]
     r"""The tag of this generator's settings"""
-    title: NotRequired[str]
-    type: NotRequired[GetPlaylistGeneratorType]
-    r"""The type of this generator"""
 
 
 class GetPlaylistGeneratorItem(BaseModel):
+    title: Optional[str] = None
+
+    type: Optional[GetPlaylistGeneratorType] = None
+    r"""The type of this generator"""
+
     composite: Optional[str] = None
     r"""The composite thumbnail image path"""
 
-    device: Annotated[
-        Optional[GetPlaylistGeneratorDevice], pydantic.Field(alias="Device")
-    ] = None
+    device: Annotated[Optional[Device], pydantic.Field(alias="Device")] = None
 
     id: Optional[int] = None
 
@@ -641,15 +644,12 @@ class GetPlaylistGeneratorItem(BaseModel):
     target_tag_id: Annotated[Optional[int], pydantic.Field(alias="targetTagID")] = None
     r"""The tag of this generator's settings"""
 
-    title: Optional[str] = None
-
-    type: Optional[GetPlaylistGeneratorType] = None
-    r"""The type of this generator"""
-
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
             [
+                "title",
+                "type",
                 "composite",
                 "Device",
                 "id",
@@ -659,8 +659,6 @@ class GetPlaylistGeneratorItem(BaseModel):
                 "Status",
                 "target",
                 "targetTagID",
-                "title",
-                "type",
             ]
         )
         serialized = handler(self)
@@ -681,19 +679,14 @@ class GetPlaylistGeneratorMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
     item: NotRequired[List[GetPlaylistGeneratorItemTypedDict]]
 
 
@@ -701,22 +694,17 @@ class GetPlaylistGeneratorMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     item: Annotated[
         Optional[List[GetPlaylistGeneratorItem]], pydantic.Field(alias="Item")

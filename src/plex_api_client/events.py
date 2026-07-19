@@ -5,14 +5,14 @@ from plex_api_client import utils
 from plex_api_client._hooks import HookContext
 from plex_api_client.models import errors, operations
 from plex_api_client.types import BaseModel, OptionalNullable, UNSET
-from typing import Mapping, Optional, Union, cast
+from plex_api_client.utils.unmarshal_json_response import unmarshal_json_response
+from typing import Any, Mapping, Optional, Union, cast
 
 
 class Events(BaseSDK):
     r"""The server can notify clients in real-time of a wide range of events, from library scanning, to preferences being modified, to changes to media, and many other things. This is also the mechanism by which activity progress is reported.
 
     Two protocols for receiving the events are available: EventSource (also known as SSE), and WebSocket.
-
     """
 
     def get_notifications(
@@ -84,10 +84,14 @@ class Events(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -96,6 +100,8 @@ class Events(BaseSDK):
                 operation_id="getNotifications",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Events"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -103,6 +109,7 @@ class Events(BaseSDK):
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/octet-stream"):
             return operations.GetNotificationsResponse(
                 response_stream=http_res,
@@ -110,7 +117,13 @@ class Events(BaseSDK):
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            http_res_text = utils.stream_to_text(http_res)
+            response_data = unmarshal_json_response(
+                errors.ErrorData, http_res, http_res_text
+            )
+            raise errors.Error(response_data, http_res, http_res_text)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -189,10 +202,14 @@ class Events(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -201,6 +218,8 @@ class Events(BaseSDK):
                 operation_id="getNotifications",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Events"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -208,6 +227,7 @@ class Events(BaseSDK):
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/octet-stream"):
             return operations.GetNotificationsResponse(
                 response_stream=http_res,
@@ -215,7 +235,13 @@ class Events(BaseSDK):
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            response_data = unmarshal_json_response(
+                errors.ErrorData, http_res, http_res_text
+            )
+            raise errors.Error(response_data, http_res, http_res_text)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -294,10 +320,14 @@ class Events(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -306,6 +336,8 @@ class Events(BaseSDK):
                 operation_id="connectWebSocket",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Events"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -313,6 +345,7 @@ class Events(BaseSDK):
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/octet-stream"):
             return operations.ConnectWebSocketResponse(
                 response_stream=http_res,
@@ -320,7 +353,13 @@ class Events(BaseSDK):
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            http_res_text = utils.stream_to_text(http_res)
+            response_data = unmarshal_json_response(
+                errors.ErrorData, http_res, http_res_text
+            )
+            raise errors.Error(response_data, http_res, http_res_text)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -399,10 +438,14 @@ class Events(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -411,6 +454,8 @@ class Events(BaseSDK):
                 operation_id="connectWebSocket",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Events"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -418,6 +463,7 @@ class Events(BaseSDK):
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/octet-stream"):
             return operations.ConnectWebSocketResponse(
                 response_stream=http_res,
@@ -425,7 +471,13 @@ class Events(BaseSDK):
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            response_data = unmarshal_json_response(
+                errors.ErrorData, http_res, http_res_text
+            )
+            raise errors.Error(response_data, http_res, http_res_text)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -434,3 +486,247 @@ class Events(BaseSDK):
 
         http_res_text = await utils.stream_to_text_async(http_res)
         raise errors.SDKError("Unexpected response received", http_res, http_res_text)
+
+    def get_websocket_notifications(
+        self,
+        *,
+        request: Union[
+            operations.GetWebsocketNotificationsRequest,
+            operations.GetWebsocketNotificationsRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetWebsocketNotificationsResponse:
+        r"""Get WebSocket Notifications
+
+        WebSocket endpoint for real-time notifications (plural alias). Connect with X-Plex-Token header. Delivers NotificationContainer messages.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(
+                request, operations.GetWebsocketNotificationsRequest
+            )
+        request = cast(operations.GetWebsocketNotificationsRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/:/websockets/notifications",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/octet-stream",
+            http_headers=http_headers,
+            _globals=operations.GetWebsocketNotificationsGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getWebsocketNotifications",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Events"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "101", "*"):
+            return operations.GetWebsocketNotificationsResponse(
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "200", "application/octet-stream"):
+            http_res_bytes = utils.stream_to_bytes(http_res)
+            return operations.GetWebsocketNotificationsResponse(
+                body=http_res_bytes,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_websocket_notifications_async(
+        self,
+        *,
+        request: Union[
+            operations.GetWebsocketNotificationsRequest,
+            operations.GetWebsocketNotificationsRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetWebsocketNotificationsResponse:
+        r"""Get WebSocket Notifications
+
+        WebSocket endpoint for real-time notifications (plural alias). Connect with X-Plex-Token header. Delivers NotificationContainer messages.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(
+                request, operations.GetWebsocketNotificationsRequest
+            )
+        request = cast(operations.GetWebsocketNotificationsRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/:/websockets/notifications",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/octet-stream",
+            http_headers=http_headers,
+            _globals=operations.GetWebsocketNotificationsGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+                client_identifier=self.sdk_configuration.globals.client_identifier,
+                product=self.sdk_configuration.globals.product,
+                version=self.sdk_configuration.globals.version,
+                platform=self.sdk_configuration.globals.platform,
+                platform_version=self.sdk_configuration.globals.platform_version,
+                device=self.sdk_configuration.globals.device,
+                model=self.sdk_configuration.globals.model,
+                device_vendor=self.sdk_configuration.globals.device_vendor,
+                device_name=self.sdk_configuration.globals.device_name,
+                marketplace=self.sdk_configuration.globals.marketplace,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getWebsocketNotifications",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Events"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "101", "*"):
+            return operations.GetWebsocketNotificationsResponse(
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "200", "application/octet-stream"):
+            http_res_bytes = await utils.stream_to_bytes_async(http_res)
+            return operations.GetWebsocketNotificationsResponse(
+                body=http_res_bytes,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)

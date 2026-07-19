@@ -179,10 +179,12 @@ class ListPlaylistsRequestTypedDict(TypedDict):
     r"""A friendly name for the client"""
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
-    playlist_type: NotRequired[PlaylistType]
-    r"""Limit to a type of playlist"""
     smart: NotRequired[bool]
     r"""Whether this is a smart collection/playlist"""
+    playlist_type: NotRequired[PlaylistType]
+    r"""Limit to a type of playlist"""
+    media_type: NotRequired[int]
+    r"""Filter by playlist type. Use 42 for optimized/conversion items."""
 
 
 class ListPlaylistsRequest(BaseModel):
@@ -262,6 +264,12 @@ class ListPlaylistsRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    smart: Annotated[
+        Optional[bool],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Whether this is a smart collection/playlist"""
+
     playlist_type: Annotated[
         Optional[PlaylistType],
         pydantic.Field(alias="playlistType"),
@@ -269,11 +277,12 @@ class ListPlaylistsRequest(BaseModel):
     ] = None
     r"""Limit to a type of playlist"""
 
-    smart: Annotated[
-        Optional[bool],
+    media_type: Annotated[
+        Optional[int],
+        pydantic.Field(alias="type"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
-    r"""Whether this is a smart collection/playlist"""
+    r"""Filter by playlist type. Use 42 for optimized/conversion items."""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -290,8 +299,9 @@ class ListPlaylistsRequest(BaseModel):
                 "Device-Vendor",
                 "Device-Name",
                 "Marketplace",
-                "playlistType",
                 "smart",
+                "playlistType",
+                "mediaType",
             ]
         )
         serialized = handler(self)

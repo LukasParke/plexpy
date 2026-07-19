@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 import httpx
+from plex_api_client.models.components import epglanguage as components_epglanguage
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
 from pydantic import model_serializer
@@ -9,79 +10,41 @@ from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
-class LanguageTypedDict(TypedDict):
-    code: NotRequired[str]
-    r"""3 letter language code"""
-    title: NotRequired[str]
-
-
-class Language(BaseModel):
-    code: Optional[str] = None
-    r"""3 letter language code"""
-
-    title: Optional[str] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["code", "title"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class GetAllLanguagesMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    language: NotRequired[List[LanguageTypedDict]]
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+    language: NotRequired[List[components_epglanguage.EPGLanguageTypedDict]]
 
 
 class GetAllLanguagesMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
-    """
-
-    language: Annotated[Optional[List[Language]], pydantic.Field(alias="Language")] = (
-        None
-    )
+    language: Annotated[
+        Optional[List[components_epglanguage.EPGLanguage]],
+        pydantic.Field(alias="Language"),
+    ] = None
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

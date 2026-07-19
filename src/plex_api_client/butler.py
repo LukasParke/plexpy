@@ -6,7 +6,7 @@ from plex_api_client._hooks import HookContext
 from plex_api_client.models import errors, operations
 from plex_api_client.types import BaseModel, OptionalNullable, UNSET
 from plex_api_client.utils.unmarshal_json_response import unmarshal_json_response
-from typing import Mapping, Optional, Union, cast
+from typing import Any, Mapping, Optional, Union, cast
 
 
 class Butler(BaseSDK):
@@ -50,7 +50,7 @@ class Butler(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="application/json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
@@ -61,10 +61,14 @@ class Butler(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -73,19 +77,25 @@ class Butler(BaseSDK):
                 operation_id="stopTasks",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Butler"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "*"):
             return operations.StopTasksResponse(
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -132,7 +142,7 @@ class Butler(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="application/json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
@@ -143,10 +153,14 @@ class Butler(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -155,19 +169,25 @@ class Butler(BaseSDK):
                 operation_id="stopTasks",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Butler"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "*"):
             return operations.StopTasksResponse(
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -187,7 +207,6 @@ class Butler(BaseSDK):
         r"""Get all Butler tasks
 
         Get the list of butler tasks and their scheduling
-
 
         If set, this operation will use `token` from the global security.
 
@@ -226,10 +245,14 @@ class Butler(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -238,12 +261,15 @@ class Butler(BaseSDK):
                 operation_id="getTasks",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Butler"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetTasksResponse(
                 object=unmarshal_json_response(
@@ -253,7 +279,10 @@ class Butler(BaseSDK):
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -273,7 +302,6 @@ class Butler(BaseSDK):
         r"""Get all Butler tasks
 
         Get the list of butler tasks and their scheduling
-
 
         If set, this operation will use `token` from the global security.
 
@@ -312,10 +340,14 @@ class Butler(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -324,12 +356,15 @@ class Butler(BaseSDK):
                 operation_id="getTasks",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Butler"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetTasksResponse(
                 object=unmarshal_json_response(
@@ -339,7 +374,10 @@ class Butler(BaseSDK):
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -365,7 +403,6 @@ class Butler(BaseSDK):
         3. If a task is configured to run at a random time during the configured window and we are within that window, the task will be scheduled at a random time within the window.
         4. If we are outside the configured window, the task will start immediately.
 
-
         If set, this operation will use `token` from the global security.
 
         :param retries: Override the default retry configuration for this method
@@ -392,7 +429,7 @@ class Butler(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="application/json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
@@ -403,10 +440,14 @@ class Butler(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -415,19 +456,25 @@ class Butler(BaseSDK):
                 operation_id="startTasks",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Butler"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "*"):
             return operations.StartTasksResponse(
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -452,7 +499,6 @@ class Butler(BaseSDK):
         2. If a task is configured to run at a random time during the configured window and we are outside that window, the task will start immediately.
         3. If a task is configured to run at a random time during the configured window and we are within that window, the task will be scheduled at a random time within the window.
         4. If we are outside the configured window, the task will start immediately.
-
 
         If set, this operation will use `token` from the global security.
 
@@ -480,7 +526,7 @@ class Butler(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="application/json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             allow_empty_value=None,
@@ -491,10 +537,14 @@ class Butler(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -503,19 +553,25 @@ class Butler(BaseSDK):
                 operation_id="startTasks",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Butler"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "*"):
             return operations.StartTasksResponse(
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
             )
-        if utils.match_response(http_res, "4XX", "*"):
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.SDKError("API error occurred", http_res, http_res_text)
         if utils.match_response(http_res, "5XX", "*"):
@@ -536,7 +592,6 @@ class Butler(BaseSDK):
         r"""Stop a single Butler task
 
         This endpoint will stop a currently running task by name, or remove it from the list of scheduled tasks if it exists
-
 
         If set, this operation will use `token` from the global security.
 
@@ -594,10 +649,14 @@ class Butler(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -606,6 +665,8 @@ class Butler(BaseSDK):
                 operation_id="stopTask",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Butler"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -640,7 +701,6 @@ class Butler(BaseSDK):
 
         This endpoint will stop a currently running task by name, or remove it from the list of scheduled tasks if it exists
 
-
         If set, this operation will use `token` from the global security.
 
         :param request: The request object to send.
@@ -697,10 +757,14 @@ class Butler(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -709,6 +773,8 @@ class Butler(BaseSDK):
                 operation_id="stopTask",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Butler"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -745,7 +811,6 @@ class Butler(BaseSDK):
 
         This endpoint will attempt to start a specific Butler task by name.
 
-
         If set, this operation will use `token` from the global security.
 
         :param request: The request object to send.
@@ -778,7 +843,7 @@ class Butler(BaseSDK):
             request_has_path_params=True,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="text/html",
             http_headers=http_headers,
             _globals=operations.StartTaskGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
@@ -802,10 +867,14 @@ class Butler(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -814,14 +883,25 @@ class Butler(BaseSDK):
                 operation_id="startTask",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Butler"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
-        if utils.match_response(http_res, ["200", "202"], "*"):
+        if utils.match_response(http_res, "200", "text/html"):
+            http_res_bytes = utils.stream_to_bytes(http_res)
             return operations.StartTaskResponse(
+                body=http_res_bytes,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "202", "text/html"):
+            return operations.StartTaskResponse(
+                res=http_res.text,
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,
@@ -849,7 +929,6 @@ class Butler(BaseSDK):
         r"""Start a single Butler task
 
         This endpoint will attempt to start a specific Butler task by name.
-
 
         If set, this operation will use `token` from the global security.
 
@@ -883,7 +962,7 @@ class Butler(BaseSDK):
             request_has_path_params=True,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value="*/*",
+            accept_header_value="text/html",
             http_headers=http_headers,
             _globals=operations.StartTaskGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
@@ -907,10 +986,14 @@ class Butler(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -919,14 +1002,25 @@ class Butler(BaseSDK):
                 operation_id="startTask",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Butler"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
-        if utils.match_response(http_res, ["200", "202"], "*"):
+        if utils.match_response(http_res, "200", "text/html"):
+            http_res_bytes = await utils.stream_to_bytes_async(http_res)
             return operations.StartTaskResponse(
+                body=http_res_bytes,
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "202", "text/html"):
+            return operations.StartTaskResponse(
+                res=http_res.text,
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
                 raw_response=http_res,

@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 import httpx
-from plex_api_client.models.components import accepts as components_accepts
+from plex_api_client.models.components import (
+    accepts as components_accepts,
+    epgregion as components_epgregion,
+)
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
@@ -293,82 +296,39 @@ class GetCountryRegionsRequest(BaseModel):
         return m
 
 
-class GetCountryRegionsCountryTypedDict(TypedDict):
-    key: NotRequired[str]
-    national: NotRequired[bool]
-    title: NotRequired[str]
-    type: NotRequired[str]
-
-
-class GetCountryRegionsCountry(BaseModel):
-    key: Optional[str] = None
-
-    national: Optional[bool] = None
-
-    title: Optional[str] = None
-
-    type: Optional[str] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["key", "national", "title", "type"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class GetCountryRegionsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    country: NotRequired[List[GetCountryRegionsCountryTypedDict]]
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+    country: NotRequired[List[components_epgregion.EPGRegionTypedDict]]
 
 
 class GetCountryRegionsMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     country: Annotated[
-        Optional[List[GetCountryRegionsCountry]], pydantic.Field(alias="Country")
+        Optional[List[components_epgregion.EPGRegion]], pydantic.Field(alias="Country")
     ] = None
 
     @model_serializer(mode="wrap")

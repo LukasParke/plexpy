@@ -178,6 +178,7 @@ class GetSectionPreferencesRequestTypedDict(TypedDict):
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
     agent: NotRequired[str]
+    r"""The identifier of the metadata agent to use"""
 
 
 class GetSectionPreferencesRequest(BaseModel):
@@ -268,6 +269,7 @@ class GetSectionPreferencesRequest(BaseModel):
         Optional[str],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The identifier of the metadata agent to use"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

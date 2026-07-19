@@ -15,6 +15,14 @@ from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
+class AutoSelectSubtitle(int, Enum):
+    r"""The auto-select subtitle mode (0 = Manually selected, 1 = Shown with foreign audio, 2 = Always enabled)"""
+
+    MANUALLY_SELECTED = 0
+    SHOWN_WITH_FOREIGN_AUDIO = 1
+    ALWAYS_ENABLED = 2
+
+
 class DefaultAudioAccessibility(int, Enum):
     r"""The audio accessibility mode (0 = Prefer non-accessibility audio, 1 = Prefer accessibility audio, 2 = Only show accessibility audio, 3 = Only show non-accessibility audio)"""
 
@@ -22,14 +30,6 @@ class DefaultAudioAccessibility(int, Enum):
     PREFER_ACCESSIBILITY = 1
     ONLY_ACCESSIBILITY = 2
     ONLY_NON_ACCESSIBILITY = 3
-
-
-class AutoSelectSubtitle(int, Enum):
-    r"""The auto-select subtitle mode (0 = Manually selected, 1 = Shown with foreign audio, 2 = Always enabled)"""
-
-    MANUALLY_SELECTED = 0
-    SHOWN_WITH_FOREIGN_AUDIO = 1
-    ALWAYS_ENABLED = 2
 
 
 class DefaultSubtitleAccessibility(int, Enum):
@@ -50,15 +50,6 @@ class DefaultSubtitleForced(int, Enum):
     ONLY_NON_FORCED = 3
 
 
-class WatchedIndicator(int, Enum):
-    r"""Whether or not media watched indicators are enabled (little orange dot on media)"""
-
-    NONE = 0
-    MOVIES_AND_TV_SHOWS = 1
-    MOVIES = 2
-    TV_SHOWS = 3
-
-
 class MediaReviewsVisibility(int, Enum):
     r"""Whether or not the account has media reviews visibility enabled"""
 
@@ -68,6 +59,15 @@ class MediaReviewsVisibility(int, Enum):
     PLEX_USERS_AND_CRITICS = 3
 
 
+class WatchedIndicator(int, Enum):
+    r"""Whether or not media watched indicators are enabled (little orange dot on media)"""
+
+    NONE = 0
+    MOVIES_AND_TV_SHOWS = 1
+    MOVIES = 2
+    TV_SHOWS = 3
+
+
 class UserProfileTypedDict(TypedDict):
     default_audio_language: Nullable[str]
     r"""The preferred audio language for the account"""
@@ -75,18 +75,18 @@ class UserProfileTypedDict(TypedDict):
     r"""The preferred subtitle language for the account"""
     auto_select_audio: NotRequired[bool]
     r"""If the account has automatically select audio and subtitle tracks enabled"""
+    auto_select_subtitle: NotRequired[AutoSelectSubtitle]
     default_audio_accessibility: NotRequired[DefaultAudioAccessibility]
     default_audio_languages: NotRequired[Nullable[List[str]]]
     r"""The preferred audio languages for the account"""
-    default_subtitle_languages: NotRequired[Nullable[List[str]]]
-    r"""The preferred subtitle languages for the account"""
-    auto_select_subtitle: NotRequired[AutoSelectSubtitle]
     default_subtitle_accessibility: NotRequired[DefaultSubtitleAccessibility]
     default_subtitle_forced: NotRequired[DefaultSubtitleForced]
-    watched_indicator: NotRequired[WatchedIndicator]
-    media_reviews_visibility: NotRequired[MediaReviewsVisibility]
+    default_subtitle_languages: NotRequired[Nullable[List[str]]]
+    r"""The preferred subtitle languages for the account"""
     media_reviews_languages: NotRequired[Nullable[List[str]]]
     r"""The languages for media reviews visibility"""
+    media_reviews_visibility: NotRequired[MediaReviewsVisibility]
+    watched_indicator: NotRequired[WatchedIndicator]
 
 
 class UserProfile(BaseModel):
@@ -105,6 +105,10 @@ class UserProfile(BaseModel):
     ] = True
     r"""If the account has automatically select audio and subtitle tracks enabled"""
 
+    auto_select_subtitle: Annotated[
+        Optional[AutoSelectSubtitle], pydantic.Field(alias="autoSelectSubtitle")
+    ] = AutoSelectSubtitle.MANUALLY_SELECTED
+
     default_audio_accessibility: Annotated[
         Optional[DefaultAudioAccessibility],
         pydantic.Field(alias="defaultAudioAccessibility"),
@@ -115,15 +119,6 @@ class UserProfile(BaseModel):
     ] = UNSET
     r"""The preferred audio languages for the account"""
 
-    default_subtitle_languages: Annotated[
-        OptionalNullable[List[str]], pydantic.Field(alias="defaultSubtitleLanguages")
-    ] = UNSET
-    r"""The preferred subtitle languages for the account"""
-
-    auto_select_subtitle: Annotated[
-        Optional[AutoSelectSubtitle], pydantic.Field(alias="autoSelectSubtitle")
-    ] = AutoSelectSubtitle.MANUALLY_SELECTED
-
     default_subtitle_accessibility: Annotated[
         Optional[DefaultSubtitleAccessibility],
         pydantic.Field(alias="defaultSubtitleAccessibility"),
@@ -133,33 +128,38 @@ class UserProfile(BaseModel):
         Optional[DefaultSubtitleForced], pydantic.Field(alias="defaultSubtitleForced")
     ] = DefaultSubtitleForced.PREFER_NON_FORCED
 
-    watched_indicator: Annotated[
-        Optional[WatchedIndicator], pydantic.Field(alias="watchedIndicator")
-    ] = WatchedIndicator.NONE
-
-    media_reviews_visibility: Annotated[
-        Optional[MediaReviewsVisibility], pydantic.Field(alias="mediaReviewsVisibility")
-    ] = MediaReviewsVisibility.NO_ONE
+    default_subtitle_languages: Annotated[
+        OptionalNullable[List[str]], pydantic.Field(alias="defaultSubtitleLanguages")
+    ] = UNSET
+    r"""The preferred subtitle languages for the account"""
 
     media_reviews_languages: Annotated[
         OptionalNullable[List[str]], pydantic.Field(alias="mediaReviewsLanguages")
     ] = UNSET
     r"""The languages for media reviews visibility"""
 
+    media_reviews_visibility: Annotated[
+        Optional[MediaReviewsVisibility], pydantic.Field(alias="mediaReviewsVisibility")
+    ] = MediaReviewsVisibility.NO_ONE
+
+    watched_indicator: Annotated[
+        Optional[WatchedIndicator], pydantic.Field(alias="watchedIndicator")
+    ] = WatchedIndicator.NONE
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
             [
                 "autoSelectAudio",
+                "autoSelectSubtitle",
                 "defaultAudioAccessibility",
                 "defaultAudioLanguages",
-                "defaultSubtitleLanguages",
-                "autoSelectSubtitle",
                 "defaultSubtitleAccessibility",
                 "defaultSubtitleForced",
-                "watchedIndicator",
-                "mediaReviewsVisibility",
+                "defaultSubtitleLanguages",
                 "mediaReviewsLanguages",
+                "mediaReviewsVisibility",
+                "watchedIndicator",
             ]
         )
         nullable_fields = set(

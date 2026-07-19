@@ -159,7 +159,7 @@ class QueryParamPrefs(BaseModel):
 class AddSectionRequestTypedDict(TypedDict):
     name: str
     r"""The name of the new section"""
-    type: int
+    media_type: int
     r"""The type of library section"""
     agent: str
     r"""The agent this section should use for metadata"""
@@ -207,8 +207,10 @@ class AddSectionRequest(BaseModel):
     ]
     r"""The name of the new section"""
 
-    type: Annotated[
-        int, FieldMetadata(query=QueryParamMetadata(style="form", explode=True))
+    media_type: Annotated[
+        int,
+        pydantic.Field(alias="type"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ]
     r"""The type of library section"""
 
@@ -383,7 +385,7 @@ class AddSectionResponseTypedDict(TypedDict):
     slash_get_responses_200: NotRequired[
         components_slash_get_responses_200.SlashGetResponses200TypedDict
     ]
-    r"""OK"""
+    r"""Successfully created/executed add a library section"""
 
 
 class AddSectionResponse(BaseModel):
@@ -399,7 +401,7 @@ class AddSectionResponse(BaseModel):
     slash_get_responses_200: Optional[
         components_slash_get_responses_200.SlashGetResponses200
     ] = None
-    r"""OK"""
+    r"""Successfully created/executed add a library section"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

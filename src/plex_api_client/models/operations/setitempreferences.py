@@ -150,15 +150,16 @@ class SetItemPreferencesGlobals(BaseModel):
 
 
 class QueryParamArgsTypedDict(TypedDict):
-    pass
+    r"""The args"""
 
 
 class QueryParamArgs(BaseModel):
-    pass
+    r"""The args"""
 
 
 class SetItemPreferencesRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -182,12 +183,14 @@ class SetItemPreferencesRequestTypedDict(TypedDict):
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
     args: NotRequired[QueryParamArgsTypedDict]
+    r"""The args"""
 
 
 class SetItemPreferencesRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -269,6 +272,7 @@ class SetItemPreferencesRequest(BaseModel):
         Optional[QueryParamArgs],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The args"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

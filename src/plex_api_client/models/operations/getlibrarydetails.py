@@ -318,14 +318,14 @@ AllowSync = TypeAliasType("AllowSync", Union[bool, Two])
 
 
 class GetLibraryDetailsMediaContainerTypedDict(TypedDict):
+    allow_sync: NotRequired[AllowSyncTypedDict]
+    art: NotRequired[str]
     content: NotRequired[str]
     r"""The flavors of directory found here:
     - Primary: (e.g. all, On Deck) These are still used in some clients to provide \"shortcuts\" to subsets of media. However, with the exception of On Deck, all of them can be created by media queries, and the desire is to allow these to be customized by users.
     - Secondary: These are marked with `\"secondary\": true` and were used by old clients to provide nested menus allowing for primative (but structured) navigation.
     - Special: There is a By Folder entry which allows browsing the media by the underlying filesystem structure, and there's a completely obsolete entry marked `\"search\": true` which used to be used to allow clients to build search dialogs on the fly.
     """
-    allow_sync: NotRequired[AllowSyncTypedDict]
-    art: NotRequired[str]
     directory: NotRequired[List[components_metadata.MetadataTypedDict]]
     identifier: NotRequired[str]
     library_section_id: NotRequired[int]
@@ -340,16 +340,16 @@ class GetLibraryDetailsMediaContainerTypedDict(TypedDict):
 
 
 class GetLibraryDetailsMediaContainer(BaseModel):
+    allow_sync: Annotated[Optional[AllowSync], pydantic.Field(alias="allowSync")] = None
+
+    art: Optional[str] = None
+
     content: Optional[str] = None
     r"""The flavors of directory found here:
     - Primary: (e.g. all, On Deck) These are still used in some clients to provide \"shortcuts\" to subsets of media. However, with the exception of On Deck, all of them can be created by media queries, and the desire is to allow these to be customized by users.
     - Secondary: These are marked with `\"secondary\": true` and were used by old clients to provide nested menus allowing for primative (but structured) navigation.
     - Special: There is a By Folder entry which allows browsing the media by the underlying filesystem structure, and there's a completely obsolete entry marked `\"search\": true` which used to be used to allow clients to build search dialogs on the fly.
     """
-
-    allow_sync: Annotated[Optional[AllowSync], pydantic.Field(alias="allowSync")] = None
-
-    art: Optional[str] = None
 
     directory: Annotated[
         Optional[List[components_metadata.Metadata]], pydantic.Field(alias="Directory")
@@ -385,9 +385,9 @@ class GetLibraryDetailsMediaContainer(BaseModel):
     def serialize_model(self, handler):
         optional_fields = set(
             [
-                "content",
                 "allowSync",
                 "art",
+                "content",
                 "Directory",
                 "identifier",
                 "librarySectionID",

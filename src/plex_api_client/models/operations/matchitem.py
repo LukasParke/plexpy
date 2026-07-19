@@ -151,6 +151,7 @@ class MatchItemGlobals(BaseModel):
 
 class MatchItemRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -174,14 +175,18 @@ class MatchItemRequestTypedDict(TypedDict):
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
     guid: NotRequired[str]
+    r"""The guid"""
     name: NotRequired[str]
+    r"""The name"""
     year: NotRequired[int]
+    r"""The year to filter by"""
 
 
 class MatchItemRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -263,16 +268,19 @@ class MatchItemRequest(BaseModel):
         Optional[str],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The guid"""
 
     name: Annotated[
         Optional[str],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The name"""
 
     year: Annotated[
         Optional[int],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The year to filter by"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

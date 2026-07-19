@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 import httpx
-from plex_api_client.models.components import accepts as components_accepts
+from plex_api_client.models.components import (
+    accepts as components_accepts,
+    topuseraccount as components_topuseraccount,
+)
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
@@ -146,6 +149,7 @@ class ListTopUsersGlobals(BaseModel):
 
 class ListTopUsersRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -174,6 +178,7 @@ class ListTopUsersRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -282,77 +287,41 @@ class ListTopUsersRequest(BaseModel):
         return m
 
 
-class AccountTypedDict(TypedDict):
-    global_view_count: NotRequired[int]
-    id: NotRequired[int]
-
-
-class Account(BaseModel):
-    global_view_count: Annotated[
-        Optional[int], pydantic.Field(alias="globalViewCount")
-    ] = None
-
-    id: Optional[int] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["globalViewCount", "id"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class ListTopUsersMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    account: NotRequired[List[AccountTypedDict]]
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+    account: NotRequired[List[components_topuseraccount.TopUserAccountTypedDict]]
 
 
 class ListTopUsersMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
-    """
-
-    account: Annotated[Optional[List[Account]], pydantic.Field(alias="Account")] = None
+    account: Annotated[
+        Optional[List[components_topuseraccount.TopUserAccount]],
+        pydantic.Field(alias="Account"),
+    ] = None
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -442,10 +411,6 @@ class ListTopUsersResponse(BaseModel):
         return m
 
 
-try:
-    Account.model_rebuild()
-except NameError:
-    pass
 try:
     ListTopUsersMediaContainer.model_rebuild()
 except NameError:

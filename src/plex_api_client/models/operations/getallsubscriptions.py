@@ -175,6 +175,10 @@ class GetAllSubscriptionsRequestTypedDict(TypedDict):
     r"""Indicates whether the active grabs should be included as well"""
     include_storage: NotRequired[components_boolint.BoolInt]
     r"""Compute the storage of recorded items desired by this subscription"""
+    x_plex_container_start: NotRequired[int]
+    r"""Pagination start offset."""
+    x_plex_container_size: NotRequired[int]
+    r"""Pagination page size."""
 
 
 class GetAllSubscriptionsRequest(BaseModel):
@@ -268,6 +272,20 @@ class GetAllSubscriptionsRequest(BaseModel):
     ] = components_boolint.BoolInt.FALSE
     r"""Compute the storage of recorded items desired by this subscription"""
 
+    x_plex_container_start: Annotated[
+        Optional[int],
+        pydantic.Field(alias="X-Plex-Container-Start"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Pagination start offset."""
+
+    x_plex_container_size: Annotated[
+        Optional[int],
+        pydantic.Field(alias="X-Plex-Container-Size"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Pagination page size."""
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
@@ -285,6 +303,8 @@ class GetAllSubscriptionsRequest(BaseModel):
                 "Marketplace",
                 "includeGrabs",
                 "includeStorage",
+                "X-Plex-Container-Start",
+                "X-Plex-Container-Size",
             ]
         )
         serialized = handler(self)

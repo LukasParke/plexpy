@@ -173,6 +173,10 @@ class GetTemplateRequestTypedDict(TypedDict):
     r"""The marketplace on which the client application is distributed"""
     guid: NotRequired[str]
     r"""The guid of the item for which to get the template"""
+    media_type: NotRequired[str]
+    r"""Subscription type."""
+    target_library_section_id: NotRequired[int]
+    r"""Target library section ID."""
 
 
 class GetTemplateRequest(BaseModel):
@@ -258,6 +262,20 @@ class GetTemplateRequest(BaseModel):
     ] = None
     r"""The guid of the item for which to get the template"""
 
+    media_type: Annotated[
+        Optional[str],
+        pydantic.Field(alias="type"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Subscription type."""
+
+    target_library_section_id: Annotated[
+        Optional[int],
+        pydantic.Field(alias="targetLibrarySectionID"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Target library section ID."""
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
@@ -274,6 +292,8 @@ class GetTemplateRequest(BaseModel):
                 "Device-Name",
                 "Marketplace",
                 "guid",
+                "mediaType",
+                "targetLibrarySectionID",
             ]
         )
         serialized = handler(self)
@@ -459,19 +479,14 @@ class GetTemplateMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
     subscription_template: NotRequired[List[SubscriptionTemplateTypedDict]]
 
 
@@ -479,22 +494,17 @@ class GetTemplateMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     subscription_template: Annotated[
         Optional[List[SubscriptionTemplate]],

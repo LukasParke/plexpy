@@ -300,7 +300,7 @@ class GetHistoryItemResponseTypedDict(TypedDict):
     history_all_get_responses_200: NotRequired[
         components_historyall_get_responses_200.HistoryAllGetResponses200TypedDict
     ]
-    r"""OK"""
+    r"""Successfully retrieved get single history item"""
 
 
 class GetHistoryItemResponse(BaseModel):
@@ -318,7 +318,7 @@ class GetHistoryItemResponse(BaseModel):
     history_all_get_responses_200: Optional[
         components_historyall_get_responses_200.HistoryAllGetResponses200
     ] = None
-    r"""OK"""
+    r"""Successfully retrieved get single history item"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

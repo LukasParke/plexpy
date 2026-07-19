@@ -294,6 +294,7 @@ class ReloadGuideResponseTypedDict(TypedDict):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
     headers: Dict[str, List[str]]
+    body: NotRequired[bytes]
 
 
 class ReloadGuideResponse(BaseModel):
@@ -307,3 +308,21 @@ class ReloadGuideResponse(BaseModel):
     r"""Raw HTTP response; suitable for custom response parsing"""
 
     headers: Dict[str, List[str]]
+
+    body: Optional[bytes] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["Body"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m

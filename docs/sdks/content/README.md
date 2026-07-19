@@ -134,9 +134,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_albums
 
@@ -189,13 +190,15 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## list_content
 
-Get the items in a section, potentially filtering them
+Get the items in a section, potentially filtering them.
+When `includeCollections=1` is passed, the response may also contain `Collection` items.
 
 ### Example Usage
 
@@ -223,12 +226,38 @@ with PlexAPI(
     res = plex_api.content.list_content(request=operations.ListContentRequest(
         media_query=components.MediaQuery(
             type=components.MediaType.EPISODE,
-            source_type=2,
             sort="duration:desc,index",
+            source_type=2,
         ),
+        section_id=813218,
         include_meta=components.BoolInt.TRUE,
         include_guids=components.BoolInt.TRUE,
-        section_id="<id>",
+        include_collections=components.BoolInt.TRUE,
+        include_external_media=components.BoolInt.TRUE,
+        include_advanced=components.BoolInt.TRUE,
+        check_files=components.BoolInt.TRUE,
+        include_related=components.BoolInt.TRUE,
+        include_extras=components.BoolInt.TRUE,
+        include_popular_leaves=components.BoolInt.TRUE,
+        include_concerts=components.BoolInt.TRUE,
+        include_on_deck=components.BoolInt.TRUE,
+        include_chapters=components.BoolInt.TRUE,
+        include_preferences=components.BoolInt.TRUE,
+        include_bandwidths=components.BoolInt.TRUE,
+        include_loudness_ramps=components.BoolInt.TRUE,
+        include_stations=components.BoolInt.TRUE,
+        include_external_ids=components.BoolInt.TRUE,
+        include_reviews=components.BoolInt.TRUE,
+        include_credits=components.BoolInt.TRUE,
+        include_art=components.BoolInt.TRUE,
+        include_thumb=components.BoolInt.TRUE,
+        include_banner=components.BoolInt.TRUE,
+        include_theme=components.BoolInt.TRUE,
+        async_augment_metadata=components.BoolInt.TRUE,
+        async_refresh_local_media_agent=components.BoolInt.TRUE,
+        nocache=components.BoolInt.TRUE,
+        skip_refresh=components.BoolInt.TRUE,
+        unwatched=components.BoolInt.TRUE,
     ))
 
     assert res.media_container_with_metadata is not None
@@ -251,9 +280,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_all_leaves
 
@@ -306,9 +336,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_arts
 
@@ -361,9 +392,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_categories
 
@@ -416,9 +448,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_cluster
 
@@ -471,9 +504,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_sonic_path
 
@@ -528,9 +562,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_folders
 
@@ -583,9 +618,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## list_moments
 
@@ -638,9 +674,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_sonically_similar
 
@@ -694,9 +731,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_collection_image
 

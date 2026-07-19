@@ -14,7 +14,6 @@ Logging mechanism to allow clients to log to the server
 
 This endpoint will write multiple lines to the main Plex Media Server log in a single request. It takes a set of query strings as would normally sent to the above PUT endpoint as a linefeed-separated block of POST data. The parameters for each query string match as above.
 
-
 ### Example Usage
 
 <!-- UsageSnippet language="python" operationID="writeLog" method="post" path="/log" -->
@@ -37,10 +36,10 @@ with PlexAPI(
 
 ### Parameters
 
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `request`                                                           | [Union[bytes, IO[bytes], io.BufferedReader]](../../models/.md)      | :heavy_check_mark:                                                  | The request object to use for the request.                          |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+| Parameter                                                               | Type                                                                    | Required                                                                | Description                                                             |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `request`                                                               | [Union[bytes, IO[bytes], io.IOBase]](../../models/logmessagerequest.md) | :heavy_check_mark:                                                      | The request object to use for the request.                              |
+| `retries`                                                               | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)        | :heavy_minus_sign:                                                      | Configuration to override the default retry behavior of the client.     |
 
 ### Response
 
@@ -57,7 +56,6 @@ with PlexAPI(
 This endpoint will write a single-line log message, including a level and source to the main Plex Media Server log.
 
 Note: This endpoint responds to all HTTP verbs **except POST** but PUT is preferred
-
 
 ### Example Usage
 
@@ -104,16 +102,16 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## enable_papertrail
 
 This endpoint will enable all Plex Media Server logs to be sent to the Papertrail networked logging site for a period of time
 
 Note: This endpoint responds to all HTTP verbs but POST is preferred
-
 
 ### Example Usage
 

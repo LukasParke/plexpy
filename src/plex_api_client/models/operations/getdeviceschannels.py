@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 import httpx
-from plex_api_client.models.components import accepts as components_accepts
+from plex_api_client.models.components import (
+    accepts as components_accepts,
+    devicechannel as components_devicechannel,
+)
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
@@ -286,111 +289,40 @@ class GetDevicesChannelsRequest(BaseModel):
         return m
 
 
-class DeviceChannelTypedDict(TypedDict):
-    drm: NotRequired[bool]
-    r"""Indicates the channel is DRMed and thus may not be playable"""
-    favorite: NotRequired[bool]
-    hd: NotRequired[bool]
-    identifier: NotRequired[str]
-    key: NotRequired[str]
-    name: NotRequired[str]
-    signal_quality: NotRequired[int]
-    signal_strength: NotRequired[int]
-
-
-class DeviceChannel(BaseModel):
-    drm: Optional[bool] = None
-    r"""Indicates the channel is DRMed and thus may not be playable"""
-
-    favorite: Optional[bool] = None
-
-    hd: Optional[bool] = None
-
-    identifier: Optional[str] = None
-
-    key: Optional[str] = None
-
-    name: Optional[str] = None
-
-    signal_quality: Annotated[Optional[int], pydantic.Field(alias="signalQuality")] = (
-        None
-    )
-
-    signal_strength: Annotated[
-        Optional[int], pydantic.Field(alias="signalStrength")
-    ] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(
-            [
-                "drm",
-                "favorite",
-                "hd",
-                "identifier",
-                "key",
-                "name",
-                "signalQuality",
-                "signalStrength",
-            ]
-        )
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class GetDevicesChannelsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    device_channel: NotRequired[List[DeviceChannelTypedDict]]
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+    device_channel: NotRequired[List[components_devicechannel.DeviceChannelTypedDict]]
 
 
 class GetDevicesChannelsMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     device_channel: Annotated[
-        Optional[List[DeviceChannel]], pydantic.Field(alias="DeviceChannel")
+        Optional[List[components_devicechannel.DeviceChannel]],
+        pydantic.Field(alias="DeviceChannel"),
     ] = None
 
     @model_serializer(mode="wrap")
@@ -487,10 +419,6 @@ class GetDevicesChannelsResponse(BaseModel):
         return m
 
 
-try:
-    DeviceChannel.model_rebuild()
-except NameError:
-    pass
 try:
     GetDevicesChannelsMediaContainer.model_rebuild()
 except NameError:

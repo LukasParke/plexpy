@@ -37,6 +37,7 @@ Example SSDP output
   - UDN: (string) A UUID for the device. This should be unique across models of a device at minimum.
   - URLBase: (string) The base HTTP URL for the device from which all of the other endpoints are hosted.
 
+Note: This tag covers media grabber and network tuner devices only. For client device discovery, use `/clients` or `/resources`.
 
 ### Available Operations
 
@@ -105,9 +106,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## list_devices
 
@@ -145,9 +147,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## add_device
 
@@ -210,7 +213,7 @@ Tell grabbers to discover devices
 
 ### Example Usage
 
-<!-- UsageSnippet language="python" operationID="discoverDevices" method="post" path="/media/grabbers/devices/discover" -->
+<!-- UsageSnippet language="python" operationID="discoverDevices" method="get" path="/media/grabbers/devices/discover" -->
 ```python
 from plex_api_client import PlexAPI
 
@@ -230,9 +233,11 @@ with PlexAPI(
 
 ### Parameters
 
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+| Parameter                                                            | Type                                                                 | Required                                                             | Description                                                          |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `protocol`                                                           | [Optional[operations.Protocol]](../../models/operations/protocol.md) | :heavy_minus_sign:                                                   | Protocol to filter discovery.                                        |
+| `grabber_identifier`                                                 | *Optional[str]*                                                      | :heavy_minus_sign:                                                   | Targeted grabber identifier.                                         |
+| `retries`                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)     | :heavy_minus_sign:                                                   | Configuration to override the default retry behavior of the client.  |
 
 ### Response
 
@@ -240,9 +245,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## remove_device
 
@@ -479,9 +485,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_devices_channels
 
@@ -589,9 +596,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## stop_scan
 
@@ -644,9 +652,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## scan
 
@@ -700,9 +709,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_thumb
 
@@ -736,10 +746,10 @@ with PlexAPI(
         "version_path_parameter": 1025,
     })
 
-    assert res is not None
+    assert res.binary_response is not None
 
     # Handle response
-    print(res)
+    print(res.binary_response)
 
 ```
 

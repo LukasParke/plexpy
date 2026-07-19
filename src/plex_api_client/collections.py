@@ -81,10 +81,14 @@ class Collections(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -93,6 +97,8 @@ class Collections(BaseSDK):
                 operation_id="createCollection",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Collections"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -101,8 +107,8 @@ class Collections(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.CreateCollectionResponse(
-                media_container_with_metadata=unmarshal_json_response(
-                    Optional[components.MediaContainerWithMetadata], http_res
+                collection=unmarshal_json_response(
+                    Optional[components.Collection], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -186,10 +192,14 @@ class Collections(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -198,6 +208,8 @@ class Collections(BaseSDK):
                 operation_id="createCollection",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Collections"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -206,8 +218,8 @@ class Collections(BaseSDK):
 
         if utils.match_response(http_res, "200", "application/json"):
             return operations.CreateCollectionResponse(
-                media_container_with_metadata=unmarshal_json_response(
-                    Optional[components.MediaContainerWithMetadata], http_res
+                collection=unmarshal_json_response(
+                    Optional[components.Collection], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",

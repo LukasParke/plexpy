@@ -299,7 +299,7 @@ class ClearPlaylistItemsResponseTypedDict(TypedDict):
     media_container_with_playlist_metadata: NotRequired[
         components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadataTypedDict
     ]
-    r"""OK"""
+    r"""Successfully deleted clearing a playlist"""
 
 
 class ClearPlaylistItemsResponse(BaseModel):
@@ -315,7 +315,7 @@ class ClearPlaylistItemsResponse(BaseModel):
     media_container_with_playlist_metadata: Optional[
         components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadata
     ] = None
-    r"""OK"""
+    r"""Successfully deleted clearing a playlist"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

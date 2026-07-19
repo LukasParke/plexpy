@@ -145,15 +145,16 @@ class SetPreferencesGlobals(BaseModel):
 
 
 class PrefsTypedDict(TypedDict):
-    pass
+    r"""The preference key to retrieve or set"""
 
 
 class Prefs(BaseModel):
-    pass
+    r"""The preference key to retrieve or set"""
 
 
 class SetPreferencesRequestTypedDict(TypedDict):
     prefs: PrefsTypedDict
+    r"""The preference key to retrieve or set"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -182,6 +183,7 @@ class SetPreferencesRequest(BaseModel):
     prefs: Annotated[
         Prefs, FieldMetadata(query=QueryParamMetadata(style="form", explode=True))
     ]
+    r"""The preference key to retrieve or set"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],

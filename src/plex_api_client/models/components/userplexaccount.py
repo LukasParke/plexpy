@@ -13,8 +13,8 @@ from plex_api_client.types import (
     UNSET_SENTINEL,
 )
 import pydantic
-from pydantic import field_serializer, model_serializer
-from typing import List, Optional
+from pydantic import ConfigDict, field_serializer, model_serializer
+from typing import Any, Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
@@ -32,23 +32,23 @@ class UserPlexAccountStatus(str, Enum, metaclass=utils.OpenEnumMeta):
 
 
 class ServicesTypedDict(TypedDict):
-    identifier: str
     endpoint: str
-    token: Nullable[str]
+    identifier: str
     secret: Nullable[str]
     status: UserPlexAccountStatus
+    token: Nullable[str]
 
 
 class Services(BaseModel):
-    identifier: str
-
     endpoint: str
 
-    token: Nullable[str]
+    identifier: str
 
     secret: Nullable[str]
 
     status: UserPlexAccountStatus
+
+    token: Nullable[str]
 
     @field_serializer("status")
     def serialize_status(self, value):
@@ -84,36 +84,28 @@ class UserPlexAccountSubscriptionStatus(str, Enum, metaclass=utils.OpenEnumMeta)
 class SubscriptionTypedDict(TypedDict):
     r"""If the account's Plex Pass subscription is active"""
 
-    features: NotRequired[List[str]]
-    r"""List of features allowed on your Plex Pass subscription"""
     active: NotRequired[bool]
     r"""If the account's Plex Pass subscription is active"""
-    subscribed_at: NotRequired[Nullable[str]]
-    r"""Date the account subscribed to Plex Pass"""
-    status: NotRequired[UserPlexAccountSubscriptionStatus]
-    r"""String representation of subscriptionActive"""
+    features: NotRequired[List[str]]
+    r"""List of features allowed on your Plex Pass subscription"""
     payment_service: NotRequired[Nullable[str]]
     r"""Payment service used for your Plex Pass subscription"""
     plan: NotRequired[Nullable[str]]
     r"""Name of Plex Pass subscription plan"""
+    status: NotRequired[UserPlexAccountSubscriptionStatus]
+    r"""String representation of subscriptionActive"""
+    subscribed_at: NotRequired[Nullable[str]]
+    r"""Date the account subscribed to Plex Pass"""
 
 
 class Subscription(BaseModel):
     r"""If the account's Plex Pass subscription is active"""
 
-    features: Optional[List[str]] = None
-    r"""List of features allowed on your Plex Pass subscription"""
-
     active: Optional[bool] = None
     r"""If the account's Plex Pass subscription is active"""
 
-    subscribed_at: Annotated[
-        OptionalNullable[str], pydantic.Field(alias="subscribedAt")
-    ] = UNSET
-    r"""Date the account subscribed to Plex Pass"""
-
-    status: Optional[UserPlexAccountSubscriptionStatus] = None
-    r"""String representation of subscriptionActive"""
+    features: Optional[List[str]] = None
+    r"""List of features allowed on your Plex Pass subscription"""
 
     payment_service: Annotated[
         OptionalNullable[str], pydantic.Field(alias="paymentService")
@@ -122,6 +114,14 @@ class Subscription(BaseModel):
 
     plan: OptionalNullable[str] = UNSET
     r"""Name of Plex Pass subscription plan"""
+
+    status: Optional[UserPlexAccountSubscriptionStatus] = None
+    r"""String representation of subscriptionActive"""
+
+    subscribed_at: Annotated[
+        OptionalNullable[str], pydantic.Field(alias="subscribedAt")
+    ] = UNSET
+    r"""Date the account subscribed to Plex Pass"""
 
     @field_serializer("status")
     def serialize_status(self, value):
@@ -135,9 +135,9 @@ class Subscription(BaseModel):
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
-            ["features", "active", "subscribedAt", "status", "paymentService", "plan"]
+            ["active", "features", "paymentService", "plan", "status", "subscribedAt"]
         )
-        nullable_fields = set(["subscribedAt", "paymentService", "plan"])
+        nullable_fields = set(["paymentService", "plan", "subscribedAt"])
         serialized = handler(self)
         m = {}
 
@@ -168,34 +168,26 @@ class UserPlexAccountSubscriptionsStatus(str, Enum, metaclass=utils.OpenEnumMeta
 
 
 class UserPlexAccountSubscriptionTypedDict(TypedDict):
-    features: NotRequired[List[str]]
-    r"""List of features allowed on your Plex Pass subscription"""
     active: NotRequired[bool]
     r"""If the account's Plex Pass subscription is active"""
-    subscribed_at: NotRequired[Nullable[str]]
-    r"""Date the account subscribed to Plex Pass"""
-    status: NotRequired[UserPlexAccountSubscriptionsStatus]
-    r"""String representation of subscriptionActive"""
+    features: NotRequired[List[str]]
+    r"""List of features allowed on your Plex Pass subscription"""
     payment_service: NotRequired[Nullable[str]]
     r"""Payment service used for your Plex Pass subscription"""
     plan: NotRequired[Nullable[str]]
     r"""Name of Plex Pass subscription plan"""
+    status: NotRequired[UserPlexAccountSubscriptionsStatus]
+    r"""String representation of subscriptionActive"""
+    subscribed_at: NotRequired[Nullable[str]]
+    r"""Date the account subscribed to Plex Pass"""
 
 
 class UserPlexAccountSubscription(BaseModel):
-    features: Optional[List[str]] = None
-    r"""List of features allowed on your Plex Pass subscription"""
-
     active: Optional[bool] = None
     r"""If the account's Plex Pass subscription is active"""
 
-    subscribed_at: Annotated[
-        OptionalNullable[str], pydantic.Field(alias="subscribedAt")
-    ] = UNSET
-    r"""Date the account subscribed to Plex Pass"""
-
-    status: Optional[UserPlexAccountSubscriptionsStatus] = None
-    r"""String representation of subscriptionActive"""
+    features: Optional[List[str]] = None
+    r"""List of features allowed on your Plex Pass subscription"""
 
     payment_service: Annotated[
         OptionalNullable[str], pydantic.Field(alias="paymentService")
@@ -204,6 +196,14 @@ class UserPlexAccountSubscription(BaseModel):
 
     plan: OptionalNullable[str] = UNSET
     r"""Name of Plex Pass subscription plan"""
+
+    status: Optional[UserPlexAccountSubscriptionsStatus] = None
+    r"""String representation of subscriptionActive"""
+
+    subscribed_at: Annotated[
+        OptionalNullable[str], pydantic.Field(alias="subscribedAt")
+    ] = UNSET
+    r"""Date the account subscribed to Plex Pass"""
 
     @field_serializer("status")
     def serialize_status(self, value):
@@ -217,9 +217,9 @@ class UserPlexAccountSubscription(BaseModel):
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
-            ["features", "active", "subscribedAt", "status", "paymentService", "plan"]
+            ["active", "features", "paymentService", "plan", "status", "subscribedAt"]
         )
-        nullable_fields = set(["subscribedAt", "paymentService", "plan"])
+        nullable_fields = set(["paymentService", "plan", "subscribedAt"])
         serialized = handler(self)
         m = {}
 
@@ -243,6 +243,8 @@ class UserPlexAccountSubscription(BaseModel):
 
 
 class UserPlexAccountTypedDict(TypedDict):
+    title: str
+    r"""The title of the account (username or friendly name)"""
     auth_token: str
     r"""The account token"""
     email: str
@@ -253,8 +255,6 @@ class UserPlexAccountTypedDict(TypedDict):
     r"""The Plex account ID"""
     joined_at: int
     r"""Unix epoch datetime in seconds"""
-    title: str
-    r"""The title of the account (username or friendly name)"""
     username: str
     r"""The account username"""
     uuid: str
@@ -265,6 +265,7 @@ class UserPlexAccountTypedDict(TypedDict):
     ads_consent_set_at: NotRequired[Nullable[int]]
     anonymous: NotRequired[Nullable[bool]]
     r"""Unknown"""
+    attribution_partner: NotRequired[Nullable[str]]
     backup_codes_created: NotRequired[bool]
     r"""If the two-factor authentication backup codes have been created"""
     confirmed: NotRequired[bool]
@@ -273,10 +274,10 @@ class UserPlexAccountTypedDict(TypedDict):
     r"""The account country"""
     email_only_auth: NotRequired[bool]
     r"""If login with email only is enabled"""
-    experimental_features: NotRequired[bool]
-    r"""If experimental features are enabled"""
     entitlements: NotRequired[List[str]]
     r"""List of devices your allowed to use with this account"""
+    experimental_features: NotRequired[bool]
+    r"""If experimental features are enabled"""
     guest: NotRequired[bool]
     r"""If the account is a Plex Home guest user"""
     has_password: NotRequired[bool]
@@ -318,10 +319,17 @@ class UserPlexAccountTypedDict(TypedDict):
     r"""URL of the account thumbnail"""
     two_factor_enabled: NotRequired[bool]
     r"""If two-factor authentication is enabled"""
-    attribution_partner: NotRequired[Nullable[str]]
 
 
 class UserPlexAccount(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True, arbitrary_types_allowed=True, extra="allow"
+    )
+    __pydantic_extra__: Dict[str, Any] = pydantic.Field(init=False)
+
+    title: str
+    r"""The title of the account (username or friendly name)"""
+
     auth_token: Annotated[str, pydantic.Field(alias="authToken")]
     r"""The account token"""
 
@@ -336,9 +344,6 @@ class UserPlexAccount(BaseModel):
 
     joined_at: Annotated[int, pydantic.Field(alias="joinedAt")]
     r"""Unix epoch datetime in seconds"""
-
-    title: str
-    r"""The title of the account (username or friendly name)"""
 
     username: str
     r"""The account username"""
@@ -362,6 +367,10 @@ class UserPlexAccount(BaseModel):
     anonymous: OptionalNullable[bool] = False
     r"""Unknown"""
 
+    attribution_partner: Annotated[
+        OptionalNullable[str], pydantic.Field(alias="attributionPartner")
+    ] = UNSET
+
     backup_codes_created: Annotated[
         Optional[bool], pydantic.Field(alias="backupCodesCreated")
     ] = False
@@ -378,13 +387,13 @@ class UserPlexAccount(BaseModel):
     ] = False
     r"""If login with email only is enabled"""
 
+    entitlements: Optional[List[str]] = None
+    r"""List of devices your allowed to use with this account"""
+
     experimental_features: Annotated[
         Optional[bool], pydantic.Field(alias="experimentalFeatures")
     ] = False
     r"""If experimental features are enabled"""
-
-    entitlements: Optional[List[str]] = None
-    r"""List of devices your allowed to use with this account"""
 
     guest: Optional[bool] = False
     r"""If the account is a Plex Home guest user"""
@@ -466,9 +475,13 @@ class UserPlexAccount(BaseModel):
     ] = False
     r"""If two-factor authentication is enabled"""
 
-    attribution_partner: Annotated[
-        OptionalNullable[str], pydantic.Field(alias="attributionPartner")
-    ] = UNSET
+    @property
+    def additional_properties(self):
+        return self.__pydantic_extra__
+
+    @additional_properties.setter
+    def additional_properties(self, value):
+        self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -478,12 +491,13 @@ class UserPlexAccount(BaseModel):
                 "adsConsentReminderAt",
                 "adsConsentSetAt",
                 "anonymous",
+                "attributionPartner",
                 "backupCodesCreated",
                 "confirmed",
                 "country",
                 "emailOnlyAuth",
-                "experimentalFeatures",
                 "entitlements",
+                "experimentalFeatures",
                 "guest",
                 "hasPassword",
                 "home",
@@ -506,7 +520,6 @@ class UserPlexAccount(BaseModel):
                 "subscriptions",
                 "thumb",
                 "twoFactorEnabled",
-                "attributionPartner",
             ]
         )
         nullable_fields = set(
@@ -515,9 +528,9 @@ class UserPlexAccount(BaseModel):
                 "adsConsentReminderAt",
                 "adsConsentSetAt",
                 "anonymous",
+                "attributionPartner",
                 "locale",
                 "subscriptionDescription",
-                "attributionPartner",
             ]
         )
         serialized = handler(self)
@@ -526,6 +539,7 @@ class UserPlexAccount(BaseModel):
         for n, f in type(self).model_fields.items():
             k = f.alias or n
             val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
             is_nullable_and_explicitly_set = (
                 k in nullable_fields
                 and (self.__pydantic_fields_set__.intersection({n}))  # pylint: disable=no-member
@@ -538,6 +552,8 @@ class UserPlexAccount(BaseModel):
                     or is_nullable_and_explicitly_set
                 ):
                     m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
 
         return m
 

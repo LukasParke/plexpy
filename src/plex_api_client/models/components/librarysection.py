@@ -60,9 +60,7 @@ class LibrarySectionLocation(BaseModel):
 
 class LibrarySectionTypedDict(TypedDict):
     type: MediaTypeString
-    r"""The type of media content in the Plex library. This can represent videos, music, or photos.
-
-    """
+    r"""The type of media content in the Plex library. This can represent videos, music, or photos."""
     language: str
     uuid: str
     r"""The universally unique identifier for the library."""
@@ -74,7 +72,9 @@ class LibrarySectionTypedDict(TypedDict):
     composite: NotRequired[str]
     content: NotRequired[bool]
     content_changed_at: NotRequired[int]
+    r"""Unix epoch datetime in seconds"""
     created_at: NotRequired[int]
+    r"""Unix epoch datetime in seconds"""
     directory: NotRequired[bool]
     filters: NotRequired[bool]
     r"""Indicates whether this section has filtering capabilities"""
@@ -84,16 +84,16 @@ class LibrarySectionTypedDict(TypedDict):
     refreshing: NotRequired[bool]
     r"""Indicates whether this library section is currently scanning"""
     scanned_at: NotRequired[int]
+    r"""Unix epoch datetime in seconds"""
     scanner: NotRequired[str]
     thumb: NotRequired[str]
     updated_at: NotRequired[int]
+    r"""Unix epoch datetime in seconds"""
 
 
 class LibrarySection(BaseModel):
     type: MediaTypeString
-    r"""The type of media content in the Plex library. This can represent videos, music, or photos.
-
-    """
+    r"""The type of media content in the Plex library. This can represent videos, music, or photos."""
 
     language: str
 
@@ -118,8 +118,10 @@ class LibrarySection(BaseModel):
     content_changed_at: Annotated[
         Optional[int], pydantic.Field(alias="contentChangedAt")
     ] = None
+    r"""Unix epoch datetime in seconds"""
 
     created_at: Annotated[Optional[int], pydantic.Field(alias="createdAt")] = None
+    r"""Unix epoch datetime in seconds"""
 
     directory: Optional[bool] = None
 
@@ -138,12 +140,14 @@ class LibrarySection(BaseModel):
     r"""Indicates whether this library section is currently scanning"""
 
     scanned_at: Annotated[Optional[int], pydantic.Field(alias="scannedAt")] = None
+    r"""Unix epoch datetime in seconds"""
 
     scanner: Optional[str] = None
 
     thumb: Optional[str] = None
 
     updated_at: Annotated[Optional[int], pydantic.Field(alias="updatedAt")] = None
+    r"""Unix epoch datetime in seconds"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

@@ -23,14 +23,12 @@ class OptimizedForStreaming(int, Enum):
 HasVoiceActivityTypedDict = TypeAliasType("HasVoiceActivityTypedDict", Union[bool, Two])
 r"""Voice activity detection availability flag returned by PMS.
 PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
-
 """
 
 
 HasVoiceActivity = TypeAliasType("HasVoiceActivity", Union[bool, Two])
 r"""Voice activity detection availability flag returned by PMS.
 PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
-
 """
 
 
@@ -49,11 +47,14 @@ class MediaTypedDict(TypedDict):
     has_voice_activity: NotRequired[HasVoiceActivityTypedDict]
     r"""Voice activity detection availability flag returned by PMS.
     PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
-
     """
     height: NotRequired[int]
     optimized_for_streaming: NotRequired[OptimizedForStreaming]
     part: NotRequired[List[PartTypedDict]]
+    selected: NotRequired[bool]
+    r"""Whether this media version is selected for playback."""
+    uuid: NotRequired[str]
+    r"""Unique identifier for this media instance."""
     video_codec: NotRequired[str]
     video_frame_rate: NotRequired[str]
     video_profile: NotRequired[str]
@@ -96,7 +97,6 @@ class Media(BaseModel):
     ] = None
     r"""Voice activity detection availability flag returned by PMS.
     PMS may return this as a boolean or as string values (`\"0\"` or `\"1\"`).
-
     """
 
     height: Optional[int] = None
@@ -106,6 +106,12 @@ class Media(BaseModel):
     ] = None
 
     part: Annotated[Optional[List[Part]], pydantic.Field(alias="Part")] = None
+
+    selected: Optional[bool] = None
+    r"""Whether this media version is selected for playback."""
+
+    uuid: Optional[str] = None
+    r"""Unique identifier for this media instance."""
 
     video_codec: Annotated[Optional[str], pydantic.Field(alias="videoCodec")] = None
 
@@ -145,6 +151,8 @@ class Media(BaseModel):
                 "height",
                 "optimizedForStreaming",
                 "Part",
+                "selected",
+                "uuid",
                 "videoCodec",
                 "videoFrameRate",
                 "videoProfile",

@@ -14,7 +14,6 @@ class MediaQueryTypedDict(TypedDict):
     r"""A querystring-based filtering language used to select subsets of media. When provided as an object, properties are serialized as a querystring using form style with explode.
 
     Only the defined properties below are allowed. The object serializes to a querystring format like: `type=4&sourceType=2&sort=duration:desc,index`
-
     """
 
     type: NotRequired[MediaType]
@@ -31,23 +30,21 @@ class MediaQueryTypedDict(TypedDict):
     9 = photo
 
     E.g. A movie library will not return anything with type 3 as there are no seasons for movie libraries
-
     """
-    source_type: NotRequired[int]
-    r"""Change the default level to which fields refer (used with type for hierarchical queries)"""
-    sort: NotRequired[str]
-    r"""Field(s) to sort by, with optional modifiers. Use comma to separate multiple fields, and :desc or :nullsLast for modifiers (e.g., \"duration:desc,index\")"""
     group: NotRequired[str]
     r"""Field to group results by (similar to SQL GROUP BY)"""
     limit: NotRequired[int]
     r"""Maximum number of results to return"""
+    sort: NotRequired[str]
+    r"""Field(s) to sort by, with optional modifiers. Use comma to separate multiple fields, and :desc or :nullsLast for modifiers (e.g., \"duration:desc,index\")"""
+    source_type: NotRequired[int]
+    r"""Change the default level to which fields refer (used with type for hierarchical queries)"""
 
 
 class MediaQuery(BaseModel):
     r"""A querystring-based filtering language used to select subsets of media. When provided as an object, properties are serialized as a querystring using form style with explode.
 
     Only the defined properties below are allowed. The object serializes to a querystring format like: `type=4&sourceType=2&sort=duration:desc,index`
-
     """
 
     type: Annotated[Optional[MediaType], FieldMetadata(query=True)] = None
@@ -64,16 +61,7 @@ class MediaQuery(BaseModel):
     9 = photo
 
     E.g. A movie library will not return anything with type 3 as there are no seasons for movie libraries
-
     """
-
-    source_type: Annotated[
-        Optional[int], pydantic.Field(alias="sourceType"), FieldMetadata(query=True)
-    ] = None
-    r"""Change the default level to which fields refer (used with type for hierarchical queries)"""
-
-    sort: Annotated[Optional[str], FieldMetadata(query=True)] = None
-    r"""Field(s) to sort by, with optional modifiers. Use comma to separate multiple fields, and :desc or :nullsLast for modifiers (e.g., \"duration:desc,index\")"""
 
     group: Annotated[Optional[str], FieldMetadata(query=True)] = None
     r"""Field to group results by (similar to SQL GROUP BY)"""
@@ -81,9 +69,17 @@ class MediaQuery(BaseModel):
     limit: Annotated[Optional[int], FieldMetadata(query=True)] = None
     r"""Maximum number of results to return"""
 
+    sort: Annotated[Optional[str], FieldMetadata(query=True)] = None
+    r"""Field(s) to sort by, with optional modifiers. Use comma to separate multiple fields, and :desc or :nullsLast for modifiers (e.g., \"duration:desc,index\")"""
+
+    source_type: Annotated[
+        Optional[int], pydantic.Field(alias="sourceType"), FieldMetadata(query=True)
+    ] = None
+    r"""Change the default level to which fields refer (used with type for hierarchical queries)"""
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["type", "sourceType", "sort", "group", "limit"])
+        optional_fields = set(["type", "group", "limit", "sort", "sourceType"])
         serialized = handler(self)
         m = {}
 

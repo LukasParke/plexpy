@@ -3,9 +3,10 @@
 from __future__ import annotations
 from enum import Enum
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
-from pydantic import model_serializer
-from typing import Optional
-from typing_extensions import NotRequired, TypedDict
+import pydantic
+from pydantic import ConfigDict, model_serializer
+from typing import Any, Dict, Optional
+from typing_extensions import Annotated, NotRequired, TypedDict
 
 
 class SessionLocation(str, Enum):
@@ -18,16 +19,32 @@ class SessionLocation(str, Enum):
 class SessionTypedDict(TypedDict):
     r"""Information about the playback session"""
 
+    title: NotRequired[str]
+    r"""Title of the media being played."""
     bandwidth: NotRequired[int]
     r"""The bandwidth used by this client's playback in kbps"""
     id: NotRequired[str]
     r"""The id of the playback session"""
     location: NotRequired[SessionLocation]
     r"""The location of the client"""
+    session_key: NotRequired[str]
+    r"""Unique session key for this playback session."""
+    user_id: NotRequired[int]
+    r"""ID of the user owning this session."""
+    uuid: NotRequired[str]
+    r"""UUID of the playback session."""
 
 
 class Session(BaseModel):
     r"""Information about the playback session"""
+
+    model_config = ConfigDict(
+        populate_by_name=True, arbitrary_types_allowed=True, extra="allow"
+    )
+    __pydantic_extra__: Dict[str, Any] = pydantic.Field(init=False)
+
+    title: Optional[str] = None
+    r"""Title of the media being played."""
 
     bandwidth: Optional[int] = None
     r"""The bandwidth used by this client's playback in kbps"""
@@ -38,18 +55,46 @@ class Session(BaseModel):
     location: Optional[SessionLocation] = None
     r"""The location of the client"""
 
+    session_key: Annotated[Optional[str], pydantic.Field(alias="sessionKey")] = None
+    r"""Unique session key for this playback session."""
+
+    user_id: Annotated[Optional[int], pydantic.Field(alias="userID")] = None
+    r"""ID of the user owning this session."""
+
+    uuid: Optional[str] = None
+    r"""UUID of the playback session."""
+
+    @property
+    def additional_properties(self):
+        return self.__pydantic_extra__
+
+    @additional_properties.setter
+    def additional_properties(self, value):
+        self.__pydantic_extra__ = value  # pyright: ignore[reportIncompatibleVariableOverride]
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["bandwidth", "id", "location"])
+        optional_fields = set(
+            ["title", "bandwidth", "id", "location", "sessionKey", "userID", "uuid"]
+        )
         serialized = handler(self)
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
             val = serialized.get(k, serialized.get(n))
+            serialized.pop(k, serialized.pop(n, None))
 
             if val != UNSET_SENTINEL:
                 if val is not None or k not in optional_fields:
                     m[k] = val
+        for k, v in serialized.items():
+            m[k] = v
 
         return m
+
+
+try:
+    Session.model_rebuild()
+except NameError:
+    pass

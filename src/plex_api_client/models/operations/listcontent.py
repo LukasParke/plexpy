@@ -155,7 +155,7 @@ class ListContentGlobals(BaseModel):
 
 
 class ListContentRequestTypedDict(TypedDict):
-    section_id: str
+    section_id: int
     r"""The id of the section"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
@@ -183,13 +183,11 @@ class ListContentRequestTypedDict(TypedDict):
     r"""The index of the first item to return. If not specified, the first item will be returned.
     If the number of items exceeds the limit, the response will be paginated.
     By default this is 0
-
     """
     x_plex_container_size: NotRequired[int]
     r"""The number of items to return. If not specified, all items will be returned.
     If the number of items exceeds the limit, the response will be paginated.
     By default this is 50
-
     """
     media_query: NotRequired[components_mediaquery.MediaQueryTypedDict]
     r"""A querystring-based filtering language used to select subsets of media. Can be provided as an object with typed properties for type safety, or as a string for complex queries with operators and boolean logic.
@@ -208,21 +206,92 @@ class ListContentRequestTypedDict(TypedDict):
     - Complex: `push=1&index=1&or=1&rating=2&pop=1&duration=10` - (index = 1 OR rating = 2) AND duration = 10
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
-
     """
+    media_type: NotRequired[int]
+    r"""Filter by metadata type (1=movie, 2=show, 3=season, 4=episode, 8=artist, 9=album, 10=track)"""
+    sort: NotRequired[str]
+    r"""Sort key and direction (e.g. addedAt:desc, titleSort)"""
     include_meta: NotRequired[components_boolint.BoolInt]
-    r"""Adds the Meta object to the response
-
-    """
+    r"""Adds the Meta object to the response"""
     include_guids: NotRequired[components_boolint.BoolInt]
-    r"""Adds the Guid object to the response
-
-    """
+    r"""Adds the Guid object to the response"""
+    include_collections: NotRequired[components_boolint.BoolInt]
+    r"""Include collection items in results"""
+    include_external_media: NotRequired[components_boolint.BoolInt]
+    r"""Include external or online media"""
+    include_advanced: NotRequired[components_boolint.BoolInt]
+    r"""Include advanced settings"""
+    check_files: NotRequired[components_boolint.BoolInt]
+    r"""Verify file existence"""
+    include_related: NotRequired[components_boolint.BoolInt]
+    r"""Include related items"""
+    include_extras: NotRequired[components_boolint.BoolInt]
+    r"""Include trailers, behind-the-scenes, etc."""
+    include_popular_leaves: NotRequired[components_boolint.BoolInt]
+    r"""Include popular episodes"""
+    include_concerts: NotRequired[components_boolint.BoolInt]
+    r"""Include concert items"""
+    include_on_deck: NotRequired[components_boolint.BoolInt]
+    r"""Include On Deck status"""
+    include_chapters: NotRequired[components_boolint.BoolInt]
+    r"""Include chapter markers"""
+    include_preferences: NotRequired[components_boolint.BoolInt]
+    r"""Include user preferences"""
+    include_bandwidths: NotRequired[components_boolint.BoolInt]
+    r"""Include bandwidth info"""
+    include_loudness_ramps: NotRequired[components_boolint.BoolInt]
+    r"""Include loudness ramp data"""
+    include_stations: NotRequired[components_boolint.BoolInt]
+    r"""Include radio station data"""
+    include_external_ids: NotRequired[components_boolint.BoolInt]
+    r"""Include external GUIDs"""
+    include_reviews: NotRequired[components_boolint.BoolInt]
+    r"""Include user reviews"""
+    include_credits: NotRequired[components_boolint.BoolInt]
+    r"""Include full credits"""
+    include_art: NotRequired[components_boolint.BoolInt]
+    r"""Force inclusion of artwork fields"""
+    include_thumb: NotRequired[components_boolint.BoolInt]
+    r"""Force inclusion of thumbnail fields"""
+    include_banner: NotRequired[components_boolint.BoolInt]
+    r"""Force inclusion of banner fields"""
+    include_theme: NotRequired[components_boolint.BoolInt]
+    r"""Force inclusion of theme fields"""
+    include_fields: NotRequired[str]
+    r"""Whitelist of fields to return"""
+    exclude_fields: NotRequired[str]
+    r"""Blacklist of fields to omit"""
+    async_augment_metadata: NotRequired[components_boolint.BoolInt]
+    r"""Async metadata augmentation"""
+    async_refresh_local_media_agent: NotRequired[components_boolint.BoolInt]
+    r"""Async local media agent refresh"""
+    nocache: NotRequired[components_boolint.BoolInt]
+    r"""Bypass cache"""
+    skip_refresh: NotRequired[components_boolint.BoolInt]
+    r"""Skip synchronous refresh"""
+    exclude_elements: NotRequired[str]
+    r"""Comma-separated list of elements to exclude from the response"""
+    filters: NotRequired[str]
+    r"""General filtering expression."""
+    unwatched: NotRequired[components_boolint.BoolInt]
+    r"""Filter to unwatched only (1 = true)."""
+    genre: NotRequired[str]
+    r"""Filter by genre."""
+    studio: NotRequired[str]
+    r"""Filter by studio."""
+    content_rating: NotRequired[str]
+    r"""Filter by content rating."""
+    resolution: NotRequired[str]
+    r"""Filter by resolution."""
+    year: NotRequired[int]
+    r"""Filter by year."""
+    first_character: NotRequired[str]
+    r"""Filter by first character of title."""
 
 
 class ListContentRequest(BaseModel):
     section_id: Annotated[
-        str,
+        int,
         pydantic.Field(alias="sectionId"),
         FieldMetadata(path=PathParamMetadata(style="simple", explode=False)),
     ]
@@ -312,7 +381,6 @@ class ListContentRequest(BaseModel):
     r"""The index of the first item to return. If not specified, the first item will be returned.
     If the number of items exceeds the limit, the response will be paginated.
     By default this is 0
-
     """
 
     x_plex_container_size: Annotated[
@@ -323,7 +391,6 @@ class ListContentRequest(BaseModel):
     r"""The number of items to return. If not specified, all items will be returned.
     If the number of items exceeds the limit, the response will be paginated.
     By default this is 50
-
     """
 
     media_query: Annotated[
@@ -347,26 +414,279 @@ class ListContentRequest(BaseModel):
     - Complex: `push=1&index=1&or=1&rating=2&pop=1&duration=10` - (index = 1 OR rating = 2) AND duration = 10
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
-
     """
+
+    media_type: Annotated[
+        Optional[int],
+        pydantic.Field(alias="type"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Filter by metadata type (1=movie, 2=show, 3=season, 4=episode, 8=artist, 9=album, 10=track)"""
+
+    sort: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Sort key and direction (e.g. addedAt:desc, titleSort)"""
 
     include_meta: Annotated[
         Optional[components_boolint.BoolInt],
         pydantic.Field(alias="includeMeta"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = components_boolint.BoolInt.FALSE
-    r"""Adds the Meta object to the response
-
-    """
+    r"""Adds the Meta object to the response"""
 
     include_guids: Annotated[
         Optional[components_boolint.BoolInt],
         pydantic.Field(alias="includeGuids"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = components_boolint.BoolInt.FALSE
-    r"""Adds the Guid object to the response
+    r"""Adds the Guid object to the response"""
 
-    """
+    include_collections: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeCollections"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include collection items in results"""
+
+    include_external_media: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeExternalMedia"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include external or online media"""
+
+    include_advanced: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeAdvanced"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include advanced settings"""
+
+    check_files: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="checkFiles"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Verify file existence"""
+
+    include_related: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeRelated"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include related items"""
+
+    include_extras: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeExtras"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include trailers, behind-the-scenes, etc."""
+
+    include_popular_leaves: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includePopularLeaves"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include popular episodes"""
+
+    include_concerts: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeConcerts"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include concert items"""
+
+    include_on_deck: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeOnDeck"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include On Deck status"""
+
+    include_chapters: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeChapters"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include chapter markers"""
+
+    include_preferences: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includePreferences"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include user preferences"""
+
+    include_bandwidths: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeBandwidths"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include bandwidth info"""
+
+    include_loudness_ramps: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeLoudnessRamps"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include loudness ramp data"""
+
+    include_stations: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeStations"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include radio station data"""
+
+    include_external_ids: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeExternalIds"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include external GUIDs"""
+
+    include_reviews: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeReviews"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include user reviews"""
+
+    include_credits: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeCredits"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include full credits"""
+
+    include_art: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeArt"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Force inclusion of artwork fields"""
+
+    include_thumb: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeThumb"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Force inclusion of thumbnail fields"""
+
+    include_banner: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeBanner"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Force inclusion of banner fields"""
+
+    include_theme: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeTheme"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Force inclusion of theme fields"""
+
+    include_fields: Annotated[
+        Optional[str],
+        pydantic.Field(alias="includeFields"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Whitelist of fields to return"""
+
+    exclude_fields: Annotated[
+        Optional[str],
+        pydantic.Field(alias="excludeFields"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Blacklist of fields to omit"""
+
+    async_augment_metadata: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="asyncAugmentMetadata"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Async metadata augmentation"""
+
+    async_refresh_local_media_agent: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="asyncRefreshLocalMediaAgent"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Async local media agent refresh"""
+
+    nocache: Annotated[
+        Optional[components_boolint.BoolInt],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Bypass cache"""
+
+    skip_refresh: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="skipRefresh"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Skip synchronous refresh"""
+
+    exclude_elements: Annotated[
+        Optional[str],
+        pydantic.Field(alias="excludeElements"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Comma-separated list of elements to exclude from the response"""
+
+    filters: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""General filtering expression."""
+
+    unwatched: Annotated[
+        Optional[components_boolint.BoolInt],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Filter to unwatched only (1 = true)."""
+
+    genre: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Filter by genre."""
+
+    studio: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Filter by studio."""
+
+    content_rating: Annotated[
+        Optional[str],
+        pydantic.Field(alias="contentRating"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Filter by content rating."""
+
+    resolution: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Filter by resolution."""
+
+    year: Annotated[
+        Optional[int],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Filter by year."""
+
+    first_character: Annotated[
+        Optional[str],
+        pydantic.Field(alias="firstCharacter"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Filter by first character of title."""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -386,8 +706,46 @@ class ListContentRequest(BaseModel):
                 "X-Plex-Container-Start",
                 "X-Plex-Container-Size",
                 "mediaQuery",
+                "mediaType",
+                "sort",
                 "includeMeta",
                 "includeGuids",
+                "includeCollections",
+                "includeExternalMedia",
+                "includeAdvanced",
+                "checkFiles",
+                "includeRelated",
+                "includeExtras",
+                "includePopularLeaves",
+                "includeConcerts",
+                "includeOnDeck",
+                "includeChapters",
+                "includePreferences",
+                "includeBandwidths",
+                "includeLoudnessRamps",
+                "includeStations",
+                "includeExternalIds",
+                "includeReviews",
+                "includeCredits",
+                "includeArt",
+                "includeThumb",
+                "includeBanner",
+                "includeTheme",
+                "includeFields",
+                "excludeFields",
+                "asyncAugmentMetadata",
+                "asyncRefreshLocalMediaAgent",
+                "nocache",
+                "skipRefresh",
+                "excludeElements",
+                "filters",
+                "unwatched",
+                "genre",
+                "studio",
+                "contentRating",
+                "resolution",
+                "year",
+                "firstCharacter",
             ]
         )
         serialized = handler(self)

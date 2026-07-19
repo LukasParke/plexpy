@@ -36,14 +36,14 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.collections.create_collection(request={
-        "section_id": "<id>",
         "type": components.MediaType.TV_SHOW,
+        "section_id": "<id>",
     })
 
-    assert res.media_container_with_metadata is not None
+    assert res.collection is not None
 
     # Handle response
-    print(res.media_container_with_metadata)
+    print(res.collection)
 
 ```
 

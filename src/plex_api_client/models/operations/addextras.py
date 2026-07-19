@@ -151,6 +151,7 @@ class AddExtrasGlobals(BaseModel):
 
 class AddExtrasRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     url: str
     r"""The URL of the extra"""
     accepts: NotRequired[components_accepts.Accepts]
@@ -175,16 +176,17 @@ class AddExtrasRequestTypedDict(TypedDict):
     r"""A friendly name for the client"""
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
-    extra_type: NotRequired[int]
-    r"""The metadata type of the extra"""
     title: NotRequired[str]
     r"""The title to filter by or assign"""
+    extra_type: NotRequired[int]
+    r"""The metadata type of the extra"""
 
 
 class AddExtrasRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     url: Annotated[
         str, FieldMetadata(query=QueryParamMetadata(style="form", explode=True))
@@ -267,18 +269,18 @@ class AddExtrasRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    title: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""The title to filter by or assign"""
+
     extra_type: Annotated[
         Optional[int],
         pydantic.Field(alias="extraType"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
     r"""The metadata type of the extra"""
-
-    title: Annotated[
-        Optional[str],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""The title to filter by or assign"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -295,8 +297,8 @@ class AddExtrasRequest(BaseModel):
                 "Device-Vendor",
                 "Device-Name",
                 "Marketplace",
-                "extraType",
                 "title",
+                "extraType",
             ]
         )
         serialized = handler(self)

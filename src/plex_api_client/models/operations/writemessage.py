@@ -152,7 +152,6 @@ class Level(int, Enum):
     - 2: Info
     - 3: Debug
     - 4: Verbose
-
     """
 
     ZERO = 0
@@ -192,7 +191,6 @@ class WriteMessageRequestTypedDict(TypedDict):
     - 2: Info
     - 3: Debug
     - 4: Verbose
-
     """
     message: NotRequired[str]
     r"""The text of the message to write to the log."""
@@ -287,7 +285,6 @@ class WriteMessageRequest(BaseModel):
     - 2: Info
     - 3: Debug
     - 4: Verbose
-
     """
 
     message: Annotated[

@@ -186,15 +186,17 @@ class GetLibraryMatchesRequestTypedDict(TypedDict):
     9 = photo
 
     E.g. A movie library will not return anything with type 3 as there are no seasons for movie libraries
-
     """
-    include_full_metadata: NotRequired[components_boolint.BoolInt]
-    include_ancestor_metadata: NotRequired[components_boolint.BoolInt]
-    include_alternate_metadata_sources: NotRequired[components_boolint.BoolInt]
-    guid: NotRequired[str]
-    r"""Used for movies, shows, artists, albums, and tracks.  Allowed for various URI schemes, to be defined."""
     title: NotRequired[str]
     r"""The title to filter by or assign"""
+    include_full_metadata: NotRequired[components_boolint.BoolInt]
+    r"""Include full metadata in the response"""
+    include_ancestor_metadata: NotRequired[components_boolint.BoolInt]
+    r"""Include ancestor metadata in the response"""
+    include_alternate_metadata_sources: NotRequired[components_boolint.BoolInt]
+    r"""Include alternate metadata sources in the response"""
+    guid: NotRequired[str]
+    r"""Used for movies, shows, artists, albums, and tracks.  Allowed for various URI schemes, to be defined."""
     year: NotRequired[int]
     r"""Used for movies shows, and albums.  Optional."""
     path: NotRequired[str]
@@ -307,38 +309,40 @@ class GetLibraryMatchesRequest(BaseModel):
     9 = photo
 
     E.g. A movie library will not return anything with type 3 as there are no seasons for movie libraries
-
     """
-
-    include_full_metadata: Annotated[
-        Optional[components_boolint.BoolInt],
-        pydantic.Field(alias="includeFullMetadata"),
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = components_boolint.BoolInt.FALSE
-
-    include_ancestor_metadata: Annotated[
-        Optional[components_boolint.BoolInt],
-        pydantic.Field(alias="includeAncestorMetadata"),
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = components_boolint.BoolInt.FALSE
-
-    include_alternate_metadata_sources: Annotated[
-        Optional[components_boolint.BoolInt],
-        pydantic.Field(alias="includeAlternateMetadataSources"),
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = components_boolint.BoolInt.FALSE
-
-    guid: Annotated[
-        Optional[str],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""Used for movies, shows, artists, albums, and tracks.  Allowed for various URI schemes, to be defined."""
 
     title: Annotated[
         Optional[str],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
     r"""The title to filter by or assign"""
+
+    include_full_metadata: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeFullMetadata"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include full metadata in the response"""
+
+    include_ancestor_metadata: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeAncestorMetadata"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include ancestor metadata in the response"""
+
+    include_alternate_metadata_sources: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeAlternateMetadataSources"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include alternate metadata sources in the response"""
+
+    guid: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Used for movies, shows, artists, albums, and tracks.  Allowed for various URI schemes, to be defined."""
 
     year: Annotated[
         Optional[int],
@@ -409,11 +413,11 @@ class GetLibraryMatchesRequest(BaseModel):
                 "Device-Name",
                 "Marketplace",
                 "type",
+                "title",
                 "includeFullMetadata",
                 "includeAncestorMetadata",
                 "includeAlternateMetadataSources",
                 "guid",
-                "title",
                 "year",
                 "path",
                 "grandparentTitle",

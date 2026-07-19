@@ -311,6 +311,8 @@ class GetSessionSegmentResponseTypedDict(TypedDict):
     r"""HTTP response status code for this operation"""
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
+    binary_response: NotRequired[httpx.Response]
+    r"""MPEG-TS segment for playing HLS content"""
 
 
 class GetSessionSegmentResponse(BaseModel):
@@ -322,3 +324,22 @@ class GetSessionSegmentResponse(BaseModel):
 
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
+
+    binary_response: Optional[httpx.Response] = None
+    r"""MPEG-TS segment for playing HLS content"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["BinaryResponse"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m

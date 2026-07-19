@@ -178,8 +178,6 @@ class GetCommonRequestTypedDict(TypedDict):
     r"""A friendly name for the client"""
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
-    type: NotRequired[int]
-    r"""Item type"""
     media_query: NotRequired[components_mediaquery.MediaQueryTypedDict]
     r"""A querystring-based filtering language used to select subsets of media. Can be provided as an object with typed properties for type safety, or as a string for complex queries with operators and boolean logic.
 
@@ -197,8 +195,9 @@ class GetCommonRequestTypedDict(TypedDict):
     - Complex: `push=1&index=1&or=1&rating=2&pop=1&duration=10` - (index = 1 OR rating = 2) AND duration = 10
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
-
     """
+    media_type: NotRequired[int]
+    r"""Item type"""
 
 
 class GetCommonRequest(BaseModel):
@@ -285,12 +284,6 @@ class GetCommonRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
-    type: Annotated[
-        Optional[int],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""Item type"""
-
     media_query: Annotated[
         Optional[components_mediaquery.MediaQuery],
         pydantic.Field(alias="mediaQuery"),
@@ -312,8 +305,14 @@ class GetCommonRequest(BaseModel):
     - Complex: `push=1&index=1&or=1&rating=2&pop=1&duration=10` - (index = 1 OR rating = 2) AND duration = 10
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
-
     """
+
+    media_type: Annotated[
+        Optional[int],
+        pydantic.Field(alias="type"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Item type"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -330,8 +329,8 @@ class GetCommonRequest(BaseModel):
                 "Device-Vendor",
                 "Device-Name",
                 "Marketplace",
-                "type",
                 "mediaQuery",
+                "mediaType",
             ]
         )
         serialized = handler(self)

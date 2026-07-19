@@ -319,7 +319,7 @@ class CreateDVRResponseTypedDict(TypedDict):
     dvr_request_handler_slash_get_responses_200: NotRequired[
         components_dvrrequesthandler_slash_get_responses_200.DvrRequestHandlerSlashGetResponses200TypedDict
     ]
-    r"""OK"""
+    r"""Successfully created/executed create a dvr"""
 
 
 class CreateDVRResponse(BaseModel):
@@ -337,7 +337,7 @@ class CreateDVRResponse(BaseModel):
     dvr_request_handler_slash_get_responses_200: Optional[
         components_dvrrequesthandler_slash_get_responses_200.DvrRequestHandlerSlashGetResponses200
     ] = None
-    r"""OK"""
+    r"""Successfully created/executed create a dvr"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

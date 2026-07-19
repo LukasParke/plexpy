@@ -10,35 +10,76 @@ from typing_extensions import Annotated, NotRequired, TypedDict
 
 
 class DeviceTypedDict(TypedDict):
+    title: NotRequired[str]
+    r"""Display title for the device."""
     channel_mapping: NotRequired[List[ChannelMappingTypedDict]]
+    device_identifier: NotRequired[str]
+    r"""Distinct hardware identifier for the device."""
+    enabled: NotRequired[bool]
+    r"""Whether the device is enabled."""
+    id: NotRequired[int]
+    r"""Unique device ID."""
     key: NotRequired[str]
     last_seen_at: NotRequired[int]
+    lineup: NotRequired[str]
+    r"""EPG lineup association."""
+    lineup_type: NotRequired[str]
+    r"""Type of EPG lineup."""
     make: NotRequired[str]
     model: NotRequired[str]
     model_number: NotRequired[str]
+    name: NotRequired[str]
+    r"""Human-readable device name."""
     protocol: NotRequired[str]
     sources: NotRequired[str]
     state: NotRequired[str]
     status: NotRequired[str]
+    thumb: NotRequired[str]
+    r"""URL to the device thumbnail image."""
+    thumb_version: NotRequired[int]
+    r"""Version of the device thumbnail."""
     tuners: NotRequired[str]
     uri: NotRequired[str]
     uuid: NotRequired[str]
 
 
 class Device(BaseModel):
+    title: Optional[str] = None
+    r"""Display title for the device."""
+
     channel_mapping: Annotated[
         Optional[List[ChannelMapping]], pydantic.Field(alias="ChannelMapping")
     ] = None
 
+    device_identifier: Annotated[
+        Optional[str], pydantic.Field(alias="deviceIdentifier")
+    ] = None
+    r"""Distinct hardware identifier for the device."""
+
+    enabled: Optional[bool] = None
+    r"""Whether the device is enabled."""
+
+    id: Optional[int] = None
+    r"""Unique device ID."""
+
     key: Optional[str] = None
 
     last_seen_at: Annotated[Optional[int], pydantic.Field(alias="lastSeenAt")] = None
+
+    lineup: Optional[str] = None
+    r"""EPG lineup association."""
+
+    lineup_type: Annotated[Optional[str], pydantic.Field(alias="lineupType")] = None
+    r"""Type of EPG lineup."""
 
     make: Optional[str] = None
 
     model: Optional[str] = None
 
     model_number: Annotated[Optional[str], pydantic.Field(alias="modelNumber")] = None
+
+    name: Optional[str] = None
+    r"""Human-readable device name."""
 
     protocol: Optional[str] = None
 
@@ -47,6 +88,12 @@ class Device(BaseModel):
     state: Optional[str] = None
 
     status: Optional[str] = None
+
+    thumb: Optional[str] = None
+    r"""URL to the device thumbnail image."""
+
+    thumb_version: Annotated[Optional[int], pydantic.Field(alias="thumbVersion")] = None
+    r"""Version of the device thumbnail."""
 
     tuners: Optional[str] = None
 
@@ -58,16 +105,25 @@ class Device(BaseModel):
     def serialize_model(self, handler):
         optional_fields = set(
             [
+                "title",
                 "ChannelMapping",
+                "deviceIdentifier",
+                "enabled",
+                "id",
                 "key",
                 "lastSeenAt",
+                "lineup",
+                "lineupType",
                 "make",
                 "model",
                 "modelNumber",
+                "name",
                 "protocol",
                 "sources",
                 "state",
                 "status",
+                "thumb",
+                "thumbVersion",
                 "tuners",
                 "uri",
                 "uuid",

@@ -6,6 +6,7 @@ import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
     boolint as components_boolint,
+    mediacontainerwithplayqueue as components_mediacontainerwithplayqueue,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
@@ -157,7 +158,7 @@ class Type(str, Enum):
 
 
 class CreatePlayQueueRequestTypedDict(TypedDict):
-    type: Type
+    media_type: Type
     r"""The type of play queue to create"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
@@ -202,8 +203,10 @@ class CreatePlayQueueRequestTypedDict(TypedDict):
 
 
 class CreatePlayQueueRequest(BaseModel):
-    type: Annotated[
-        Type, FieldMetadata(query=QueryParamMetadata(style="form", explode=True))
+    media_type: Annotated[
+        Type,
+        pydantic.Field(alias="type"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ]
     r"""The type of play queue to create"""
 
@@ -380,170 +383,6 @@ class CreatePlayQueueRequest(BaseModel):
         return m
 
 
-class CreatePlayQueueMediaContainerTypedDict(TypedDict):
-    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
-    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
-    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
-    """
-
-    identifier: NotRequired[str]
-    offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
-    size: NotRequired[int]
-    total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    play_queue_id: NotRequired[int]
-    r"""The ID of the play queue, which is used in subsequent requests."""
-    play_queue_last_added_item_id: NotRequired[str]
-    r"""Defines where the \"Up Next\" region starts"""
-    play_queue_selected_item_id: NotRequired[int]
-    r"""The queue item ID of the currently selected  item."""
-    play_queue_selected_item_offset: NotRequired[int]
-    r"""The offset of the selected item in the play queue, from the beginning of the queue."""
-    play_queue_selected_metadata_item_id: NotRequired[int]
-    r"""The metadata item ID of the currently selected item (matches `ratingKey` attribute in metadata item if the media provider is a library)."""
-    play_queue_shuffled: NotRequired[bool]
-    r"""Whether or not the queue is shuffled."""
-    play_queue_source_uri: NotRequired[str]
-    r"""The original URI used to create the play queue."""
-    play_queue_total_count: NotRequired[int]
-    r"""The total number of items in the play queue."""
-    play_queue_version: NotRequired[int]
-    r"""The version of the play queue. It increments every time a change is made to the play queue to assist clients in knowing when to refresh."""
-
-
-class CreatePlayQueueMediaContainer(BaseModel):
-    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
-    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
-    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
-    """
-
-    identifier: Optional[str] = None
-
-    offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
-
-    size: Optional[int] = None
-
-    total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-
-    play_queue_id: Annotated[Optional[int], pydantic.Field(alias="playQueueID")] = None
-    r"""The ID of the play queue, which is used in subsequent requests."""
-
-    play_queue_last_added_item_id: Annotated[
-        Optional[str], pydantic.Field(alias="playQueueLastAddedItemID")
-    ] = None
-    r"""Defines where the \"Up Next\" region starts"""
-
-    play_queue_selected_item_id: Annotated[
-        Optional[int], pydantic.Field(alias="playQueueSelectedItemID")
-    ] = None
-    r"""The queue item ID of the currently selected  item."""
-
-    play_queue_selected_item_offset: Annotated[
-        Optional[int], pydantic.Field(alias="playQueueSelectedItemOffset")
-    ] = None
-    r"""The offset of the selected item in the play queue, from the beginning of the queue."""
-
-    play_queue_selected_metadata_item_id: Annotated[
-        Optional[int], pydantic.Field(alias="playQueueSelectedMetadataItemID")
-    ] = None
-    r"""The metadata item ID of the currently selected item (matches `ratingKey` attribute in metadata item if the media provider is a library)."""
-
-    play_queue_shuffled: Annotated[
-        Optional[bool], pydantic.Field(alias="playQueueShuffled")
-    ] = None
-    r"""Whether or not the queue is shuffled."""
-
-    play_queue_source_uri: Annotated[
-        Optional[str], pydantic.Field(alias="playQueueSourceURI")
-    ] = None
-    r"""The original URI used to create the play queue."""
-
-    play_queue_total_count: Annotated[
-        Optional[int], pydantic.Field(alias="playQueueTotalCount")
-    ] = None
-    r"""The total number of items in the play queue."""
-
-    play_queue_version: Annotated[
-        Optional[int], pydantic.Field(alias="playQueueVersion")
-    ] = None
-    r"""The version of the play queue. It increments every time a change is made to the play queue to assist clients in knowing when to refresh."""
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(
-            [
-                "identifier",
-                "offset",
-                "size",
-                "totalSize",
-                "playQueueID",
-                "playQueueLastAddedItemID",
-                "playQueueSelectedItemID",
-                "playQueueSelectedItemOffset",
-                "playQueueSelectedMetadataItemID",
-                "playQueueShuffled",
-                "playQueueSourceURI",
-                "playQueueTotalCount",
-                "playQueueVersion",
-            ]
-        )
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
-class CreatePlayQueueResponseBodyTypedDict(TypedDict):
-    r"""OK"""
-
-    media_container: NotRequired[CreatePlayQueueMediaContainerTypedDict]
-
-
-class CreatePlayQueueResponseBody(BaseModel):
-    r"""OK"""
-
-    media_container: Annotated[
-        Optional[CreatePlayQueueMediaContainer], pydantic.Field(alias="MediaContainer")
-    ] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["MediaContainer"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class CreatePlayQueueResponseTypedDict(TypedDict):
     content_type: str
     r"""HTTP response content type for this operation"""
@@ -552,7 +391,9 @@ class CreatePlayQueueResponseTypedDict(TypedDict):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
     headers: Dict[str, List[str]]
-    object: NotRequired[CreatePlayQueueResponseBodyTypedDict]
+    media_container_with_play_queue: NotRequired[
+        components_mediacontainerwithplayqueue.MediaContainerWithPlayQueueTypedDict
+    ]
     r"""OK"""
 
 
@@ -568,12 +409,14 @@ class CreatePlayQueueResponse(BaseModel):
 
     headers: Dict[str, List[str]]
 
-    object: Optional[CreatePlayQueueResponseBody] = None
+    media_container_with_play_queue: Optional[
+        components_mediacontainerwithplayqueue.MediaContainerWithPlayQueue
+    ] = None
     r"""OK"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["object"])
+        optional_fields = set(["MediaContainerWithPlayQueue"])
         serialized = handler(self)
         m = {}
 
@@ -586,13 +429,3 @@ class CreatePlayQueueResponse(BaseModel):
                     m[k] = val
 
         return m
-
-
-try:
-    CreatePlayQueueMediaContainer.model_rebuild()
-except NameError:
-    pass
-try:
-    CreatePlayQueueResponseBody.model_rebuild()
-except NameError:
-    pass

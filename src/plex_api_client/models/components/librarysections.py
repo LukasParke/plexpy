@@ -44,19 +44,14 @@ class LibrarySectionsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
     allow_camera_upload: NotRequired[bool]
     allow_channel_access: NotRequired[bool]
     allow_media_deletion: NotRequired[bool]
@@ -67,7 +62,8 @@ class LibrarySectionsMediaContainerTypedDict(TypedDict):
     certificate: NotRequired[bool]
     companion_proxy: NotRequired[bool]
     country_code: NotRequired[str]
-    diagnostics: NotRequired[str]
+    diagnostics: NotRequired[List[str]]
+    r"""Comma-separated list of enabled diagnostics modules."""
     event_stream: NotRequired[bool]
     friendly_name: NotRequired[str]
     hub_search: NotRequired[bool]
@@ -82,9 +78,10 @@ class LibrarySectionsMediaContainerTypedDict(TypedDict):
     my_plex_signin_state: NotRequired[Any]
     my_plex_subscription: NotRequired[bool]
     my_plex_username: NotRequired[str]
-    offline_transcode: NotRequired[Any]
-    owner_features: NotRequired[str]
-    r"""A comma-separated list of features which are enabled for the server owner"""
+    offline_transcode: NotRequired[int]
+    r"""Whether offline transcoding is enabled."""
+    owner_features: NotRequired[List[str]]
+    r"""List of enabled owner features."""
     platform: NotRequired[str]
     platform_version: NotRequired[str]
     plugin_host: NotRequired[bool]
@@ -99,11 +96,12 @@ class LibrarySectionsMediaContainerTypedDict(TypedDict):
     transcoder_photo: NotRequired[bool]
     transcoder_subtitles: NotRequired[bool]
     transcoder_video: NotRequired[bool]
-    transcoder_video_bitrates: NotRequired[Any]
-    r"""The suggested video quality bitrates to present to the user"""
-    transcoder_video_qualities: NotRequired[str]
-    transcoder_video_resolutions: NotRequired[Any]
-    r"""The suggested video resolutions to the above quality bitrates"""
+    transcoder_video_bitrates: NotRequired[List[str]]
+    r"""List of supported transcoder video bitrates."""
+    transcoder_video_qualities: NotRequired[List[str]]
+    r"""List of supported transcoder video qualities."""
+    transcoder_video_resolutions: NotRequired[List[str]]
+    r"""List of supported transcoder video resolutions."""
     updated_at: NotRequired[int]
     updater: NotRequired[bool]
     version: NotRequired[str]
@@ -115,22 +113,17 @@ class LibrarySectionsMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     allow_camera_upload: Annotated[
         Optional[bool], pydantic.Field(alias="allowCameraUpload")
@@ -164,7 +157,8 @@ class LibrarySectionsMediaContainer(BaseModel):
 
     country_code: Annotated[Optional[str], pydantic.Field(alias="countryCode")] = None
 
-    diagnostics: Optional[str] = None
+    diagnostics: Optional[List[str]] = None
+    r"""Comma-separated list of enabled diagnostics modules."""
 
     event_stream: Annotated[Optional[bool], pydantic.Field(alias="eventStream")] = None
 
@@ -211,13 +205,14 @@ class LibrarySectionsMediaContainer(BaseModel):
     ] = None
 
     offline_transcode: Annotated[
-        Optional[Any], pydantic.Field(alias="offlineTranscode")
+        Optional[int], pydantic.Field(alias="offlineTranscode")
     ] = None
+    r"""Whether offline transcoding is enabled."""
 
-    owner_features: Annotated[Optional[str], pydantic.Field(alias="ownerFeatures")] = (
-        None
-    )
-    r"""A comma-separated list of features which are enabled for the server owner"""
+    owner_features: Annotated[
+        Optional[List[str]], pydantic.Field(alias="ownerFeatures")
+    ] = None
+    r"""List of enabled owner features."""
 
     platform: Optional[str] = None
 
@@ -270,18 +265,19 @@ class LibrarySectionsMediaContainer(BaseModel):
     ] = None
 
     transcoder_video_bitrates: Annotated[
-        Optional[Any], pydantic.Field(alias="transcoderVideoBitrates")
+        Optional[List[str]], pydantic.Field(alias="transcoderVideoBitrates")
     ] = None
-    r"""The suggested video quality bitrates to present to the user"""
+    r"""List of supported transcoder video bitrates."""
 
     transcoder_video_qualities: Annotated[
-        Optional[str], pydantic.Field(alias="transcoderVideoQualities")
+        Optional[List[str]], pydantic.Field(alias="transcoderVideoQualities")
     ] = None
+    r"""List of supported transcoder video qualities."""
 
     transcoder_video_resolutions: Annotated[
-        Optional[Any], pydantic.Field(alias="transcoderVideoResolutions")
+        Optional[List[str]], pydantic.Field(alias="transcoderVideoResolutions")
     ] = None
-    r"""The suggested video resolutions to the above quality bitrates"""
+    r"""List of supported transcoder video resolutions."""
 
     updated_at: Annotated[Optional[int], pydantic.Field(alias="updatedAt")] = None
 

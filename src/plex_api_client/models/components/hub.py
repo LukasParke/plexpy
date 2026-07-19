@@ -18,20 +18,22 @@ class HubTypedDict(TypedDict):
     hub_identifier: NotRequired[str]
     r"""A unique identifier for the hub"""
     hub_key: NotRequired[str]
-    r"""A key at which the exact content currently displayed can be fetched again. This is particularly important when a hub is marked as random and requesting the `key` may get different results. It's otherwise optional.
-
-    """
+    r"""A key at which the exact content currently displayed can be fetched again. This is particularly important when a hub is marked as random and requesting the `key` may get different results. It's otherwise optional."""
     key: NotRequired[str]
     r"""The key at which all of the content for this hub can be retrieved"""
     metadata: NotRequired[List[MetadataTypedDict]]
     more: NotRequired[bool]
-    r"""\"A boolean indicating that the hub contains more than what's included in the current response.\" 
-
-    """
+    r"""\"A boolean indicating that the hub contains more than what's included in the current response.\" """
     promoted: NotRequired[bool]
     r"""Indicating if the hub should be promoted to the user's homescreen"""
     random: NotRequired[bool]
     r"""Indicating that the contents of the hub may change on each request"""
+    reason: NotRequired[str]
+    r"""Reason for hub inclusion (e.g. \"because you watched\")."""
+    reason_id: NotRequired[int]
+    r"""ID of the item that triggered the reason."""
+    reason_title: NotRequired[str]
+    r"""Human-readable reason title."""
     size: NotRequired[int]
     style: NotRequired[str]
     r"""A suggestion on how this hub's contents might be displayed by a client. Some examples include `hero`, `list`, `spotlight`, and `upsell`"""
@@ -60,9 +62,7 @@ class Hub(BaseModel):
     r"""A unique identifier for the hub"""
 
     hub_key: Annotated[Optional[str], pydantic.Field(alias="hubKey")] = None
-    r"""A key at which the exact content currently displayed can be fetched again. This is particularly important when a hub is marked as random and requesting the `key` may get different results. It's otherwise optional.
-
-    """
+    r"""A key at which the exact content currently displayed can be fetched again. This is particularly important when a hub is marked as random and requesting the `key` may get different results. It's otherwise optional."""
 
     key: Optional[str] = None
     r"""The key at which all of the content for this hub can be retrieved"""
@@ -72,15 +72,22 @@ class Hub(BaseModel):
     )
 
     more: Optional[bool] = None
-    r"""\"A boolean indicating that the hub contains more than what's included in the current response.\" 
-
-    """
+    r"""\"A boolean indicating that the hub contains more than what's included in the current response.\" """
 
     promoted: Optional[bool] = None
     r"""Indicating if the hub should be promoted to the user's homescreen"""
 
     random: Optional[bool] = None
     r"""Indicating that the contents of the hub may change on each request"""
+
+    reason: Optional[str] = None
+    r"""Reason for hub inclusion (e.g. \"because you watched\")."""
+
+    reason_id: Annotated[Optional[int], pydantic.Field(alias="reasonID")] = None
+    r"""ID of the item that triggered the reason."""
+
+    reason_title: Annotated[Optional[str], pydantic.Field(alias="reasonTitle")] = None
+    r"""Human-readable reason title."""
 
     size: Optional[int] = None
 
@@ -114,6 +121,9 @@ class Hub(BaseModel):
                 "more",
                 "promoted",
                 "random",
+                "reason",
+                "reasonID",
+                "reasonTitle",
                 "size",
                 "style",
                 "subtype",

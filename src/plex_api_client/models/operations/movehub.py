@@ -321,7 +321,7 @@ class MoveHubResponseTypedDict(TypedDict):
     get_responses_200: NotRequired[
         components_get_responses_200.GetResponses200TypedDict
     ]
-    r"""OK"""
+    r"""Successfully updated move hub"""
 
 
 class MoveHubResponse(BaseModel):
@@ -337,7 +337,7 @@ class MoveHubResponse(BaseModel):
     headers: Dict[str, List[str]]
 
     get_responses_200: Optional[components_get_responses_200.GetResponses200] = None
-    r"""OK"""
+    r"""Successfully updated move hub"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

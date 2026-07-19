@@ -2,7 +2,8 @@
 
 ## Overview
 
-API Operations against the Download Queue
+API Operations against the Download Queue.
+Note: The Download Queue is distinct from the Play Queue. The Download Queue manages offline/downloaded content, while the Play Queue manages active playback sessions.
 
 ### Available Operations
 
@@ -21,7 +22,6 @@ API Operations against the Download Queue
 Available: 0.2.0
 
 Creates a download queue for this client if one doesn't exist, or returns the existing queue for this client and user.
-
 
 ### Example Usage
 
@@ -55,16 +55,16 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_download_queue
 
 Available: 0.2.0
 
 Get a download queue by its id
-
 
 ### Example Usage
 
@@ -113,16 +113,16 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## add_download_queue_items
 
 Available: 0.2.0
 
 Add items to the download queue
-
 
 ### Example Usage
 
@@ -148,11 +148,6 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.download_queue.add_download_queue_items(request=operations.AddDownloadQueueItemsRequest(
-        queue_id=984925,
-        keys=[
-            "/library/metadata/3",
-            "/library/metadata/6",
-        ],
         advanced_subtitles=components.AdvancedSubtitles.BURN,
         audio_boost=50,
         audio_channel_count=5,
@@ -175,9 +170,15 @@ with PlexAPI(
         protocol=components.Protocol.DASH,
         seconds_per_segment=5,
         subtitle_size=50,
+        subtitles=components.Subtitles.BURN,
         video_bitrate=12000,
         video_quality=50,
         video_resolution="1080x1080",
+        queue_id=984925,
+        keys=[
+            "/library/metadata/3",
+            "/library/metadata/6",
+        ],
     ))
 
     assert res.object is not None
@@ -200,16 +201,16 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## list_download_queue_items
 
 Available: 0.2.0
 
 Get items from a download queue
-
 
 ### Example Usage
 
@@ -258,16 +259,16 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_item_decision
 
 Available: 0.2.0
 
 Grab the decision for a download queue item
-
 
 ### Example Usage
 
@@ -327,7 +328,6 @@ Available: 0.2.0
 
 Grab the media for a download queue item
 
-
 ### Example Usage
 
 <!-- UsageSnippet language="python" operationID="getDownloadQueueMedia" method="get" path="/downloadQueue/{queueId}/item/{itemId}/media" -->
@@ -356,10 +356,10 @@ with PlexAPI(
         "item_id": 32,
     })
 
-    assert res is not None
+    assert res.binary_response is not None
 
     # Handle response
-    print(res)
+    print(res.binary_response)
 
 ```
 
@@ -436,16 +436,16 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_download_queue_items
 
 Available: 0.2.0
 
 Get items from a download queue
-
 
 ### Example Usage
 
@@ -499,16 +499,16 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## restart_processing_download_queue_items
 
 Available: 0.2.0
 
 Reprocess download queue items with previous decision parameters
-
 
 ### Example Usage
 
@@ -562,6 +562,7 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |

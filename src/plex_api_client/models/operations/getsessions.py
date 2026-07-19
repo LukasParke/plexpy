@@ -6,9 +6,49 @@ from plex_api_client.models.components import (
     mediacontainerwithmetadata as components_mediacontainerwithmetadata,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
+from plex_api_client.utils import FieldMetadata, QueryParamMetadata
+import pydantic
 from pydantic import model_serializer
 from typing import Dict, List, Optional
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import Annotated, NotRequired, TypedDict
+
+
+class GetSessionsRequestTypedDict(TypedDict):
+    dvr_id: NotRequired[int]
+    r"""Filter by DVR ID."""
+    channel: NotRequired[int]
+    r"""Filter by channel ID."""
+
+
+class GetSessionsRequest(BaseModel):
+    dvr_id: Annotated[
+        Optional[int],
+        pydantic.Field(alias="dvrId"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Filter by DVR ID."""
+
+    channel: Annotated[
+        Optional[int],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Filter by channel ID."""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["dvrId", "channel"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class GetSessionsResponseTypedDict(TypedDict):

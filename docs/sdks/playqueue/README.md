@@ -50,7 +50,7 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.play_queue.create_play_queue(request=operations.CreatePlayQueueRequest(
-        type=operations.Type.AUDIO,
+        media_type=operations.Type.AUDIO,
         shuffle=components.BoolInt.TRUE,
         repeat=components.BoolInt.TRUE,
         continuous=components.BoolInt.TRUE,
@@ -58,10 +58,10 @@ with PlexAPI(
         on_deck=components.BoolInt.TRUE,
     ))
 
-    assert res.object is not None
+    assert res.media_container_with_play_queue is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_play_queue)
 
 ```
 
@@ -116,10 +116,10 @@ with PlexAPI(
         include_after=components.BoolInt.TRUE,
     ))
 
-    assert res.media_container_with_playlist_metadata is not None
+    assert res.play_queue_response is not None
 
     # Handle response
-    print(res.media_container_with_playlist_metadata)
+    print(res.play_queue_response)
 
 ```
 
@@ -247,9 +247,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## reset_play_queue
 

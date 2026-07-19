@@ -2,159 +2,37 @@
 
 from __future__ import annotations
 import httpx
-from plex_api_client.models.components import device as components_device
+from plex_api_client.models.components import dvrresponse as components_dvrresponse
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
-import pydantic
+from plex_api_client.utils import FieldMetadata, QueryParamMetadata
 from pydantic import model_serializer
 from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
-class ListDVRsDVRsMediaContainerTypedDict(TypedDict):
-    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
-    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
-    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
-    """
-
-    identifier: NotRequired[str]
-    offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
-    size: NotRequired[int]
-    total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    status: NotRequired[int]
-    r"""A status indicator. If present and non-zero, indicates an error"""
-
-
-class ListDVRsDVRsMediaContainer(BaseModel):
-    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
-    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
-    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
-    """
-
-    identifier: Optional[str] = None
-
-    offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
-
-    size: Optional[int] = None
-
-    total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-
-    status: Optional[int] = None
-    r"""A status indicator. If present and non-zero, indicates an error"""
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["identifier", "offset", "size", "totalSize", "status"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
-class DvrTypedDict(TypedDict):
-    device: NotRequired[List[components_device.DeviceTypedDict]]
-    key: NotRequired[str]
-    language: NotRequired[str]
-    lineup: NotRequired[str]
+class ListDVRsRequestTypedDict(TypedDict):
     uuid: NotRequired[str]
+    r"""Filter by DVR UUID."""
+    lineup: NotRequired[str]
+    r"""Filter by lineup."""
 
 
-class Dvr(BaseModel):
-    device: Annotated[
-        Optional[List[components_device.Device]], pydantic.Field(alias="Device")
+class ListDVRsRequest(BaseModel):
+    uuid: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""Filter by DVR UUID."""
 
-    key: Optional[str] = None
-
-    language: Optional[str] = None
-
-    lineup: Optional[str] = None
-
-    uuid: Optional[str] = None
+    lineup: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Filter by lineup."""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["Device", "key", "language", "lineup", "uuid"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
-class ListDVRsMediaContainerTypedDict(TypedDict):
-    media_container: NotRequired[ListDVRsDVRsMediaContainerTypedDict]
-    dvr: NotRequired[List[DvrTypedDict]]
-
-
-class ListDVRsMediaContainer(BaseModel):
-    media_container: Annotated[
-        Optional[ListDVRsDVRsMediaContainer], pydantic.Field(alias="MediaContainer")
-    ] = None
-
-    dvr: Annotated[Optional[List[Dvr]], pydantic.Field(alias="DVR")] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["MediaContainer", "DVR"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
-class ListDVRsResponseBodyTypedDict(TypedDict):
-    r"""OK"""
-
-    media_container: NotRequired[ListDVRsMediaContainerTypedDict]
-
-
-class ListDVRsResponseBody(BaseModel):
-    r"""OK"""
-
-    media_container: Annotated[
-        Optional[ListDVRsMediaContainer], pydantic.Field(alias="MediaContainer")
-    ] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["MediaContainer"])
+        optional_fields = set(["uuid", "lineup"])
         serialized = handler(self)
         m = {}
 
@@ -177,7 +55,7 @@ class ListDVRsResponseTypedDict(TypedDict):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
     headers: Dict[str, List[str]]
-    object: NotRequired[ListDVRsResponseBodyTypedDict]
+    dvr_response: NotRequired[components_dvrresponse.DVRResponseTypedDict]
     r"""OK"""
 
 
@@ -193,12 +71,12 @@ class ListDVRsResponse(BaseModel):
 
     headers: Dict[str, List[str]]
 
-    object: Optional[ListDVRsResponseBody] = None
+    dvr_response: Optional[components_dvrresponse.DVRResponse] = None
     r"""OK"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["object"])
+        optional_fields = set(["DVRResponse"])
         serialized = handler(self)
         m = {}
 
@@ -211,21 +89,3 @@ class ListDVRsResponse(BaseModel):
                     m[k] = val
 
         return m
-
-
-try:
-    ListDVRsDVRsMediaContainer.model_rebuild()
-except NameError:
-    pass
-try:
-    Dvr.model_rebuild()
-except NameError:
-    pass
-try:
-    ListDVRsMediaContainer.model_rebuild()
-except NameError:
-    pass
-try:
-    ListDVRsResponseBody.model_rebuild()
-except NameError:
-    pass

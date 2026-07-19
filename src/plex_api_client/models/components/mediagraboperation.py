@@ -10,7 +10,7 @@ from typing import Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
-class Status(str, Enum):
+class MediaGrabOperationStatus(str, Enum):
     INACTIVE = "inactive"
     SCHEDULED = "scheduled"
     INPROGRESS = "inprogress"
@@ -22,7 +22,7 @@ class Status(str, Enum):
 
 
 class MediaGrabOperationTypedDict(TypedDict):
-    r"""A media grab opration represents a scheduled or active recording of media"""
+    r"""A media grab operation represents a scheduled or active recording of media"""
 
     current_size: NotRequired[int]
     grabber_identifier: NotRequired[str]
@@ -37,15 +37,14 @@ class MediaGrabOperationTypedDict(TypedDict):
     Note that when a metadata item has multiple media items, those media items should be isomorphic. That is, a 4K version and 1080p version of a movie are different versions of the same movie. They have the same duration, same summary, same rating, etc. and they can generally be considered interchangeable. A theatrical release vs. director's cut vs. unrated version on the other hand would be separate metadata items.
 
     Metadata items can often live in a hierarchy with relationships between them.  For example, the metadata item for an episodes is associated with a season metadata item which is associated with a show metadata item.  A similar hierarchy exists with track, album, and artist and photos and photo album.  The relationships may be expressed via relative terms and absolute terms.  For example, \"leaves\" refer to metadata items which has associated media (there is no media for a season nor show).  A show will have \"children\" in the form of seasons and a season will have \"children\" in the form of episodes and episodes have \"parent\" in the form of a season which has a \"parent\" in the form of a show.  Similarly, a show has \"grandchildren\" in the form of episodse and an episode has a \"grandparent\" in the form of a show.
-
     """
     percent: NotRequired[float]
     provider: NotRequired[str]
-    status: NotRequired[Status]
+    status: NotRequired[MediaGrabOperationStatus]
 
 
 class MediaGrabOperation(BaseModel):
-    r"""A media grab opration represents a scheduled or active recording of media"""
+    r"""A media grab operation represents a scheduled or active recording of media"""
 
     current_size: Annotated[Optional[int], pydantic.Field(alias="currentSize")] = None
 
@@ -73,14 +72,13 @@ class MediaGrabOperation(BaseModel):
     Note that when a metadata item has multiple media items, those media items should be isomorphic. That is, a 4K version and 1080p version of a movie are different versions of the same movie. They have the same duration, same summary, same rating, etc. and they can generally be considered interchangeable. A theatrical release vs. director's cut vs. unrated version on the other hand would be separate metadata items.
 
     Metadata items can often live in a hierarchy with relationships between them.  For example, the metadata item for an episodes is associated with a season metadata item which is associated with a show metadata item.  A similar hierarchy exists with track, album, and artist and photos and photo album.  The relationships may be expressed via relative terms and absolute terms.  For example, \"leaves\" refer to metadata items which has associated media (there is no media for a season nor show).  A show will have \"children\" in the form of seasons and a season will have \"children\" in the form of episodes and episodes have \"parent\" in the form of a season which has a \"parent\" in the form of a show.  Similarly, a show has \"grandchildren\" in the form of episodse and an episode has a \"grandparent\" in the form of a show.
-
     """
 
     percent: Optional[float] = None
 
     provider: Optional[str] = None
 
-    status: Optional[Status] = None
+    status: Optional[MediaGrabOperationStatus] = None
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

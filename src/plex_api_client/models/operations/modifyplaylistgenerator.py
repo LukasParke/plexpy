@@ -184,23 +184,23 @@ class QueryParamScope(str, Enum):
 
 
 class PolicyTypedDict(TypedDict):
-    value: NotRequired[int]
     scope: NotRequired[QueryParamScope]
     unwatched: NotRequired[components_boolint.BoolInt]
+    value: NotRequired[int]
 
 
 class Policy(BaseModel):
-    value: Annotated[Optional[int], FieldMetadata(query=True)] = None
-
     scope: Annotated[Optional[QueryParamScope], FieldMetadata(query=True)] = None
 
     unwatched: Annotated[
         Optional[components_boolint.BoolInt], FieldMetadata(query=True)
     ] = components_boolint.BoolInt.FALSE
 
+    value: Annotated[Optional[int], FieldMetadata(query=True)] = None
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["value", "scope", "unwatched"])
+        optional_fields = set(["scope", "unwatched", "value"])
         serialized = handler(self)
         m = {}
 
@@ -219,24 +219,26 @@ class ItemTypedDict(TypedDict):
     r"""Note: OpenAPI cannot properly render this query parameter example ([See GHI](https://github.com/OAI/OpenAPI-Specification/issues/1706)).  It should be rendered as:
 
     Item[type]=42&Item[title]=Jack-Jack Attack&Item[target]=&Item[targetTagID]=1&Item[locationID]=-1&Item[Location][uri]=library://82503060-0d68-4603-b594-8b071d54819e/item//library/metadata/146&Item[Policy][scope]=all&Item[Policy][value]=&Item[Policy][unwatched]=0
-
     """
 
+    title: NotRequired[str]
+    type: NotRequired[int]
     location: NotRequired[ModifyPlaylistGeneratorQueryParamLocationTypedDict]
     location_id: NotRequired[int]
     policy: NotRequired[PolicyTypedDict]
     target: NotRequired[str]
     target_tag_id: NotRequired[int]
-    title: NotRequired[str]
-    type: NotRequired[int]
 
 
 class Item(BaseModel):
     r"""Note: OpenAPI cannot properly render this query parameter example ([See GHI](https://github.com/OAI/OpenAPI-Specification/issues/1706)).  It should be rendered as:
 
     Item[type]=42&Item[title]=Jack-Jack Attack&Item[target]=&Item[targetTagID]=1&Item[locationID]=-1&Item[Location][uri]=library://82503060-0d68-4603-b594-8b071d54819e/item//library/metadata/146&Item[Policy][scope]=all&Item[Policy][value]=&Item[Policy][unwatched]=0
-
     """
+
+    title: Annotated[Optional[str], FieldMetadata(query=True)] = None
+
+    type: Annotated[Optional[int], FieldMetadata(query=True)] = None
 
     location: Annotated[
         Optional[ModifyPlaylistGeneratorQueryParamLocation],
@@ -258,21 +260,17 @@ class Item(BaseModel):
         Optional[int], pydantic.Field(alias="targetTagID"), FieldMetadata(query=True)
     ] = None
 
-    title: Annotated[Optional[str], FieldMetadata(query=True)] = None
-
-    type: Annotated[Optional[int], FieldMetadata(query=True)] = None
-
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
             [
+                "title",
+                "type",
                 "Location",
                 "locationID",
                 "Policy",
                 "target",
                 "targetTagID",
-                "title",
-                "type",
             ]
         )
         serialized = handler(self)
@@ -320,7 +318,6 @@ class ModifyPlaylistGeneratorRequestTypedDict(TypedDict):
     r"""Note: OpenAPI cannot properly render this query parameter example ([See GHI](https://github.com/OAI/OpenAPI-Specification/issues/1706)).  It should be rendered as:
 
     Item[type]=42&Item[title]=Jack-Jack Attack&Item[target]=&Item[targetTagID]=1&Item[locationID]=-1&Item[Location][uri]=library://82503060-0d68-4603-b594-8b071d54819e/item//library/metadata/146&Item[Policy][scope]=all&Item[Policy][value]=&Item[Policy][unwatched]=0
-
     """
 
 
@@ -423,7 +420,6 @@ class ModifyPlaylistGeneratorRequest(BaseModel):
     r"""Note: OpenAPI cannot properly render this query parameter example ([See GHI](https://github.com/OAI/OpenAPI-Specification/issues/1706)).  It should be rendered as:
 
     Item[type]=42&Item[title]=Jack-Jack Attack&Item[target]=&Item[targetTagID]=1&Item[locationID]=-1&Item[Location][uri]=library://82503060-0d68-4603-b594-8b071d54819e/item//library/metadata/146&Item[Policy][scope]=all&Item[Policy][value]=&Item[Policy][unwatched]=0
-
     """
 
     @model_serializer(mode="wrap")
@@ -468,7 +464,7 @@ class ModifyPlaylistGeneratorResponseTypedDict(TypedDict):
     media_container_with_playlist_metadata: NotRequired[
         components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadataTypedDict
     ]
-    r"""OK"""
+    r"""Successfully updated modify a generator"""
 
 
 class ModifyPlaylistGeneratorResponse(BaseModel):
@@ -484,7 +480,7 @@ class ModifyPlaylistGeneratorResponse(BaseModel):
     media_container_with_playlist_metadata: Optional[
         components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadata
     ] = None
-    r"""OK"""
+    r"""Successfully updated modify a generator"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

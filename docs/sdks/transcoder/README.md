@@ -6,11 +6,69 @@ API Operations against the Transcoder
 
 ### Available Operations
 
+* [transcode_music](#transcode_music) - Transcode Music
 * [transcode_image](#transcode_image) - Transcode an image
+* [get_transcode_sessions](#get_transcode_sessions) - Get Transcode Sessions
 * [make_decision](#make_decision) - Make a decision on media playback
 * [trigger_fallback](#trigger_fallback) - Manually trigger a transcoder fallback
 * [transcode_subtitles](#transcode_subtitles) - Transcode subtitles
 * [start_transcode_session](#start_transcode_session) - Start A Transcoding Session
+* [get_dash_segment](#get_dash_segment) - Get DASH Segment
+* [get_hls_segment](#get_hls_segment) - Get HLS Segment
+
+## transcode_music
+
+Audio transcode endpoint for music playback.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="transcodeMusic" method="get" path="/music/:/transcode" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.transcoder.transcode_music(request={})
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                            | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `request`                                                                            | [operations.TranscodeMusicRequest](../../models/operations/transcodemusicrequest.md) | :heavy_check_mark:                                                                   | The request object to use for the request.                                           |
+| `retries`                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                     | :heavy_minus_sign:                                                                   | Configuration to override the default retry behavior of the client.                  |
+
+### Response
+
+**[operations.TranscodeMusicResponse](../../models/operations/transcodemusicresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## transcode_image
 
@@ -72,6 +130,47 @@ with PlexAPI(
 | --------------- | --------------- | --------------- |
 | errors.SDKError | 4XX, 5XX        | \*/\*           |
 
+## get_transcode_sessions
+
+Get active transcode sessions.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getTranscodeSessions" method="get" path="/transcode/sessions" -->
+```python
+from plex_api_client import PlexAPI
+
+
+with PlexAPI(
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.transcoder.get_transcode_sessions()
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[operations.GetTranscodeSessionsResponse](../../models/operations/gettranscodesessionsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
 ## make_decision
 
 Make a decision on media playback based on client profile, and requested settings such as bandwidth and resolution.
@@ -120,12 +219,14 @@ with PlexAPI(
         path="/library/metadata/151671",
         peak_bitrate=12000,
         photo_resolution="1080x1080",
-        protocol=operations.Protocol.DASH,
+        protocol=operations.QueryParamProtocol.DASH,
         seconds_per_segment=5,
         subtitle_size=50,
+        subtitles=operations.Subtitles.BURN,
+        video_resolution="1080x1080",
+        copyts=components.BoolInt.TRUE,
         video_bitrate=12000,
         video_quality=50,
-        video_resolution="1080x1080",
         x_plex_client_profile_extra="add-limitation(scope=videoCodec&scopeName=*&type=upperBound&name=video.frameRate&value=60&replace=true)+append-transcode-target-codec(type=videoProfile&context=streaming&videoCodec=h264%2Chevc&audioCodec=aac&protocol=dash)",
         x_plex_client_profile_name="generic",
     ))
@@ -150,9 +251,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## trigger_fallback
 
@@ -257,20 +359,22 @@ with PlexAPI(
         path="/library/metadata/151671",
         peak_bitrate=12000,
         photo_resolution="1080x1080",
-        protocol=operations.QueryParamProtocol.DASH,
+        protocol=operations.TranscodeSubtitlesQueryParamProtocol.DASH,
         seconds_per_segment=5,
         subtitle_size=50,
+        subtitles=operations.QueryParamSubtitles.BURN,
+        video_resolution="1080x1080",
+        copyts=components.BoolInt.TRUE,
         video_bitrate=12000,
         video_quality=50,
-        video_resolution="1080x1080",
         x_plex_client_profile_extra="add-limitation(scope=videoCodec&scopeName=*&type=upperBound&name=video.frameRate&value=60&replace=true)+append-transcode-target-codec(type=videoProfile&context=streaming&videoCodec=h264%2Chevc&audioCodec=aac&protocol=dash)",
         x_plex_client_profile_name="generic",
     ))
 
-    assert res is not None
+    assert res.binary_response is not None
 
     # Handle response
-    print(res)
+    print(res.binary_response)
 
 ```
 
@@ -320,8 +424,8 @@ with PlexAPI(
 
     res = plex_api.transcoder.start_transcode_session(request=operations.StartTranscodeSessionRequest(
         transcode_type=components.TranscodeType.MUSIC,
-        extension=operations.Extension.MPD,
         advanced_subtitles=components.AdvancedSubtitles.BURN,
+        extension=operations.Extension.MPD,
         audio_boost=50,
         audio_channel_count=5,
         auto_adjust_quality=components.BoolInt.TRUE,
@@ -343,17 +447,19 @@ with PlexAPI(
         protocol=operations.StartTranscodeSessionQueryParamProtocol.DASH,
         seconds_per_segment=5,
         subtitle_size=50,
+        subtitles=operations.StartTranscodeSessionQueryParamSubtitles.BURN,
+        video_resolution="1080x1080",
+        copyts=components.BoolInt.TRUE,
         video_bitrate=12000,
         video_quality=50,
-        video_resolution="1080x1080",
         x_plex_client_profile_extra="add-limitation(scope=videoCodec&scopeName=*&type=upperBound&name=video.frameRate&value=60&replace=true)+append-transcode-target-codec(type=videoProfile&context=streaming&videoCodec=h264%2Chevc&audioCodec=aac&protocol=dash)",
         x_plex_client_profile_name="generic",
     ))
 
-    assert res.response_stream is not None
+    assert res.two_hundred_application_vnd_apple_mpegurl_binary_response is not None
 
     # Handle response
-    print(res.response_stream)
+    print(res.two_hundred_application_vnd_apple_mpegurl_binary_response)
 
 ```
 
@@ -373,3 +479,119 @@ with PlexAPI(
 | Error Type      | Status Code     | Content Type    |
 | --------------- | --------------- | --------------- |
 | errors.SDKError | 4XX, 5XX        | \*/\*           |
+
+## get_dash_segment
+
+DASH segment delivery for adaptive streaming.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getDASHSegment" method="get" path="/{transcodeType}/:/transcode/universal/session/{sessionId}/{segmentId}.m4s" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.transcoder.get_dash_segment(request={
+        "transcode_type": "<value>",
+        "session_id": "<id>",
+        "segment_id": "<id>",
+    })
+
+    assert res.response_stream is not None
+
+    # Handle response
+    print(res.response_stream)
+
+```
+
+### Parameters
+
+| Parameter                                                                            | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `request`                                                                            | [operations.GetDASHSegmentRequest](../../models/operations/getdashsegmentrequest.md) | :heavy_check_mark:                                                                   | The request object to use for the request.                                           |
+| `retries`                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                     | :heavy_minus_sign:                                                                   | Configuration to override the default retry behavior of the client.                  |
+
+### Response
+
+**[operations.GetDASHSegmentResponse](../../models/operations/getdashsegmentresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_hls_segment
+
+HLS TS segment delivery for adaptive streaming.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getHLSSegment" method="get" path="/{transcodeType}/:/transcode/universal/session/{sessionId}/{segmentId}.ts" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.transcoder.get_hls_segment(request={
+        "transcode_type": "<value>",
+        "session_id": "<id>",
+        "segment_id": "<id>",
+    })
+
+    assert res.response_stream is not None
+
+    # Handle response
+    print(res.response_stream)
+
+```
+
+### Parameters
+
+| Parameter                                                                          | Type                                                                               | Required                                                                           | Description                                                                        |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `request`                                                                          | [operations.GetHLSSegmentRequest](../../models/operations/gethlssegmentrequest.md) | :heavy_check_mark:                                                                 | The request object to use for the request.                                         |
+| `retries`                                                                          | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                   | :heavy_minus_sign:                                                                 | Configuration to override the default retry behavior of the client.                |
+
+### Response
+
+**[operations.GetHLSSegmentResponse](../../models/operations/gethlssegmentresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |

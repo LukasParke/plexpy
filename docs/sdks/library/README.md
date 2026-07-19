@@ -6,19 +6,34 @@ Library endpoints which are outside of the Media Provider API.  Typically this i
 
 ### Available Operations
 
+* [get_root_library](#get_root_library) - Get Root Library
 * [get_library_items](#get_library_items) - Get all items in library
 * [delete_caches](#delete_caches) - Delete library caches
 * [clean_bundles](#clean_bundles) - Clean bundles
 * [ingest_transient_item](#ingest_transient_item) - Ingest a transient item
 * [get_library_matches](#get_library_matches) - Get library matches
+* [optimize_library](#optimize_library) - Get Optimize Library
+* [optimize_library_post](#optimize_library_post) - Optimize Library
 * [optimize_database](#optimize_database) - Optimize the Database
 * [get_random_artwork](#get_random_artwork) - Get random artwork
+* [get_recently_added_global](#get_recently_added_global) - Get Global Recently Added
+* [get_library_sections_fallback](#get_library_sections_fallback) - Get Library Sections (Fallback)
 * [get_sections](#get_sections) - Get library sections (main Media Provider Only)
 * [add_section](#add_section) - Add a library section
 * [stop_all_refreshes](#stop_all_refreshes) - Stop refresh
 * [get_sections_prefs](#get_sections_prefs) - Get section prefs
 * [refresh_sections_metadata](#refresh_sections_metadata) - Refresh all sections
 * [get_tags](#get_tags) - Get all library tags of a type
+* [upload_art](#upload_art) - Upload media art Art
+* [get_metadata_children](#get_metadata_children) - Get Metadata Children
+* [compute_sonic_path](#compute_sonic_path) - Compute Sonic Path
+* [get_metadata_grandchildren](#get_metadata_grandchildren) - Get Metadata Grandchildren
+* [get_metadata_grandparent](#get_metadata_grandparent) - Get Metadata Grandparent
+* [get_nearest_metadata](#get_nearest_metadata) - Get Nearest Metadata
+* [get_metadata_on_deck](#get_metadata_on_deck) - Get Metadata On Deck
+* [get_metadata_parent](#get_metadata_parent) - Get Metadata Parent
+* [upload_poster](#upload_poster) - Upload media art Poster
+* [get_metadata_reviews](#get_metadata_reviews) - Get Metadata Reviews
 * [delete_metadata_item](#delete_metadata_item) - Delete a metadata item
 * [edit_metadata_item](#edit_metadata_item) - Edit a metadata item
 * [detect_ads](#detect_ads) - Ad-detect an item
@@ -35,13 +50,12 @@ Library endpoints which are outside of the Media Provider API.  Typically this i
 * [match_item](#match_item) - Match a metadata item
 * [list_matches](#list_matches) - Get metadata matches for an item
 * [merge_items](#merge_items) - Merge a metadata item
-* [list_sonically_similar](#list_sonically_similar) - Get nearest tracks to metadata item
 * [set_item_preferences](#set_item_preferences) - Set metadata preferences
 * [refresh_items_metadata](#refresh_items_metadata) - Refresh a metadata item
 * [get_related_items](#get_related_items) - Get related items
 * [list_similar](#list_similar) - Get similar items
 * [split_item](#split_item) - Split a metadata item
-* [add_subtitles](#add_subtitles) - Add subtitles
+* [get_subtitles](#get_subtitles) - Get subtitles
 * [get_item_tree](#get_item_tree) - Get metadata items as a tree
 * [unmatch](#unmatch) - Unmatch a metadata item
 * [list_top_users](#list_top_users) - Get metadata top users
@@ -53,21 +67,54 @@ Library endpoints which are outside of the Media Provider API.  Typically this i
 * [delete_library_section](#delete_library_section) - Delete a library section
 * [get_library_details](#get_library_details) - Get a library section by id
 * [edit_section](#edit_section) - Edit a library section
+* [get_section_agents](#get_section_agents) - Get Section Agents
 * [update_items](#update_items) - Set the fields of the filtered items
 * [start_analysis](#start_analysis) - Analyze a section
+* [get_section_artists](#get_section_artists) - Get Section Artists
 * [autocomplete](#autocomplete) - Get autocompletions for search
+* [get_by_content_rating](#get_by_content_rating) - Get By Content Rating
+* [get_by_decade](#get_by_decade) - Get By Decade
+* [get_by_folder](#get_by_folder) - Get By Folder
+* [get_by_resolution](#get_by_resolution) - Get By Resolution
+* [get_by_year](#get_by_year) - Get By Year
+* [get_section_clips](#get_section_clips) - Get Section Clips
 * [get_collections](#get_collections) - Get collections in a section
 * [get_common](#get_common) - Get common fields for items
-* [empty_trash](#empty_trash) - Empty section trash
+* [get_section_edit](#get_section_edit) - Edit Section
+* [edit_library_section](#edit_library_section) - Edit Section
+* [empty_trash](#empty_trash) - Get Empty Trash
+* [empty_trash_post](#empty_trash_post) - Empty Trash
+* [empty_trash_put](#empty_trash_put) - Empty section trash
+* [get_section_episodes](#get_section_episodes) - Get Section Episodes
 * [get_section_filters](#get_section_filters) - Get section filters
 * [get_first_characters](#get_first_characters) - Get list of first characters
+* [get_library_section_hubs](#get_library_section_hubs) - Get Section Hubs
 * [delete_indexes](#delete_indexes) - Delete section indexes
 * [delete_intros](#delete_intros) - Delete section intro markers
+* [get_section_labels](#get_section_labels) - Get Section Labels
+* [match_section_items](#match_section_items) - Match Section Items
+* [move_section](#move_section) - Move Section
+* [get_section_movies](#get_section_movies) - Get Section Movies
+* [get_newest_for_section](#get_newest_for_section) - Get Newest for Section
+* [get_on_deck_for_section](#get_on_deck_for_section) - Get On Deck for Section
+* [optimize_section](#optimize_section) - Get Optimize Section
+* [optimize_section_post](#optimize_section_post) - Optimize Section
+* [get_section_photos](#get_section_photos) - Get Section Photos
+* [get_section_playlists](#get_section_playlists) - Get Section Playlists
 * [get_section_preferences](#get_section_preferences) - Get section prefs
 * [set_section_preferences](#set_section_preferences) - Set section prefs
+* [get_recently_added_for_section](#get_recently_added_for_section) - Get Recently Added for Section
 * [cancel_refresh](#cancel_refresh) - Cancel section refresh
-* [refresh_section](#refresh_section) - Refresh section
+* [refresh_section](#refresh_section) - Get Refresh Section
+* [refresh_section_post](#refresh_section_post) - Refresh Section
+* [search_section](#search_section) - Search Section
+* [get_section_settings](#get_section_settings) - Get Section Settings
+* [get_section_shows](#get_section_shows) - Get Section Shows
 * [get_available_sorts](#get_available_sorts) - Get a section sorts
+* [get_section_tags](#get_section_tags) - Get Section Tags
+* [get_section_timeline](#get_section_timeline) - Get Section Timeline
+* [unmatch_section_items](#unmatch_section_items) - Unmatch Section Items
+* [get_unwatched_for_section](#get_unwatched_for_section) - Get Unwatched for Section
 * [get_stream_levels](#get_stream_levels) - Get loudness about a stream in json
 * [get_stream_loudness](#get_stream_loudness) - Get loudness about a stream
 * [get_chapter_image](#get_chapter_image) - Get a chapter image
@@ -85,6 +132,47 @@ Library endpoints which are outside of the Media Provider API.  Typically this i
 * [get_item_artwork](#get_item_artwork) - Get an item's artwork, theme, etc
 * [get_media_part](#get_media_part) - Get a media part
 * [get_image_from_bif](#get_image_from_bif) - Get an image from part BIF
+
+## get_root_library
+
+Get the root library object.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getRootLibrary" method="get" path="/library" -->
+```python
+from plex_api_client import PlexAPI
+
+
+with PlexAPI(
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_root_library()
+
+    assert res.media_container_with_directory is not None
+
+    # Handle response
+    print(res.media_container_with_directory)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[operations.GetRootLibraryResponse](../../models/operations/getrootlibraryresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_library_items
 
@@ -116,8 +204,8 @@ with PlexAPI(
     res = plex_api.library.get_library_items(request={
         "media_query": {
             "type": components.MediaType.EPISODE,
-            "source_type": 2,
             "sort": "duration:desc,index",
+            "source_type": 2,
         },
     })
 
@@ -141,9 +229,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## delete_caches
 
@@ -181,9 +270,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## clean_bundles
 
@@ -221,9 +311,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## ingest_transient_item
 
@@ -280,9 +371,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_library_matches
 
@@ -342,9 +434,118 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## optimize_library
+
+Optimize the database globally across all library sections.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="optimizeLibrary" method="get" path="/library/optimize" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.optimize_library(request={})
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                              | Type                                                                                   | Required                                                                               | Description                                                                            |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `request`                                                                              | [operations.OptimizeLibraryRequest](../../models/operations/optimizelibraryrequest.md) | :heavy_check_mark:                                                                     | The request object to use for the request.                                             |
+| `retries`                                                                              | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                       | :heavy_minus_sign:                                                                     | Configuration to override the default retry behavior of the client.                    |
+
+### Response
+
+**[operations.OptimizeLibraryResponse](../../models/operations/optimizelibraryresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## optimize_library_post
+
+Optimize the database globally across all library sections.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="optimizeLibraryPost" method="post" path="/library/optimize" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.optimize_library_post(request={})
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                                      | Type                                                                                           | Required                                                                                       | Description                                                                                    |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `request`                                                                                      | [operations.OptimizeLibraryPostRequest](../../models/operations/optimizelibrarypostrequest.md) | :heavy_check_mark:                                                                             | The request object to use for the request.                                                     |
+| `retries`                                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                               | :heavy_minus_sign:                                                                             | Configuration to override the default retry behavior of the client.                            |
+
+### Response
+
+**[operations.OptimizeLibraryPostResponse](../../models/operations/optimizelibrarypostresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## optimize_database
 
@@ -397,16 +598,16 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_random_artwork
 
 Get random artwork across sections.  This is commonly used for a screensaver.
 
 This retrieves 100 random artwork paths in the specified sections and returns them.  Restrictions are put in place to not return artwork for items the user is not allowed to access.  Artwork will be for Movies, Shows, and Artists only.
-
 
 ### Example Usage
 
@@ -458,9 +659,105 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_recently_added_global
+
+Get recently added items across all library sections.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getRecentlyAddedGlobal" method="get" path="/library/recentlyAdded" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_recently_added_global(request={})
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                            | Type                                                                                                 | Required                                                                                             | Description                                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `request`                                                                                            | [operations.GetRecentlyAddedGlobalRequest](../../models/operations/getrecentlyaddedglobalrequest.md) | :heavy_check_mark:                                                                                   | The request object to use for the request.                                                           |
+| `retries`                                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                     | :heavy_minus_sign:                                                                                   | Configuration to override the default retry behavior of the client.                                  |
+
+### Response
+
+**[operations.GetRecentlyAddedGlobalResponse](../../models/operations/getrecentlyaddedglobalresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_library_sections_fallback
+
+Fallback for non-owners to list library sections.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getLibrarySectionsFallback" method="get" path="/library/sections/" -->
+```python
+from plex_api_client import PlexAPI
+
+
+with PlexAPI(
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_library_sections_fallback()
+
+    assert res.media_container_with_directory is not None
+
+    # Handle response
+    print(res.media_container_with_directory)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[operations.GetLibrarySectionsFallbackResponse](../../models/operations/getlibrarysectionsfallbackresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_sections
 
@@ -499,9 +796,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## add_section
 
@@ -532,7 +830,7 @@ with PlexAPI(
 
     res = plex_api.library.add_section(request=operations.AddSectionRequest(
         name="<value>",
-        type=39544,
+        media_type=39544,
         agent="<value>",
         language="<value>",
         locations=[
@@ -604,9 +902,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_sections_prefs
 
@@ -636,7 +935,7 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.library.get_sections_prefs(request={
-        "type": 460221,
+        "media_type": 460221,
     })
 
     assert res.library_sections is not None
@@ -767,9 +1066,648 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## upload_art
+
+Upload custom background art for a metadata item.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="uploadArt" method="post" path="/library/metadata/{id}/arts" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.upload_art(request={
+        "id": 996758,
+        "request_body": {
+            "file": {
+                "file_name": "example.file",
+                "content": open("example.file", "rb"),
+            },
+        },
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                  | Type                                                                       | Required                                                                   | Description                                                                |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `request`                                                                  | [operations.UploadArtRequest](../../models/operations/uploadartrequest.md) | :heavy_check_mark:                                                         | The request object to use for the request.                                 |
+| `retries`                                                                  | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)           | :heavy_minus_sign:                                                         | Configuration to override the default retry behavior of the client.        |
+
+### Response
+
+**[operations.UploadArtResponse](../../models/operations/uploadartresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_metadata_children
+
+Get children of a show, season, artist, or album.
+
+### Example Usage: include-stream
+
+<!-- UsageSnippet language="python" operationID="getMetadataChildren" method="get" path="/library/metadata/{id}/children" example="include-stream" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_metadata_children(request={
+        "id": 240367,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+### Example Usage: include-stream-otheritem
+
+<!-- UsageSnippet language="python" operationID="getMetadataChildren" method="get" path="/library/metadata/{id}/children" example="include-stream-otheritem" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_metadata_children(request={
+        "id": 240367,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+### Example Usage: include-stream-otheritem-anotheritem
+
+<!-- UsageSnippet language="python" operationID="getMetadataChildren" method="get" path="/library/metadata/{id}/children" example="include-stream-otheritem-anotheritem" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_metadata_children(request={
+        "id": 240367,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                      | Type                                                                                           | Required                                                                                       | Description                                                                                    |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `request`                                                                                      | [operations.GetMetadataChildrenRequest](../../models/operations/getmetadatachildrenrequest.md) | :heavy_check_mark:                                                                             | The request object to use for the request.                                                     |
+| `retries`                                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                               | :heavy_minus_sign:                                                                             | Configuration to override the default retry behavior of the client.                            |
+
+### Response
+
+**[operations.GetMetadataChildrenResponse](../../models/operations/getmetadatachildrenresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## compute_sonic_path
+
+Compute a sonic adventure path from a starting track.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="computeSonicPath" method="get" path="/library/metadata/{id}/computePath" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.compute_sonic_path(request={
+        "id": 622554,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                | Type                                                                                     | Required                                                                                 | Description                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `request`                                                                                | [operations.ComputeSonicPathRequest](../../models/operations/computesonicpathrequest.md) | :heavy_check_mark:                                                                       | The request object to use for the request.                                               |
+| `retries`                                                                                | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                         | :heavy_minus_sign:                                                                       | Configuration to override the default retry behavior of the client.                      |
+
+### Response
+
+**[operations.ComputeSonicPathResponse](../../models/operations/computesonicpathresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_metadata_grandchildren
+
+Get grandchildren (e.g. episodes under a show).
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getMetadataGrandchildren" method="get" path="/library/metadata/{id}/grandchildren" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_metadata_grandchildren(request={
+        "id": 679910,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                                | Type                                                                                                     | Required                                                                                                 | Description                                                                                              |
+| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `request`                                                                                                | [operations.GetMetadataGrandchildrenRequest](../../models/operations/getmetadatagrandchildrenrequest.md) | :heavy_check_mark:                                                                                       | The request object to use for the request.                                                               |
+| `retries`                                                                                                | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                         | :heavy_minus_sign:                                                                                       | Configuration to override the default retry behavior of the client.                                      |
+
+### Response
+
+**[operations.GetMetadataGrandchildrenResponse](../../models/operations/getmetadatagrandchildrenresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_metadata_grandparent
+
+Get grandparent metadata shortcut.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getMetadataGrandparent" method="get" path="/library/metadata/{id}/grandparent" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_metadata_grandparent(request={
+        "id": 191152,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                            | Type                                                                                                 | Required                                                                                             | Description                                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `request`                                                                                            | [operations.GetMetadataGrandparentRequest](../../models/operations/getmetadatagrandparentrequest.md) | :heavy_check_mark:                                                                                   | The request object to use for the request.                                                           |
+| `retries`                                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                     | :heavy_minus_sign:                                                                                   | Configuration to override the default retry behavior of the client.                                  |
+
+### Response
+
+**[operations.GetMetadataGrandparentResponse](../../models/operations/getmetadatagrandparentresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_nearest_metadata
+
+Get sonically similar items for a music track.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getNearestMetadata" method="get" path="/library/metadata/{id}/nearest" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_nearest_metadata(request={
+        "id": 62697,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `request`                                                                                    | [operations.GetNearestMetadataRequest](../../models/operations/getnearestmetadatarequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
+| `retries`                                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                             | :heavy_minus_sign:                                                                           | Configuration to override the default retry behavior of the client.                          |
+
+### Response
+
+**[operations.GetNearestMetadataResponse](../../models/operations/getnearestmetadataresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_metadata_on_deck
+
+Get On Deck status for a show or season.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getMetadataOnDeck" method="get" path="/library/metadata/{id}/onDeck" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_metadata_on_deck(request={
+        "id": 883975,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                  | Type                                                                                       | Required                                                                                   | Description                                                                                |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `request`                                                                                  | [operations.GetMetadataOnDeckRequest](../../models/operations/getmetadataondeckrequest.md) | :heavy_check_mark:                                                                         | The request object to use for the request.                                                 |
+| `retries`                                                                                  | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                           | :heavy_minus_sign:                                                                         | Configuration to override the default retry behavior of the client.                        |
+
+### Response
+
+**[operations.GetMetadataOnDeckResponse](../../models/operations/getmetadataondeckresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_metadata_parent
+
+Get parent metadata shortcut.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getMetadataParent" method="get" path="/library/metadata/{id}/parent" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_metadata_parent(request={
+        "id": 352555,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                  | Type                                                                                       | Required                                                                                   | Description                                                                                |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `request`                                                                                  | [operations.GetMetadataParentRequest](../../models/operations/getmetadataparentrequest.md) | :heavy_check_mark:                                                                         | The request object to use for the request.                                                 |
+| `retries`                                                                                  | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                           | :heavy_minus_sign:                                                                         | Configuration to override the default retry behavior of the client.                        |
+
+### Response
+
+**[operations.GetMetadataParentResponse](../../models/operations/getmetadataparentresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## upload_poster
+
+Upload a custom poster image for a metadata item.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="uploadPoster" method="post" path="/library/metadata/{id}/posters" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.upload_poster(request={
+        "id": 316927,
+        "request_body": {
+            "file": {
+                "file_name": "example.file",
+                "content": open("example.file", "rb"),
+            },
+        },
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `request`                                                                        | [operations.UploadPosterRequest](../../models/operations/uploadposterrequest.md) | :heavy_check_mark:                                                               | The request object to use for the request.                                       |
+| `retries`                                                                        | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                 | :heavy_minus_sign:                                                               | Configuration to override the default retry behavior of the client.              |
+
+### Response
+
+**[operations.UploadPosterResponse](../../models/operations/uploadposterresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_metadata_reviews
+
+Get user reviews for a metadata item.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getMetadataReviews" method="get" path="/library/metadata/{id}/reviews" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_metadata_reviews(request={
+        "id": 146091,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `request`                                                                                    | [operations.GetMetadataReviewsRequest](../../models/operations/getmetadatareviewsrequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
+| `retries`                                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                             | :heavy_minus_sign:                                                                           | Configuration to override the default retry behavior of the client.                          |
+
+### Response
+
+**[operations.GetMetadataReviewsResponse](../../models/operations/getmetadatareviewsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## delete_metadata_item
 
@@ -936,9 +1874,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_all_item_leaves
 
@@ -991,9 +1930,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## analyze_metadata
 
@@ -1046,9 +1986,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## generate_thumbs
 
@@ -1102,9 +2043,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## detect_credits
 
@@ -1159,9 +2101,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_extras
 
@@ -1214,9 +2157,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## add_extras
 
@@ -1325,9 +2269,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## start_bif_generation
 
@@ -1381,9 +2326,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## detect_intros
 
@@ -1437,9 +2383,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## create_marker
 
@@ -1470,7 +2417,7 @@ with PlexAPI(
 
     res = plex_api.library.create_marker(request={
         "ids": "<value>",
-        "type": 248391,
+        "media_type": 248391,
         "start_time_offset": 535191,
         "attributes": {},
     })
@@ -1550,9 +2497,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## list_matches
 
@@ -1606,9 +2554,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## merge_items
 
@@ -1661,64 +2610,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
-
-## list_sonically_similar
-
-Get the nearest tracks, sonically, to the provided track
-
-### Example Usage
-
-<!-- UsageSnippet language="python" operationID="listSonicallySimilar" method="get" path="/library/metadata/{ids}/nearest" -->
-```python
-from plex_api_client import PlexAPI
-from plex_api_client.models import components
-
-
-with PlexAPI(
-    accepts=components.Accepts.APPLICATION_XML,
-    client_identifier="abc123",
-    product="Plex for Roku",
-    version="2.4.1",
-    platform="Roku",
-    platform_version="4.3 build 1057",
-    device="Roku 3",
-    model="4200X",
-    device_vendor="Roku",
-    device_name="Living Room TV",
-    marketplace="googlePlay",
-    token="<YOUR_API_KEY_HERE>",
-) as plex_api:
-
-    res = plex_api.library.list_sonically_similar(request={
-        "ids": "<value>",
-    })
-
-    assert res.media_container_with_metadata is not None
-
-    # Handle response
-    print(res.media_container_with_metadata)
-
-```
-
-### Parameters
-
-| Parameter                                                                                        | Type                                                                                             | Required                                                                                         | Description                                                                                      |
-| ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| `request`                                                                                        | [operations.ListSonicallySimilarRequest](../../models/operations/listsonicallysimilarrequest.md) | :heavy_check_mark:                                                                               | The request object to use for the request.                                                       |
-| `retries`                                                                                        | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                 | :heavy_minus_sign:                                                                               | Configuration to override the default retry behavior of the client.                              |
-
-### Response
-
-**[operations.ListSonicallySimilarResponse](../../models/operations/listsonicallysimilarresponse.md)**
-
-### Errors
-
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## set_item_preferences
 
@@ -1771,9 +2666,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## refresh_items_metadata
 
@@ -1784,7 +2680,7 @@ Refresh a metadata item from the agent
 <!-- UsageSnippet language="python" operationID="refreshItemsMetadata" method="put" path="/library/metadata/{ids}/refresh" -->
 ```python
 from plex_api_client import PlexAPI
-from plex_api_client.models import components
+from plex_api_client.models import components, operations
 
 
 with PlexAPI(
@@ -1802,10 +2698,11 @@ with PlexAPI(
     token="<YOUR_API_KEY_HERE>",
 ) as plex_api:
 
-    res = plex_api.library.refresh_items_metadata(request={
-        "ids": "<value>",
-        "mark_updated": components.BoolInt.TRUE,
-    })
+    res = plex_api.library.refresh_items_metadata(request=operations.RefreshItemsMetadataRequest(
+        ids="<value>",
+        mark_updated=components.BoolInt.TRUE,
+        skip_refresh=components.BoolInt.TRUE,
+    ))
 
     assert res is not None
 
@@ -1827,9 +2724,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_related_items
 
@@ -1862,10 +2760,10 @@ with PlexAPI(
         "ids": "<value>",
     })
 
-    assert res.object is not None
+    assert res.media_container_with_hubs is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_hubs)
 
 ```
 
@@ -1882,9 +2780,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## list_similar
 
@@ -1937,9 +2836,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## split_item
 
@@ -1992,17 +2892,18 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
-## add_subtitles
+## get_subtitles
 
 Add a subtitle to a metadata item
 
 ### Example Usage
 
-<!-- UsageSnippet language="python" operationID="addSubtitles" method="get" path="/library/metadata/{ids}/subtitles" -->
+<!-- UsageSnippet language="python" operationID="getSubtitles" method="get" path="/library/metadata/{ids}/subtitles" -->
 ```python
 from plex_api_client import PlexAPI
 from plex_api_client.models import components, operations
@@ -2023,7 +2924,7 @@ with PlexAPI(
     token="<YOUR_API_KEY_HERE>",
 ) as plex_api:
 
-    res = plex_api.library.add_subtitles(request=operations.AddSubtitlesRequest(
+    res = plex_api.library.get_subtitles(request=operations.GetSubtitlesRequest(
         ids="<value>",
         forced=components.BoolInt.TRUE,
         hearing_impaired=components.BoolInt.TRUE,
@@ -2040,18 +2941,19 @@ with PlexAPI(
 
 | Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      |
 | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `request`                                                                        | [operations.AddSubtitlesRequest](../../models/operations/addsubtitlesrequest.md) | :heavy_check_mark:                                                               | The request object to use for the request.                                       |
+| `request`                                                                        | [operations.GetSubtitlesRequest](../../models/operations/getsubtitlesrequest.md) | :heavy_check_mark:                                                               | The request object to use for the request.                                       |
 | `retries`                                                                        | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                 | :heavy_minus_sign:                                                               | Configuration to override the default retry behavior of the client.              |
 
 ### Response
 
-**[operations.AddSubtitlesResponse](../../models/operations/addsubtitlesresponse.md)**
+**[operations.GetSubtitlesResponse](../../models/operations/getsubtitlesresponse.md)**
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_item_tree
 
@@ -2104,9 +3006,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## unmatch
 
@@ -2159,9 +3062,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## list_top_users
 
@@ -2214,9 +3118,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## detect_voice_activity
 
@@ -2271,9 +3176,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_augmentation_status
 
@@ -2418,10 +3324,10 @@ with PlexAPI(
         "person_id": "<id>",
     })
 
-    assert res.object is not None
+    assert res.media_container_with_tags is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_tags)
 
 ```
 
@@ -2549,9 +3455,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_library_details
 
@@ -2605,9 +3512,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## edit_section
 
@@ -2669,6 +3577,62 @@ with PlexAPI(
 | Error Type      | Status Code     | Content Type    |
 | --------------- | --------------- | --------------- |
 | errors.SDKError | 4XX, 5XX        | \*/\*           |
+
+## get_section_agents
+
+Get available metadata agents for a library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionAgents" method="get" path="/library/sections/{sectionId}/agents" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_agents(request={
+        "section_id": 757906,
+    })
+
+    assert res.media_container_with_directory is not None
+
+    # Handle response
+    print(res.media_container_with_directory)
+
+```
+
+### Parameters
+
+| Parameter                                                                                | Type                                                                                     | Required                                                                                 | Description                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `request`                                                                                | [operations.GetSectionAgentsRequest](../../models/operations/getsectionagentsrequest.md) | :heavy_check_mark:                                                                       | The request object to use for the request.                                               |
+| `retries`                                                                                | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                         | :heavy_minus_sign:                                                                       | Configuration to override the default retry behavior of the client.                      |
+
+### Response
+
+**[operations.GetSectionAgentsResponse](../../models/operations/getsectionagentsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## update_items
 
@@ -2821,9 +3785,66 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_artists
+
+Get artists for a music library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionArtists" method="get" path="/library/sections/{sectionId}/artists" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_artists(request={
+        "section_id": 716398,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                  | Type                                                                                       | Required                                                                                   | Description                                                                                |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `request`                                                                                  | [operations.GetSectionArtistsRequest](../../models/operations/getsectionartistsrequest.md) | :heavy_check_mark:                                                                         | The request object to use for the request.                                                 |
+| `retries`                                                                                  | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                           | :heavy_minus_sign:                                                                         | Configuration to override the default retry behavior of the client.                        |
+
+### Response
+
+**[operations.GetSectionArtistsResponse](../../models/operations/getsectionartistsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## autocomplete
 
@@ -2854,12 +3875,12 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.library.autocomplete(request={
-        "section_id": 942007,
         "media_query": {
             "type": components.MediaType.EPISODE,
-            "source_type": 2,
             "sort": "duration:desc,index",
+            "source_type": 2,
         },
+        "section_id": 942007,
     })
 
     assert res.media_container_with_metadata is not None
@@ -2885,6 +3906,342 @@ with PlexAPI(
 | Error Type      | Status Code     | Content Type    |
 | --------------- | --------------- | --------------- |
 | errors.SDKError | 4XX, 5XX        | \*/\*           |
+
+## get_by_content_rating
+
+Browse items in a library section grouped by content rating.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getByContentRating" method="get" path="/library/sections/{sectionId}/byContentRating" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_by_content_rating(request={
+        "section_id": 586837,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `request`                                                                                    | [operations.GetByContentRatingRequest](../../models/operations/getbycontentratingrequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
+| `retries`                                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                             | :heavy_minus_sign:                                                                           | Configuration to override the default retry behavior of the client.                          |
+
+### Response
+
+**[operations.GetByContentRatingResponse](../../models/operations/getbycontentratingresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_by_decade
+
+Browse items in a library section grouped by decade.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getByDecade" method="get" path="/library/sections/{sectionId}/byDecade" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_by_decade(request={
+        "section_id": 212187,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                      | Type                                                                           | Required                                                                       | Description                                                                    |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `request`                                                                      | [operations.GetByDecadeRequest](../../models/operations/getbydecaderequest.md) | :heavy_check_mark:                                                             | The request object to use for the request.                                     |
+| `retries`                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)               | :heavy_minus_sign:                                                             | Configuration to override the default retry behavior of the client.            |
+
+### Response
+
+**[operations.GetByDecadeResponse](../../models/operations/getbydecaderesponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_by_folder
+
+Browse items in a library section by underlying filesystem folder.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getByFolder" method="get" path="/library/sections/{sectionId}/byFolder" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_by_folder(request={
+        "section_id": 352088,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                      | Type                                                                           | Required                                                                       | Description                                                                    |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `request`                                                                      | [operations.GetByFolderRequest](../../models/operations/getbyfolderrequest.md) | :heavy_check_mark:                                                             | The request object to use for the request.                                     |
+| `retries`                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)               | :heavy_minus_sign:                                                             | Configuration to override the default retry behavior of the client.            |
+
+### Response
+
+**[operations.GetByFolderResponse](../../models/operations/getbyfolderresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_by_resolution
+
+Browse items in a library section grouped by resolution.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getByResolution" method="get" path="/library/sections/{sectionId}/byResolution" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_by_resolution(request={
+        "section_id": 139174,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                              | Type                                                                                   | Required                                                                               | Description                                                                            |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `request`                                                                              | [operations.GetByResolutionRequest](../../models/operations/getbyresolutionrequest.md) | :heavy_check_mark:                                                                     | The request object to use for the request.                                             |
+| `retries`                                                                              | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                       | :heavy_minus_sign:                                                                     | Configuration to override the default retry behavior of the client.                    |
+
+### Response
+
+**[operations.GetByResolutionResponse](../../models/operations/getbyresolutionresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_by_year
+
+Browse items in a library section grouped by year.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getByYear" method="get" path="/library/sections/{sectionId}/byYear" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_by_year(request={
+        "section_id": 14634,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                  | Type                                                                       | Required                                                                   | Description                                                                |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `request`                                                                  | [operations.GetByYearRequest](../../models/operations/getbyyearrequest.md) | :heavy_check_mark:                                                         | The request object to use for the request.                                 |
+| `retries`                                                                  | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)           | :heavy_minus_sign:                                                         | Configuration to override the default retry behavior of the client.        |
+
+### Response
+
+**[operations.GetByYearResponse](../../models/operations/getbyyearresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_clips
+
+Get clips for a library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionClips" method="get" path="/library/sections/{sectionId}/clips" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_clips(request={
+        "section_id": 407860,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                              | Type                                                                                   | Required                                                                               | Description                                                                            |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `request`                                                                              | [operations.GetSectionClipsRequest](../../models/operations/getsectionclipsrequest.md) | :heavy_check_mark:                                                                     | The request object to use for the request.                                             |
+| `retries`                                                                              | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                       | :heavy_minus_sign:                                                                     | Configuration to override the default retry behavior of the client.                    |
+
+### Response
+
+**[operations.GetSectionClipsResponse](../../models/operations/getsectionclipsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_collections
 
@@ -2914,12 +4271,12 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.library.get_collections(request={
-        "section_id": 348838,
         "media_query": {
             "type": components.MediaType.EPISODE,
-            "source_type": 2,
             "sort": "duration:desc,index",
+            "source_type": 2,
         },
+        "section_id": 348838,
     })
 
     assert res.media_container_with_metadata is not None
@@ -2942,9 +4299,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_common
 
@@ -2975,12 +4333,12 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.library.get_common(request={
-        "section_id": 298154,
         "media_query": {
             "type": components.MediaType.EPISODE,
-            "source_type": 2,
             "sort": "duration:desc,index",
+            "source_type": 2,
         },
+        "section_id": 298154,
     })
 
     assert res.media_container_with_metadata is not None
@@ -3007,13 +4365,125 @@ with PlexAPI(
 | --------------- | --------------- | --------------- |
 | errors.SDKError | 4XX, 5XX        | \*/\*           |
 
-## empty_trash
+## get_section_edit
 
-Empty trash in the section, permanently deleting media/metadata for missing media
+Get library section metadata.
 
 ### Example Usage
 
-<!-- UsageSnippet language="python" operationID="emptyTrash" method="put" path="/library/sections/{sectionId}/emptyTrash" -->
+<!-- UsageSnippet language="python" operationID="getSectionEdit" method="get" path="/library/sections/{sectionId}/edit" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_edit(request={
+        "section_id": 223075,
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                            | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `request`                                                                            | [operations.GetSectionEditRequest](../../models/operations/getsectioneditrequest.md) | :heavy_check_mark:                                                                   | The request object to use for the request.                                           |
+| `retries`                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                     | :heavy_minus_sign:                                                                   | Configuration to override the default retry behavior of the client.                  |
+
+### Response
+
+**[operations.GetSectionEditResponse](../../models/operations/getsectioneditresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## edit_library_section
+
+Update library section metadata.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="editLibrarySection" method="put" path="/library/sections/{sectionId}/edit" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.edit_library_section(request={
+        "section_id": 834094,
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `request`                                                                                    | [operations.EditLibrarySectionRequest](../../models/operations/editlibrarysectionrequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
+| `retries`                                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                             | :heavy_minus_sign:                                                                           | Configuration to override the default retry behavior of the client.                          |
+
+### Response
+
+**[operations.EditLibrarySectionResponse](../../models/operations/editlibrarysectionresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## empty_trash
+
+Permanently remove items from the trash for a library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="emptyTrash" method="get" path="/library/sections/{sectionId}/emptyTrash" -->
 ```python
 from plex_api_client import PlexAPI
 from plex_api_client.models import components
@@ -3038,10 +4508,10 @@ with PlexAPI(
         "section_id": 30052,
     })
 
-    assert res is not None
+    assert res.success_response is not None
 
     # Handle response
-    print(res)
+    print(res.success_response)
 
 ```
 
@@ -3058,9 +4528,178 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## empty_trash_post
+
+Permanently remove items from the trash for a library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="emptyTrashPost" method="post" path="/library/sections/{sectionId}/emptyTrash" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.empty_trash_post(request={
+        "section_id": 537157,
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                            | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `request`                                                                            | [operations.EmptyTrashPostRequest](../../models/operations/emptytrashpostrequest.md) | :heavy_check_mark:                                                                   | The request object to use for the request.                                           |
+| `retries`                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                     | :heavy_minus_sign:                                                                   | Configuration to override the default retry behavior of the client.                  |
+
+### Response
+
+**[operations.EmptyTrashPostResponse](../../models/operations/emptytrashpostresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## empty_trash_put
+
+Empty trash in the section, permanently deleting media/metadata for missing media
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="emptyTrashPut" method="put" path="/library/sections/{sectionId}/emptyTrash" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.empty_trash_put(request={
+        "section_id": 642296,
+    })
+
+    assert res is not None
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                                          | Type                                                                               | Required                                                                           | Description                                                                        |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `request`                                                                          | [operations.EmptyTrashPutRequest](../../models/operations/emptytrashputrequest.md) | :heavy_check_mark:                                                                 | The request object to use for the request.                                         |
+| `retries`                                                                          | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                   | :heavy_minus_sign:                                                                 | Configuration to override the default retry behavior of the client.                |
+
+### Response
+
+**[operations.EmptyTrashPutResponse](../../models/operations/emptytrashputresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_episodes
+
+Get episodes for a TV library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionEpisodes" method="get" path="/library/sections/{sectionId}/episodes" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_episodes(request={
+        "section_id": 229495,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `request`                                                                                    | [operations.GetSectionEpisodesRequest](../../models/operations/getsectionepisodesrequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
+| `retries`                                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                             | :heavy_minus_sign:                                                                           | Configuration to override the default retry behavior of the client.                          |
+
+### Response
+
+**[operations.GetSectionEpisodesResponse](../../models/operations/getsectionepisodesresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_section_filters
 
@@ -3093,10 +4732,10 @@ with PlexAPI(
         "section_id": 380557,
     })
 
-    assert res.object is not None
+    assert res.media_container_with_directory is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_directory)
 
 ```
 
@@ -3113,9 +4752,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_first_characters
 
@@ -3145,12 +4785,12 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.library.get_first_characters(request={
-        "section_id": 3947,
         "media_query": {
             "type": components.MediaType.EPISODE,
-            "source_type": 2,
             "sort": "duration:desc,index",
+            "source_type": 2,
         },
+        "section_id": 3947,
     })
 
     assert res.object is not None
@@ -3173,9 +4813,66 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_library_section_hubs
+
+Get hubs for a library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getLibrarySectionHubs" method="get" path="/library/sections/{sectionId}/hubs" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_library_section_hubs(request={
+        "section_id": 426468,
+    })
+
+    assert res.media_container_with_hubs is not None
+
+    # Handle response
+    print(res.media_container_with_hubs)
+
+```
+
+### Parameters
+
+| Parameter                                                                                          | Type                                                                                               | Required                                                                                           | Description                                                                                        |
+| -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `request`                                                                                          | [operations.GetLibrarySectionHubsRequest](../../models/operations/getlibrarysectionhubsrequest.md) | :heavy_check_mark:                                                                                 | The request object to use for the request.                                                         |
+| `retries`                                                                                          | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                   | :heavy_minus_sign:                                                                                 | Configuration to override the default retry behavior of the client.                                |
+
+### Response
+
+**[operations.GetLibrarySectionHubsResponse](../../models/operations/getlibrarysectionhubsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## delete_indexes
 
@@ -3228,9 +4925,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## delete_intros
 
@@ -3283,9 +4981,570 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_labels
+
+Get labels for a library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionLabels" method="get" path="/library/sections/{sectionId}/label" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_labels(request={
+        "section_id": 705342,
+    })
+
+    assert res.media_container_with_tags is not None
+
+    # Handle response
+    print(res.media_container_with_tags)
+
+```
+
+### Parameters
+
+| Parameter                                                                                | Type                                                                                     | Required                                                                                 | Description                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `request`                                                                                | [operations.GetSectionLabelsRequest](../../models/operations/getsectionlabelsrequest.md) | :heavy_check_mark:                                                                       | The request object to use for the request.                                               |
+| `retries`                                                                                | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                         | :heavy_minus_sign:                                                                       | Configuration to override the default retry behavior of the client.                      |
+
+### Response
+
+**[operations.GetSectionLabelsResponse](../../models/operations/getsectionlabelsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## match_section_items
+
+Match items in a library section against metadata providers.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="matchSectionItems" method="get" path="/library/sections/{sectionId}/match" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.match_section_items(request={
+        "section_id": 31032,
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                                  | Type                                                                                       | Required                                                                                   | Description                                                                                |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `request`                                                                                  | [operations.MatchSectionItemsRequest](../../models/operations/matchsectionitemsrequest.md) | :heavy_check_mark:                                                                         | The request object to use for the request.                                                 |
+| `retries`                                                                                  | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                           | :heavy_minus_sign:                                                                         | Configuration to override the default retry behavior of the client.                        |
+
+### Response
+
+**[operations.MatchSectionItemsResponse](../../models/operations/matchsectionitemsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## move_section
+
+Move library section paths.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="moveSection" method="put" path="/library/sections/{sectionId}/move" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.move_section(request={
+        "section_id": 483061,
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                      | Type                                                                           | Required                                                                       | Description                                                                    |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `request`                                                                      | [operations.MoveSectionRequest](../../models/operations/movesectionrequest.md) | :heavy_check_mark:                                                             | The request object to use for the request.                                     |
+| `retries`                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)               | :heavy_minus_sign:                                                             | Configuration to override the default retry behavior of the client.            |
+
+### Response
+
+**[operations.MoveSectionResponse](../../models/operations/movesectionresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_movies
+
+Get movies for a movie library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionMovies" method="get" path="/library/sections/{sectionId}/movies" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_movies(request={
+        "section_id": 530892,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                | Type                                                                                     | Required                                                                                 | Description                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `request`                                                                                | [operations.GetSectionMoviesRequest](../../models/operations/getsectionmoviesrequest.md) | :heavy_check_mark:                                                                       | The request object to use for the request.                                               |
+| `retries`                                                                                | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                         | :heavy_minus_sign:                                                                       | Configuration to override the default retry behavior of the client.                      |
+
+### Response
+
+**[operations.GetSectionMoviesResponse](../../models/operations/getsectionmoviesresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_newest_for_section
+
+Get the newest additions for a specific library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getNewestForSection" method="get" path="/library/sections/{sectionId}/newest" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_newest_for_section(request={
+        "section_id": 73900,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                      | Type                                                                                           | Required                                                                                       | Description                                                                                    |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `request`                                                                                      | [operations.GetNewestForSectionRequest](../../models/operations/getnewestforsectionrequest.md) | :heavy_check_mark:                                                                             | The request object to use for the request.                                                     |
+| `retries`                                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                               | :heavy_minus_sign:                                                                             | Configuration to override the default retry behavior of the client.                            |
+
+### Response
+
+**[operations.GetNewestForSectionResponse](../../models/operations/getnewestforsectionresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_on_deck_for_section
+
+Get the On Deck items for a specific library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getOnDeckForSection" method="get" path="/library/sections/{sectionId}/onDeck" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_on_deck_for_section(request={
+        "section_id": 331089,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                      | Type                                                                                           | Required                                                                                       | Description                                                                                    |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `request`                                                                                      | [operations.GetOnDeckForSectionRequest](../../models/operations/getondeckforsectionrequest.md) | :heavy_check_mark:                                                                             | The request object to use for the request.                                                     |
+| `retries`                                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                               | :heavy_minus_sign:                                                                             | Configuration to override the default retry behavior of the client.                            |
+
+### Response
+
+**[operations.GetOnDeckForSectionResponse](../../models/operations/getondeckforsectionresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## optimize_section
+
+Optimize the database for a specific library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="optimizeSection" method="get" path="/library/sections/{sectionId}/optimize" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.optimize_section(request={
+        "section_id": 721290,
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                              | Type                                                                                   | Required                                                                               | Description                                                                            |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `request`                                                                              | [operations.OptimizeSectionRequest](../../models/operations/optimizesectionrequest.md) | :heavy_check_mark:                                                                     | The request object to use for the request.                                             |
+| `retries`                                                                              | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                       | :heavy_minus_sign:                                                                     | Configuration to override the default retry behavior of the client.                    |
+
+### Response
+
+**[operations.OptimizeSectionResponse](../../models/operations/optimizesectionresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## optimize_section_post
+
+Optimize the database for a specific library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="optimizeSectionPost" method="post" path="/library/sections/{sectionId}/optimize" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.optimize_section_post(request={
+        "section_id": 876391,
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                                      | Type                                                                                           | Required                                                                                       | Description                                                                                    |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `request`                                                                                      | [operations.OptimizeSectionPostRequest](../../models/operations/optimizesectionpostrequest.md) | :heavy_check_mark:                                                                             | The request object to use for the request.                                                     |
+| `retries`                                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                               | :heavy_minus_sign:                                                                             | Configuration to override the default retry behavior of the client.                            |
+
+### Response
+
+**[operations.OptimizeSectionPostResponse](../../models/operations/optimizesectionpostresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_photos
+
+Get photos for a photo library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionPhotos" method="get" path="/library/sections/{sectionId}/photos" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_photos(request={
+        "section_id": 622466,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                | Type                                                                                     | Required                                                                                 | Description                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `request`                                                                                | [operations.GetSectionPhotosRequest](../../models/operations/getsectionphotosrequest.md) | :heavy_check_mark:                                                                       | The request object to use for the request.                                               |
+| `retries`                                                                                | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                         | :heavy_minus_sign:                                                                       | Configuration to override the default retry behavior of the client.                      |
+
+### Response
+
+**[operations.GetSectionPhotosResponse](../../models/operations/getsectionphotosresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_playlists
+
+Get playlists belonging to a library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionPlaylists" method="get" path="/library/sections/{sectionId}/playlists" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_playlists(request={
+        "section_id": 826184,
+    })
+
+    assert res.media_container_with_playlist_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_playlist_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                      | Type                                                                                           | Required                                                                                       | Description                                                                                    |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `request`                                                                                      | [operations.GetSectionPlaylistsRequest](../../models/operations/getsectionplaylistsrequest.md) | :heavy_check_mark:                                                                             | The request object to use for the request.                                                     |
+| `retries`                                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                               | :heavy_minus_sign:                                                                             | Configuration to override the default retry behavior of the client.                            |
+
+### Response
+
+**[operations.GetSectionPlaylistsResponse](../../models/operations/getsectionplaylistsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_section_preferences
 
@@ -3338,9 +5597,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## set_section_preferences
 
@@ -3394,9 +5654,66 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_recently_added_for_section
+
+Get recently added items for a specific library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getRecentlyAddedForSection" method="get" path="/library/sections/{sectionId}/recentlyAdded" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_recently_added_for_section(request={
+        "section_id": 46283,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                                    | Type                                                                                                         | Required                                                                                                     | Description                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `request`                                                                                                    | [operations.GetRecentlyAddedForSectionRequest](../../models/operations/getrecentlyaddedforsectionrequest.md) | :heavy_check_mark:                                                                                           | The request object to use for the request.                                                                   |
+| `retries`                                                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                             | :heavy_minus_sign:                                                                                           | Configuration to override the default retry behavior of the client.                                          |
+
+### Response
+
+**[operations.GetRecentlyAddedForSectionResponse](../../models/operations/getrecentlyaddedforsectionresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## cancel_refresh
 
@@ -3449,17 +5766,18 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## refresh_section
 
-Start a refresh of this section
+Trigger a metadata refresh for a library section.
 
 ### Example Usage
 
-<!-- UsageSnippet language="python" operationID="refreshSection" method="post" path="/library/sections/{sectionId}/refresh" -->
+<!-- UsageSnippet language="python" operationID="refreshSection" method="get" path="/library/sections/{sectionId}/refresh" -->
 ```python
 from plex_api_client import PlexAPI
 from plex_api_client.models import components
@@ -3482,13 +5800,12 @@ with PlexAPI(
 
     res = plex_api.library.refresh_section(request={
         "section_id": 450300,
-        "force": components.BoolInt.TRUE,
     })
 
-    assert res is not None
+    assert res.success_response is not None
 
     # Handle response
-    print(res)
+    print(res.success_response)
 
 ```
 
@@ -3505,9 +5822,235 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## refresh_section_post
+
+Trigger a metadata refresh for a library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="refreshSectionPost" method="post" path="/library/sections/{sectionId}/refresh" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.refresh_section_post(request={
+        "section_id": 848668,
+        "force": components.BoolInt.TRUE,
+    })
+
+    assert res is not None
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `request`                                                                                    | [operations.RefreshSectionPostRequest](../../models/operations/refreshsectionpostrequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
+| `retries`                                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                             | :heavy_minus_sign:                                                                           | Configuration to override the default retry behavior of the client.                          |
+
+### Response
+
+**[operations.RefreshSectionPostResponse](../../models/operations/refreshsectionpostresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## search_section
+
+Search within a specific library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="searchSection" method="get" path="/library/sections/{sectionId}/search" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.search_section(request={
+        "section_id": 925380,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                          | Type                                                                               | Required                                                                           | Description                                                                        |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `request`                                                                          | [operations.SearchSectionRequest](../../models/operations/searchsectionrequest.md) | :heavy_check_mark:                                                                 | The request object to use for the request.                                         |
+| `retries`                                                                          | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                   | :heavy_minus_sign:                                                                 | Configuration to override the default retry behavior of the client.                |
+
+### Response
+
+**[operations.SearchSectionResponse](../../models/operations/searchsectionresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_settings
+
+Get section-specific settings.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionSettings" method="get" path="/library/sections/{sectionId}/settings" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_settings(request={
+        "section_id": 100390,
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `request`                                                                                    | [operations.GetSectionSettingsRequest](../../models/operations/getsectionsettingsrequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
+| `retries`                                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                             | :heavy_minus_sign:                                                                           | Configuration to override the default retry behavior of the client.                          |
+
+### Response
+
+**[operations.GetSectionSettingsResponse](../../models/operations/getsectionsettingsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_shows
+
+Get shows for a TV library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionShows" method="get" path="/library/sections/{sectionId}/shows" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_shows(request={
+        "section_id": 9583,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                              | Type                                                                                   | Required                                                                               | Description                                                                            |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `request`                                                                              | [operations.GetSectionShowsRequest](../../models/operations/getsectionshowsrequest.md) | :heavy_check_mark:                                                                     | The request object to use for the request.                                             |
+| `retries`                                                                              | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                       | :heavy_minus_sign:                                                                     | Configuration to override the default retry behavior of the client.                    |
+
+### Response
+
+**[operations.GetSectionShowsResponse](../../models/operations/getsectionshowsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_available_sorts
 
@@ -3540,10 +6083,10 @@ with PlexAPI(
         "section_id": 212498,
     })
 
-    assert res.object is not None
+    assert res.media_container_with_sorts is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_sorts)
 
 ```
 
@@ -3560,9 +6103,234 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_tags
+
+Get tags in a library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionTags" method="get" path="/library/sections/{sectionId}/tags" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_tags(request={
+        "section_id": 787543,
+    })
+
+    assert res.media_container_with_tags is not None
+
+    # Handle response
+    print(res.media_container_with_tags)
+
+```
+
+### Parameters
+
+| Parameter                                                                            | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `request`                                                                            | [operations.GetSectionTagsRequest](../../models/operations/getsectiontagsrequest.md) | :heavy_check_mark:                                                                   | The request object to use for the request.                                           |
+| `retries`                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                     | :heavy_minus_sign:                                                                   | Configuration to override the default retry behavior of the client.                  |
+
+### Response
+
+**[operations.GetSectionTagsResponse](../../models/operations/getsectiontagsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_timeline
+
+Get section timeline data.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionTimeline" method="get" path="/library/sections/{sectionId}/timeline" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_timeline(request={
+        "section_id": 670370,
+    })
+
+    assert res.media_container_with_directory is not None
+
+    # Handle response
+    print(res.media_container_with_directory)
+
+```
+
+### Parameters
+
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `request`                                                                                    | [operations.GetSectionTimelineRequest](../../models/operations/getsectiontimelinerequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
+| `retries`                                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                             | :heavy_minus_sign:                                                                           | Configuration to override the default retry behavior of the client.                          |
+
+### Response
+
+**[operations.GetSectionTimelineResponse](../../models/operations/getsectiontimelineresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## unmatch_section_items
+
+Unmatch items in a library section from metadata providers.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="unmatchSectionItems" method="get" path="/library/sections/{sectionId}/unmatch" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.unmatch_section_items(request={
+        "section_id": 209342,
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                                      | Type                                                                                           | Required                                                                                       | Description                                                                                    |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `request`                                                                                      | [operations.UnmatchSectionItemsRequest](../../models/operations/unmatchsectionitemsrequest.md) | :heavy_check_mark:                                                                             | The request object to use for the request.                                                     |
+| `retries`                                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                               | :heavy_minus_sign:                                                                             | Configuration to override the default retry behavior of the client.                            |
+
+### Response
+
+**[operations.UnmatchSectionItemsResponse](../../models/operations/unmatchsectionitemsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_unwatched_for_section
+
+Get unwatched items for a specific library section.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getUnwatchedForSection" method="get" path="/library/sections/{sectionId}/unwatched" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_unwatched_for_section(request={
+        "section_id": 483590,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                            | Type                                                                                                 | Required                                                                                             | Description                                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `request`                                                                                            | [operations.GetUnwatchedForSectionRequest](../../models/operations/getunwatchedforsectionrequest.md) | :heavy_check_mark:                                                                                   | The request object to use for the request.                                                           |
+| `retries`                                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                     | :heavy_minus_sign:                                                                                   | Configuration to override the default retry behavior of the client.                                  |
+
+### Response
+
+**[operations.GetUnwatchedForSectionResponse](../../models/operations/getunwatchedforsectionresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_stream_levels
 
@@ -3783,9 +6551,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## update_item_artwork
 
@@ -3840,9 +6609,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## delete_marker
 
@@ -3930,7 +6700,7 @@ with PlexAPI(
     res = plex_api.library.edit_marker(request={
         "ids": "<value>",
         "marker": "<value>",
-        "type": 884347,
+        "media_type": 884347,
         "start_time_offset": 517251,
         "attributes": {},
     })
@@ -4156,13 +6926,13 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.library.get_section_image(request={
-        "section_id": 925611,
-        "updated_at": 117413,
         "media_query": {
             "type": components.MediaType.EPISODE,
-            "source_type": 2,
             "sort": "duration:desc,index",
+            "source_type": 2,
         },
+        "section_id": 925611,
+        "updated_at": 117413,
     })
 
     assert res is not None
@@ -4185,9 +6955,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## delete_stream
 
@@ -4278,10 +7049,10 @@ with PlexAPI(
         "auto_adjust_subtitle": components.BoolInt.TRUE,
     })
 
-    assert res is not None
+    assert res.binary_response is not None
 
     # Handle response
-    print(res)
+    print(res.binary_response)
 
 ```
 
@@ -4334,10 +7105,10 @@ with PlexAPI(
         "ext": "<value>",
     })
 
-    assert res is not None
+    assert res.binary_response is not None
 
     # Handle response
-    print(res)
+    print(res.binary_response)
 
 ```
 
@@ -4411,16 +7182,16 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_media_part
 
 Get a media part for streaming or download.
   - streaming: This is the default scenario.  Bandwidth usage on this endpoint will be guaranteed (on the server's end) to be at least the bandwidth reservation given in the decision.  If no decision exists, an ad-hoc decision will be created if sufficient bandwidth exists.  Clients should not rely on ad-hoc decisions being made as this may be removed in the future.
   - download: Indicated if the query parameter indicates this is a download.  Bandwidth will be prioritized behind playbacks and will get a fair share of what remains.
-
 
 ### Example Usage
 
@@ -4452,10 +7223,10 @@ with PlexAPI(
         "download": components.BoolInt.TRUE,
     })
 
-    assert res is not None
+    assert res.binary_response is not None
 
     # Handle response
-    print(res)
+    print(res.binary_response)
 
 ```
 

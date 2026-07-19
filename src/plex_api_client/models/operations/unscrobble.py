@@ -147,6 +147,8 @@ class UnscrobbleGlobals(BaseModel):
 class UnscrobbleRequestTypedDict(TypedDict):
     identifier: str
     r"""The identifier of the media provider containing the media to rate.  Typically `com.plexapp.plugins.library`"""
+    uri: str
+    r"""URI of the item to scrobble. Format is `library://<section-uuid>/item/<url-encoded-key>` or `plex://movie/<guid>` or `plex://episode/<guid>`."""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -171,8 +173,6 @@ class UnscrobbleRequestTypedDict(TypedDict):
     r"""The marketplace on which the client application is distributed"""
     key: NotRequired[str]
     r"""The key of the item to rate.  This is the `ratingKey` found in metadata items"""
-    uri: NotRequired[str]
-    r"""The URI of the item to mark as played.  See intro for description of the URIs"""
 
 
 class UnscrobbleRequest(BaseModel):
@@ -180,6 +180,11 @@ class UnscrobbleRequest(BaseModel):
         str, FieldMetadata(query=QueryParamMetadata(style="form", explode=True))
     ]
     r"""The identifier of the media provider containing the media to rate.  Typically `com.plexapp.plugins.library`"""
+
+    uri: Annotated[
+        str, FieldMetadata(query=QueryParamMetadata(style="form", explode=True))
+    ]
+    r"""URI of the item to scrobble. Format is `library://<section-uuid>/item/<url-encoded-key>` or `plex://movie/<guid>` or `plex://episode/<guid>`."""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -263,12 +268,6 @@ class UnscrobbleRequest(BaseModel):
     ] = None
     r"""The key of the item to rate.  This is the `ratingKey` found in metadata items"""
 
-    uri: Annotated[
-        Optional[str],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""The URI of the item to mark as played.  See intro for description of the URIs"""
-
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
@@ -285,7 +284,6 @@ class UnscrobbleRequest(BaseModel):
                 "Device-Name",
                 "Marketplace",
                 "key",
-                "uri",
             ]
         )
         serialized = handler(self)

@@ -23,16 +23,12 @@ from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 class GuidsTypedDict(TypedDict):
     id: str
-    r"""The unique identifier for the Guid. Can be prefixed with imdb://, tmdb://, tvdb://
-
-    """
+    r"""The unique identifier for the Guid. Can be prefixed with imdb://, tmdb://, tvdb://"""
 
 
 class Guids(BaseModel):
     id: str
-    r"""The unique identifier for the Guid. Can be prefixed with imdb://, tmdb://, tvdb://
-
-    """
+    r"""The unique identifier for the Guid. Can be prefixed with imdb://, tmdb://, tvdb://"""
 
 
 class SkipChildren2(str, Enum):
@@ -69,7 +65,6 @@ class MetadataTypedDict(TypedDict):
     Note that when a metadata item has multiple media items, those media items should be isomorphic. That is, a 4K version and 1080p version of a movie are different versions of the same movie. They have the same duration, same summary, same rating, etc. and they can generally be considered interchangeable. A theatrical release vs. director's cut vs. unrated version on the other hand would be separate metadata items.
 
     Metadata items can often live in a hierarchy with relationships between them.  For example, the metadata item for an episodes is associated with a season metadata item which is associated with a show metadata item.  A similar hierarchy exists with track, album, and artist and photos and photo album.  The relationships may be expressed via relative terms and absolute terms.  For example, \"leaves\" refer to metadata items which has associated media (there is no media for a season nor show).  A show will have \"children\" in the form of seasons and a season will have \"children\" in the form of episodes and episodes have \"parent\" in the form of a season which has a \"parent\" in the form of a show.  Similarly, a show has \"grandchildren\" in the form of episodse and an episode has a \"grandparent\" in the form of a show.
-
     """
 
     title: str
@@ -90,6 +85,8 @@ class MetadataTypedDict(TypedDict):
     r"""When present, contains the disc number for a track on multi-disc albums."""
     art: NotRequired[str]
     r"""When present, the URL for the background artwork for the item."""
+    art_blur_hash: NotRequired[str]
+    r"""Blur hash for background art."""
     audience_rating: NotRequired[float]
     r"""Some rating systems separate reviewer ratings from audience ratings"""
     audience_rating_image: NotRequired[str]
@@ -107,8 +104,14 @@ class MetadataTypedDict(TypedDict):
     r"""If known, the content rating (e.g. MPAA) for an item."""
     country: NotRequired[List[components_tag.TagTypedDict]]
     director: NotRequired[List[components_tag.TagTypedDict]]
+    distance: NotRequired[int]
+    r"""Levenshtein distance for voice search results."""
     duration: NotRequired[int]
     r"""When present, the duration for the item, in units of milliseconds."""
+    edition_title: NotRequired[str]
+    r"""Edition string (e.g. \"Director's Cut\")."""
+    enable_credits_marker_generation: NotRequired[bool]
+    r"""Whether credits marker generation is enabled for this item."""
     filter_: NotRequired[List[components_filter_.FilterTypedDict]]
     r"""Typically only seen in metadata at a library's top level"""
     genre: NotRequired[List[components_tag.TagTypedDict]]
@@ -136,10 +139,16 @@ class MetadataTypedDict(TypedDict):
     image: NotRequired[List[components_image.ImageTypedDict]]
     index: NotRequired[int]
     r"""When present, this represents the episode number for episodes, season number for seasons, or track number for audio tracks."""
+    language_override: NotRequired[str]
+    r"""Per-item language override."""
+    last_rated_at: NotRequired[int]
+    r"""Timestamp of the last user rating."""
     last_viewed_at: NotRequired[int]
     leaf_count: NotRequired[int]
     r"""For shows and seasons, contains the number of total episodes."""
     media: NotRequired[List[components_media.MediaTypedDict]]
+    music_analysis_version: NotRequired[int]
+    r"""Analysis version for music items."""
     originally_available_at: NotRequired[date]
     r"""When present, in the format YYYY-MM-DD [HH:MM:SS] (the hours/minutes/seconds part is not always present). The air date, or a higher resolution release date for an item, depending on type. For example, episodes usually have air date like 1979-08-10 (we don't use epoch seconds because media existed prior to 1970). In some cases, recorded over-the-air content has higher resolution air date which includes a time component. Albums and movies may have day-resolution release dates as well."""
     original_title: NotRequired[str]
@@ -158,6 +167,8 @@ class MetadataTypedDict(TypedDict):
     r"""The `thumb` of the parent"""
     parent_title: NotRequired[str]
     r"""The `title` of the parent"""
+    playlist_item_id: NotRequired[int]
+    r"""Item ID within a playlist."""
     primary_extra_key: NotRequired[str]
     r"""Indicates that the item has a primary extra; for a movie, this is a trailer, and for a music track it is a music video. The URL points to the metadata details endpoint for the item."""
     prompt: NotRequired[str]
@@ -178,10 +189,16 @@ class MetadataTypedDict(TypedDict):
     r"""Used by old clients to provide nested menus allowing for primative (but structured) navigation."""
     skip_children: NotRequired[SkipChildrenTypedDict]
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
+    skip_count: NotRequired[int]
+    r"""Number of times this track has been skipped."""
     skip_parent: NotRequired[SkipParentTypedDict]
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
+    slug: NotRequired[str]
+    r"""URL-friendly slug for the item."""
     sort: NotRequired[List[components_sort.SortTypedDict]]
     r"""Typically only seen in metadata at a library's top level"""
+    source_uri: NotRequired[str]
+    r"""Remote or shared server item URI."""
     studio: NotRequired[str]
     r"""When present, the studio or label which produced an item (e.g. movie studio for movies, record label for albums)."""
     subtype: NotRequired[str]
@@ -194,10 +211,14 @@ class MetadataTypedDict(TypedDict):
     r"""When present, the URL for theme music for the item (usually only for TV shows)."""
     thumb: NotRequired[str]
     r"""When present, the URL for the poster or thumbnail for the item. When available for types like movie, it will be the poster graphic, but fall-back to the extracted media thumbnail."""
+    thumb_blur_hash: NotRequired[str]
+    r"""Blur hash for thumbnail."""
     title_sort: NotRequired[str]
     r"""Whene present, this is the string used for sorting the item. It's usually the title with any leading articles removed (e.g. “Simpsons”)."""
     updated_at: NotRequired[int]
     r"""In units of seconds since the epoch, returns the time at which the item was last changed (e.g. had its metadata updated)."""
+    use_original_title: NotRequired[bool]
+    r"""Whether to display the original title."""
     user_rating: NotRequired[float]
     r"""When the user has rated an item, this contains the user rating"""
     view_count: NotRequired[int]
@@ -217,7 +238,6 @@ class Metadata(BaseModel):
     Note that when a metadata item has multiple media items, those media items should be isomorphic. That is, a 4K version and 1080p version of a movie are different versions of the same movie. They have the same duration, same summary, same rating, etc. and they can generally be considered interchangeable. A theatrical release vs. director's cut vs. unrated version on the other hand would be separate metadata items.
 
     Metadata items can often live in a hierarchy with relationships between them.  For example, the metadata item for an episodes is associated with a season metadata item which is associated with a show metadata item.  A similar hierarchy exists with track, album, and artist and photos and photo album.  The relationships may be expressed via relative terms and absolute terms.  For example, \"leaves\" refer to metadata items which has associated media (there is no media for a season nor show).  A show will have \"children\" in the form of seasons and a season will have \"children\" in the form of episodes and episodes have \"parent\" in the form of a season which has a \"parent\" in the form of a show.  Similarly, a show has \"grandchildren\" in the form of episodse and an episode has a \"grandparent\" in the form of a show.
-
     """
 
     model_config = ConfigDict(
@@ -257,6 +277,9 @@ class Metadata(BaseModel):
 
     art: Optional[str] = None
     r"""When present, the URL for the background artwork for the item."""
+
+    art_blur_hash: Annotated[Optional[str], pydantic.Field(alias="artBlurHash")] = None
+    r"""Blur hash for background art."""
 
     audience_rating: Annotated[
         Optional[float], pydantic.Field(alias="audienceRating")
@@ -299,8 +322,19 @@ class Metadata(BaseModel):
         Optional[List[components_tag.Tag]], pydantic.Field(alias="Director")
     ] = None
 
+    distance: Optional[int] = None
+    r"""Levenshtein distance for voice search results."""
+
     duration: Optional[int] = None
     r"""When present, the duration for the item, in units of milliseconds."""
+
+    edition_title: Annotated[Optional[str], pydantic.Field(alias="editionTitle")] = None
+    r"""Edition string (e.g. \"Director's Cut\")."""
+
+    enable_credits_marker_generation: Annotated[
+        Optional[bool], pydantic.Field(alias="enableCreditsMarkerGeneration")
+    ] = None
+    r"""Whether credits marker generation is enabled for this item."""
 
     filter_: Annotated[
         Optional[List[components_filter_.Filter]], pydantic.Field(alias="Filter")
@@ -366,6 +400,14 @@ class Metadata(BaseModel):
     index: Optional[int] = None
     r"""When present, this represents the episode number for episodes, season number for seasons, or track number for audio tracks."""
 
+    language_override: Annotated[
+        Optional[str], pydantic.Field(alias="languageOverride")
+    ] = None
+    r"""Per-item language override."""
+
+    last_rated_at: Annotated[Optional[int], pydantic.Field(alias="lastRatedAt")] = None
+    r"""Timestamp of the last user rating."""
+
     last_viewed_at: Annotated[Optional[int], pydantic.Field(alias="lastViewedAt")] = (
         None
     )
@@ -376,6 +418,11 @@ class Metadata(BaseModel):
     media: Annotated[
         Optional[List[components_media.Media]], pydantic.Field(alias="Media")
     ] = None
+
+    music_analysis_version: Annotated[
+        Optional[int], pydantic.Field(alias="musicAnalysisVersion")
+    ] = None
+    r"""Analysis version for music items."""
 
     originally_available_at: Annotated[
         Optional[date], pydantic.Field(alias="originallyAvailableAt")
@@ -409,6 +456,11 @@ class Metadata(BaseModel):
 
     parent_title: Annotated[Optional[str], pydantic.Field(alias="parentTitle")] = None
     r"""The `title` of the parent"""
+
+    playlist_item_id: Annotated[
+        Optional[int], pydantic.Field(alias="playlistItemID")
+    ] = None
+    r"""Item ID within a playlist."""
 
     primary_extra_key: Annotated[
         Optional[str], pydantic.Field(alias="primaryExtraKey")
@@ -449,15 +501,24 @@ class Metadata(BaseModel):
     ] = None
     r"""When found on a show item, indicates that the children (seasons) should be skipped in favor of the grandchildren (episodes). Useful for mini-series, etc."""
 
+    skip_count: Annotated[Optional[int], pydantic.Field(alias="skipCount")] = None
+    r"""Number of times this track has been skipped."""
+
     skip_parent: Annotated[Optional[SkipParent], pydantic.Field(alias="skipParent")] = (
         None
     )
     r"""When present on an episode or track item, indicates parent should be skipped in favor of grandparent (show)."""
 
+    slug: Optional[str] = None
+    r"""URL-friendly slug for the item."""
+
     sort: Annotated[
         Optional[List[components_sort.Sort]], pydantic.Field(alias="Sort")
     ] = None
     r"""Typically only seen in metadata at a library's top level"""
+
+    source_uri: Annotated[Optional[str], pydantic.Field(alias="sourceURI")] = None
+    r"""Remote or shared server item URI."""
 
     studio: Optional[str] = None
     r"""When present, the studio or label which produced an item (e.g. movie studio for movies, record label for albums)."""
@@ -477,11 +538,21 @@ class Metadata(BaseModel):
     thumb: Optional[str] = None
     r"""When present, the URL for the poster or thumbnail for the item. When available for types like movie, it will be the poster graphic, but fall-back to the extracted media thumbnail."""
 
+    thumb_blur_hash: Annotated[Optional[str], pydantic.Field(alias="thumbBlurHash")] = (
+        None
+    )
+    r"""Blur hash for thumbnail."""
+
     title_sort: Annotated[Optional[str], pydantic.Field(alias="titleSort")] = None
     r"""Whene present, this is the string used for sorting the item. It's usually the title with any leading articles removed (e.g. “Simpsons”)."""
 
     updated_at: Annotated[Optional[int], pydantic.Field(alias="updatedAt")] = None
     r"""In units of seconds since the epoch, returns the time at which the item was last changed (e.g. had its metadata updated)."""
+
+    use_original_title: Annotated[
+        Optional[bool], pydantic.Field(alias="useOriginalTitle")
+    ] = None
+    r"""Whether to display the original title."""
 
     user_rating: Annotated[Optional[float], pydantic.Field(alias="userRating")] = None
     r"""When the user has rated an item, this contains the user rating"""
@@ -521,6 +592,7 @@ class Metadata(BaseModel):
                 "User",
                 "absoluteIndex",
                 "art",
+                "artBlurHash",
                 "audienceRating",
                 "audienceRatingImage",
                 "Autotag",
@@ -531,7 +603,10 @@ class Metadata(BaseModel):
                 "contentRating",
                 "Country",
                 "Director",
+                "distance",
                 "duration",
+                "editionTitle",
+                "enableCreditsMarkerGeneration",
                 "Filter",
                 "Genre",
                 "grandparentArt",
@@ -547,9 +622,12 @@ class Metadata(BaseModel):
                 "hero",
                 "Image",
                 "index",
+                "languageOverride",
+                "lastRatedAt",
                 "lastViewedAt",
                 "leafCount",
                 "Media",
+                "musicAnalysisVersion",
                 "originallyAvailableAt",
                 "originalTitle",
                 "parentGuid",
@@ -559,6 +637,7 @@ class Metadata(BaseModel):
                 "parentRatingKey",
                 "parentThumb",
                 "parentTitle",
+                "playlistItemID",
                 "primaryExtraKey",
                 "prompt",
                 "rating",
@@ -570,16 +649,21 @@ class Metadata(BaseModel):
                 "search",
                 "secondary",
                 "skipChildren",
+                "skipCount",
                 "skipParent",
+                "slug",
                 "Sort",
+                "sourceURI",
                 "studio",
                 "subtype",
                 "summary",
                 "tagline",
                 "theme",
                 "thumb",
+                "thumbBlurHash",
                 "titleSort",
                 "updatedAt",
+                "useOriginalTitle",
                 "userRating",
                 "viewCount",
                 "viewedLeafCount",
@@ -609,19 +693,14 @@ class ListSessionsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
     metadata: NotRequired[List[MetadataTypedDict]]
 
 
@@ -629,22 +708,17 @@ class ListSessionsMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     metadata: Annotated[Optional[List[Metadata]], pydantic.Field(alias="Metadata")] = (
         None

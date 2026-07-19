@@ -4,13 +4,13 @@ from __future__ import annotations
 import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
-    hub as components_hub,
+    mediacontainerwithhubs as components_mediacontainerwithhubs,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
 from pydantic import model_serializer
-from typing import List, Optional
+from typing import Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
@@ -149,6 +149,7 @@ class GetRelatedItemsGlobals(BaseModel):
 
 class GetRelatedItemsRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -177,6 +178,7 @@ class GetRelatedItemsRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -285,98 +287,6 @@ class GetRelatedItemsRequest(BaseModel):
         return m
 
 
-class GetRelatedItemsMediaContainerTypedDict(TypedDict):
-    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
-    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
-    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
-    """
-
-    identifier: NotRequired[str]
-    offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
-    size: NotRequired[int]
-    total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    hub: NotRequired[List[components_hub.HubTypedDict]]
-
-
-class GetRelatedItemsMediaContainer(BaseModel):
-    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
-    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
-    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
-    """
-
-    identifier: Optional[str] = None
-
-    offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
-
-    size: Optional[int] = None
-
-    total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-
-    hub: Annotated[Optional[List[components_hub.Hub]], pydantic.Field(alias="Hub")] = (
-        None
-    )
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["identifier", "offset", "size", "totalSize", "Hub"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
-class GetRelatedItemsResponseBodyTypedDict(TypedDict):
-    r"""OK"""
-
-    media_container: NotRequired[GetRelatedItemsMediaContainerTypedDict]
-
-
-class GetRelatedItemsResponseBody(BaseModel):
-    r"""OK"""
-
-    media_container: Annotated[
-        Optional[GetRelatedItemsMediaContainer], pydantic.Field(alias="MediaContainer")
-    ] = None
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["MediaContainer"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class GetRelatedItemsResponseTypedDict(TypedDict):
     content_type: str
     r"""HTTP response content type for this operation"""
@@ -384,7 +294,9 @@ class GetRelatedItemsResponseTypedDict(TypedDict):
     r"""HTTP response status code for this operation"""
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
-    object: NotRequired[GetRelatedItemsResponseBodyTypedDict]
+    media_container_with_hubs: NotRequired[
+        components_mediacontainerwithhubs.MediaContainerWithHubsTypedDict
+    ]
     r"""OK"""
 
 
@@ -398,12 +310,14 @@ class GetRelatedItemsResponse(BaseModel):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
 
-    object: Optional[GetRelatedItemsResponseBody] = None
+    media_container_with_hubs: Optional[
+        components_mediacontainerwithhubs.MediaContainerWithHubs
+    ] = None
     r"""OK"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["object"])
+        optional_fields = set(["MediaContainerWithHubs"])
         serialized = handler(self)
         m = {}
 
@@ -416,13 +330,3 @@ class GetRelatedItemsResponse(BaseModel):
                     m[k] = val
 
         return m
-
-
-try:
-    GetRelatedItemsMediaContainer.model_rebuild()
-except NameError:
-    pass
-try:
-    GetRelatedItemsResponseBody.model_rebuild()
-except NameError:
-    pass

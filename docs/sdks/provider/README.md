@@ -3,13 +3,245 @@
 ## Overview
 
 Media providers are the starting points for the entire Plex Media Server media library API.  It defines the paths for the groups of endpoints.  The `/media/providers` should be the only hard-coded path in clients when accessing the media library.  Non-media library endpoints are outside the scope of the media provider.  See the description in See [the section in API Info](#section/API-Info/Media-Providers) for more information on how to use media providers.
+Note: Dynamic proxy paths such as `/{provider}/search`, `/{provider}/metadata`, and other provider-relative routes are resolved through the media provider API.
 
 ### Available Operations
 
+* [add_to_watchlist](#add_to_watchlist) - Add to Watchlist
+* [remove_from_watchlist](#remove_from_watchlist) - Remove from Watchlist
+* [search_discover](#search_discover) - Search Discover
+* [get_watchlist](#get_watchlist) - Get Watchlist
 * [list_providers](#list_providers) - Get the list of available media providers
 * [add_provider](#add_provider) - Add a media provider
 * [refresh_providers](#refresh_providers) - Refresh media providers
 * [delete_media_provider](#delete_media_provider) - Delete a media provider
+
+## add_to_watchlist
+
+Add an item to the user's Plex Discover watchlist.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="addToWatchlist" method="post" path="/actions/addToWatchlist" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.provider.add_to_watchlist(request={
+        "uri": "https://frightened-duster.com/",
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                            | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `request`                                                                            | [operations.AddToWatchlistRequest](../../models/operations/addtowatchlistrequest.md) | :heavy_check_mark:                                                                   | The request object to use for the request.                                           |
+| `retries`                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                     | :heavy_minus_sign:                                                                   | Configuration to override the default retry behavior of the client.                  |
+| `server_url`                                                                         | *Optional[str]*                                                                      | :heavy_minus_sign:                                                                   | An optional server URL to use.                                                       |
+
+### Response
+
+**[operations.AddToWatchlistResponse](../../models/operations/addtowatchlistresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## remove_from_watchlist
+
+Remove an item from the user's Plex Discover watchlist.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="removeFromWatchlist" method="post" path="/actions/removeFromWatchlist" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.provider.remove_from_watchlist(request={
+        "uri": "https://miserable-scrap.net",
+    })
+
+    assert res.success_response is not None
+
+    # Handle response
+    print(res.success_response)
+
+```
+
+### Parameters
+
+| Parameter                                                                                      | Type                                                                                           | Required                                                                                       | Description                                                                                    |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `request`                                                                                      | [operations.RemoveFromWatchlistRequest](../../models/operations/removefromwatchlistrequest.md) | :heavy_check_mark:                                                                             | The request object to use for the request.                                                     |
+| `retries`                                                                                      | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                               | :heavy_minus_sign:                                                                             | Configuration to override the default retry behavior of the client.                            |
+| `server_url`                                                                                   | *Optional[str]*                                                                                | :heavy_minus_sign:                                                                             | An optional server URL to use.                                                                 |
+
+### Response
+
+**[operations.RemoveFromWatchlistResponse](../../models/operations/removefromwatchlistresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## search_discover
+
+Search movies and shows in Plex Discover.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="searchDiscover" method="get" path="/library/search" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.provider.search_discover(request={
+        "search_types": "movies,tv",
+        "search_providers": "discover,PLEXAVOD,PLEXTVOD",
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                            | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `request`                                                                            | [operations.SearchDiscoverRequest](../../models/operations/searchdiscoverrequest.md) | :heavy_check_mark:                                                                   | The request object to use for the request.                                           |
+| `retries`                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                     | :heavy_minus_sign:                                                                   | Configuration to override the default retry behavior of the client.                  |
+| `server_url`                                                                         | *Optional[str]*                                                                      | :heavy_minus_sign:                                                                   | An optional server URL to use.                                                       |
+
+### Response
+
+**[operations.SearchDiscoverResponse](../../models/operations/searchdiscoverresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_watchlist
+
+Get the user's Plex Discover watchlist.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getWatchlist" method="get" path="/library/sections/watchlist/all" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.provider.get_watchlist(request={})
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `request`                                                                        | [operations.GetWatchlistRequest](../../models/operations/getwatchlistrequest.md) | :heavy_check_mark:                                                               | The request object to use for the request.                                       |
+| `retries`                                                                        | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                 | :heavy_minus_sign:                                                               | Configuration to override the default retry behavior of the client.              |
+| `server_url`                                                                     | *Optional[str]*                                                                  | :heavy_minus_sign:                                                               | An optional server URL to use.                                                   |
+
+### Response
+
+**[operations.GetWatchlistResponse](../../models/operations/getwatchlistresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## list_providers
 
@@ -47,9 +279,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## add_provider
 
@@ -142,9 +375,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## delete_media_provider
 

@@ -148,7 +148,7 @@ class GetSectionsPrefsGlobals(BaseModel):
 
 
 class GetSectionsPrefsRequestTypedDict(TypedDict):
-    type: int
+    media_type: int
     r"""The metadata type"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
@@ -177,8 +177,10 @@ class GetSectionsPrefsRequestTypedDict(TypedDict):
 
 
 class GetSectionsPrefsRequest(BaseModel):
-    type: Annotated[
-        int, FieldMetadata(query=QueryParamMetadata(style="form", explode=True))
+    media_type: Annotated[
+        int,
+        pydantic.Field(alias="type"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ]
     r"""The metadata type"""
 
@@ -304,7 +306,7 @@ class GetSectionsPrefsResponseTypedDict(TypedDict):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
     library_sections: NotRequired[components_librarysections.LibrarySectionsTypedDict]
-    r"""OK"""
+    r"""Successfully retrieved get section prefs"""
 
 
 class GetSectionsPrefsResponse(BaseModel):
@@ -318,7 +320,7 @@ class GetSectionsPrefsResponse(BaseModel):
     r"""Raw HTTP response; suitable for custom response parsing"""
 
     library_sections: Optional[components_librarysections.LibrarySections] = None
-    r"""OK"""
+    r"""Successfully retrieved get section prefs"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

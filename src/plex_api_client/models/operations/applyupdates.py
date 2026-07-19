@@ -305,6 +305,7 @@ class ApplyUpdatesResponseTypedDict(TypedDict):
     r"""HTTP response status code for this operation"""
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
+    body: NotRequired[bytes]
 
 
 class ApplyUpdatesResponse(BaseModel):
@@ -316,3 +317,21 @@ class ApplyUpdatesResponse(BaseModel):
 
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
+
+    body: Optional[bytes] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["Body"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m

@@ -21,32 +21,26 @@ class PostResponses200MediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+    title: NotRequired[str]
+    type: NotRequired[PostResponses200Type]
     color: NotRequired[str]
     end_time_offset: NotRequired[int]
     id: NotRequired[int]
     start_time_offset: NotRequired[int]
-    title: NotRequired[str]
-    type: NotRequired[PostResponses200Type]
 
 
 class PostResponses200MediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     model_config = ConfigDict(
@@ -57,16 +51,16 @@ class PostResponses200MediaContainer(BaseModel):
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
-    """
+    title: Optional[str] = None
+
+    type: Optional[PostResponses200Type] = None
 
     color: Optional[str] = None
 
@@ -79,10 +73,6 @@ class PostResponses200MediaContainer(BaseModel):
     start_time_offset: Annotated[
         Optional[int], pydantic.Field(alias="startTimeOffset")
     ] = None
-
-    title: Optional[str] = None
-
-    type: Optional[PostResponses200Type] = None
 
     @property
     def additional_properties(self):
@@ -100,12 +90,12 @@ class PostResponses200MediaContainer(BaseModel):
                 "offset",
                 "size",
                 "totalSize",
+                "title",
+                "type",
                 "color",
                 "endTimeOffset",
                 "id",
                 "startTimeOffset",
-                "title",
-                "type",
             ]
         )
         serialized = handler(self)

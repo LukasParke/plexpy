@@ -162,9 +162,10 @@ class QueryParamAttributes(BaseModel):
 
 class EditMarkerRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     marker: str
     r"""The id of the marker to edit"""
-    type: int
+    media_type: int
     r"""The type of marker to edit/create"""
     start_time_offset: int
     r"""The start time of the marker"""
@@ -200,14 +201,17 @@ class EditMarkerRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     marker: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
     r"""The id of the marker to edit"""
 
-    type: Annotated[
-        int, FieldMetadata(query=QueryParamMetadata(style="form", explode=True))
+    media_type: Annotated[
+        int,
+        pydantic.Field(alias="type"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ]
     r"""The type of marker to edit/create"""
 
@@ -350,7 +354,7 @@ class EditMarkerResponseTypedDict(TypedDict):
     post_responses_200: NotRequired[
         components_post_responses_200.PostResponses200TypedDict
     ]
-    r"""OK"""
+    r"""Successfully updated edit a marker"""
 
 
 class EditMarkerResponse(BaseModel):
@@ -364,7 +368,7 @@ class EditMarkerResponse(BaseModel):
     r"""Raw HTTP response; suitable for custom response parsing"""
 
     post_responses_200: Optional[components_post_responses_200.PostResponses200] = None
-    r"""OK"""
+    r"""Successfully updated edit a marker"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

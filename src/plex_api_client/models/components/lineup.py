@@ -16,7 +16,6 @@ class LineupType(int, Enum):
     - `2`: Satellite
     - `3`: IPTV
     - `4`: Virtual
-
     """
 
     MINUS_1 = -1
@@ -31,6 +30,10 @@ class LineupTypedDict(TypedDict):
     title: NotRequired[str]
     type: NotRequired[str]
     r"""The type of this object (`lineup` in this case)"""
+    identifier: NotRequired[str]
+    r"""Lineup identifier."""
+    key: NotRequired[str]
+    r"""API key for this lineup."""
     lineup_type: NotRequired[LineupType]
     r"""- `-1`: N/A
     - `0`: Over the air
@@ -38,7 +41,6 @@ class LineupTypedDict(TypedDict):
     - `2`: Satellite
     - `3`: IPTV
     - `4`: Virtual
-
     """
     location: NotRequired[str]
     uuid: NotRequired[str]
@@ -51,6 +53,12 @@ class Lineup(BaseModel):
     type: Optional[str] = None
     r"""The type of this object (`lineup` in this case)"""
 
+    identifier: Optional[str] = None
+    r"""Lineup identifier."""
+
+    key: Optional[str] = None
+    r"""API key for this lineup."""
+
     lineup_type: Annotated[Optional[LineupType], pydantic.Field(alias="lineupType")] = (
         None
     )
@@ -60,7 +68,6 @@ class Lineup(BaseModel):
     - `2`: Satellite
     - `3`: IPTV
     - `4`: Virtual
-
     """
 
     location: Optional[str] = None
@@ -70,7 +77,9 @@ class Lineup(BaseModel):
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["title", "type", "lineupType", "location", "uuid"])
+        optional_fields = set(
+            ["title", "type", "identifier", "key", "lineupType", "location", "uuid"]
+        )
         serialized = handler(self)
         m = {}
 

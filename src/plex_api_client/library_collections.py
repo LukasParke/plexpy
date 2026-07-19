@@ -84,10 +84,14 @@ class LibraryCollections(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -96,6 +100,8 @@ class LibraryCollections(BaseSDK):
                 operation_id="addCollectionItems",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Library Collections"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -192,10 +198,14 @@ class LibraryCollections(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -204,6 +214,8 @@ class LibraryCollections(BaseSDK):
                 operation_id="addCollectionItems",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Library Collections"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -228,19 +240,19 @@ class LibraryCollections(BaseSDK):
 
         raise errors.SDKError("Unexpected response received", http_res)
 
-    def delete_collection_item(
+    def update_collection_item(
         self,
         *,
         request: Union[
-            operations.DeleteCollectionItemRequest,
-            operations.DeleteCollectionItemRequestTypedDict,
+            operations.UpdateCollectionItemRequest,
+            operations.UpdateCollectionItemRequestTypedDict,
         ],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> operations.DeleteCollectionItemResponse:
-        r"""Delete an item from a collection
+    ) -> operations.UpdateCollectionItemResponse:
+        r"""Update an item in a collection
 
         Delete an item from a collection
 
@@ -263,8 +275,8 @@ class LibraryCollections(BaseSDK):
             base_url = self._get_url(base_url, url_variables)
 
         if not isinstance(request, BaseModel):
-            request = utils.unmarshal(request, operations.DeleteCollectionItemRequest)
-        request = cast(operations.DeleteCollectionItemRequest, request)
+            request = utils.unmarshal(request, operations.UpdateCollectionItemRequest)
+        request = cast(operations.UpdateCollectionItemRequest, request)
 
         req = self._build_request(
             method="PUT",
@@ -278,7 +290,7 @@ class LibraryCollections(BaseSDK):
             user_agent_header="user-agent",
             accept_header_value="application/json",
             http_headers=http_headers,
-            _globals=operations.DeleteCollectionItemGlobals(
+            _globals=operations.UpdateCollectionItemGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
                 client_identifier=self.sdk_configuration.globals.client_identifier,
                 product=self.sdk_configuration.globals.product,
@@ -300,18 +312,24 @@ class LibraryCollections(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
                 config=self.sdk_configuration,
                 base_url=base_url or "",
-                operation_id="deleteCollectionItem",
+                operation_id="updateCollectionItem",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Library Collections"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -319,7 +337,7 @@ class LibraryCollections(BaseSDK):
         )
 
         if utils.match_response(http_res, "200", "application/json"):
-            return operations.DeleteCollectionItemResponse(
+            return operations.UpdateCollectionItemResponse(
                 media_container_with_metadata=unmarshal_json_response(
                     Optional[components.MediaContainerWithMetadata], http_res
                 ),
@@ -336,19 +354,19 @@ class LibraryCollections(BaseSDK):
 
         raise errors.SDKError("Unexpected response received", http_res)
 
-    async def delete_collection_item_async(
+    async def update_collection_item_async(
         self,
         *,
         request: Union[
-            operations.DeleteCollectionItemRequest,
-            operations.DeleteCollectionItemRequestTypedDict,
+            operations.UpdateCollectionItemRequest,
+            operations.UpdateCollectionItemRequestTypedDict,
         ],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> operations.DeleteCollectionItemResponse:
-        r"""Delete an item from a collection
+    ) -> operations.UpdateCollectionItemResponse:
+        r"""Update an item in a collection
 
         Delete an item from a collection
 
@@ -371,8 +389,8 @@ class LibraryCollections(BaseSDK):
             base_url = self._get_url(base_url, url_variables)
 
         if not isinstance(request, BaseModel):
-            request = utils.unmarshal(request, operations.DeleteCollectionItemRequest)
-        request = cast(operations.DeleteCollectionItemRequest, request)
+            request = utils.unmarshal(request, operations.UpdateCollectionItemRequest)
+        request = cast(operations.UpdateCollectionItemRequest, request)
 
         req = self._build_request_async(
             method="PUT",
@@ -386,7 +404,7 @@ class LibraryCollections(BaseSDK):
             user_agent_header="user-agent",
             accept_header_value="application/json",
             http_headers=http_headers,
-            _globals=operations.DeleteCollectionItemGlobals(
+            _globals=operations.UpdateCollectionItemGlobals(
                 accepts=self.sdk_configuration.globals.accepts,
                 client_identifier=self.sdk_configuration.globals.client_identifier,
                 product=self.sdk_configuration.globals.product,
@@ -408,18 +426,24 @@ class LibraryCollections(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
                 config=self.sdk_configuration,
                 base_url=base_url or "",
-                operation_id="deleteCollectionItem",
+                operation_id="updateCollectionItem",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Library Collections"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -427,7 +451,7 @@ class LibraryCollections(BaseSDK):
         )
 
         if utils.match_response(http_res, "200", "application/json"):
-            return operations.DeleteCollectionItemResponse(
+            return operations.UpdateCollectionItemResponse(
                 media_container_with_metadata=unmarshal_json_response(
                     Optional[components.MediaContainerWithMetadata], http_res
                 ),
@@ -516,10 +540,14 @@ class LibraryCollections(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -528,6 +556,8 @@ class LibraryCollections(BaseSDK):
                 operation_id="moveCollectionItem",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Library Collections"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
@@ -624,10 +654,14 @@ class LibraryCollections(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["429"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -636,6 +670,8 @@ class LibraryCollections(BaseSDK):
                 operation_id="moveCollectionItem",
                 oauth2_scopes=None,
                 security_source=self.sdk_configuration.security,
+                tags=["Library Collections"],
+                extensions=None,
             ),
             request=req,
             is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),

@@ -177,7 +177,8 @@ class UpdateItemsRequestTypedDict(TypedDict):
     r"""A friendly name for the client"""
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
-    type: NotRequired[str]
+    media_type: NotRequired[str]
+    r"""The media type to filter by"""
     filters: NotRequired[str]
     r"""The filters to apply to determine which items should be modified"""
     field_value: NotRequired[str]
@@ -288,10 +289,12 @@ class UpdateItemsRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
-    type: Annotated[
+    media_type: Annotated[
         Optional[str],
+        pydantic.Field(alias="type"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The media type to filter by"""
 
     filters: Annotated[
         Optional[str],
@@ -391,7 +394,7 @@ class UpdateItemsRequest(BaseModel):
                 "Device-Vendor",
                 "Device-Name",
                 "Marketplace",
-                "type",
+                "mediaType",
                 "filters",
                 "field.value",
                 "field.locked",

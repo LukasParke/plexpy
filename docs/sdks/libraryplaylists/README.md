@@ -7,7 +7,7 @@ Endpoints for manipulating playlists.
 ### Available Operations
 
 * [create_playlist](#create_playlist) - Create a Playlist
-* [upload_playlist](#upload_playlist) - Upload
+* [upload_playlist](#upload_playlist) - Upload media art
 * [delete_playlist](#delete_playlist) - Delete a Playlist
 * [update_playlist](#update_playlist) - Editing a Playlist
 * [get_playlist_generators](#get_playlist_generators) - Get a playlist's generators
@@ -549,6 +549,8 @@ with PlexAPI(
         "playlist_id": 972007,
         "generator_id": 208334,
         "item": {
+            "title": "Jack-Jack Attack",
+            "type": 42,
             "location": {
                 "uri": "library://82503060-0d68-4603-b594-8b071d54819e/item/%2Flibrary%2Fmetadata%2F146",
             },
@@ -558,8 +560,6 @@ with PlexAPI(
             },
             "target": "",
             "target_tag_id": 1,
-            "title": "Jack-Jack Attack",
-            "type": 42,
         },
     })
 

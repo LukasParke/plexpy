@@ -146,7 +146,9 @@ class DeleteMarkerGlobals(BaseModel):
 
 class DeleteMarkerRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     marker: str
+    r"""The marker identifier"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -175,10 +177,12 @@ class DeleteMarkerRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     marker: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""The marker identifier"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],

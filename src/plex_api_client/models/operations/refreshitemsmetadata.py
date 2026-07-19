@@ -154,6 +154,7 @@ class RefreshItemsMetadataGlobals(BaseModel):
 
 class RefreshItemsMetadataRequestTypedDict(TypedDict):
     ids: str
+    r"""Comma-separated list of IDs"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -177,13 +178,18 @@ class RefreshItemsMetadataRequestTypedDict(TypedDict):
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
     agent: NotRequired[str]
+    r"""The identifier of the metadata agent to use"""
     mark_updated: NotRequired[components_boolint.BoolInt]
+    r"""The markUpdated"""
+    skip_refresh: NotRequired[components_boolint.BoolInt]
+    r"""Skip synchronous refresh"""
 
 
 class RefreshItemsMetadataRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -265,12 +271,21 @@ class RefreshItemsMetadataRequest(BaseModel):
         Optional[str],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
+    r"""The identifier of the metadata agent to use"""
 
     mark_updated: Annotated[
         Optional[components_boolint.BoolInt],
         pydantic.Field(alias="markUpdated"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = components_boolint.BoolInt.FALSE
+    r"""The markUpdated"""
+
+    skip_refresh: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="skipRefresh"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Skip synchronous refresh"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -289,6 +304,7 @@ class RefreshItemsMetadataRequest(BaseModel):
                 "Marketplace",
                 "agent",
                 "markUpdated",
+                "skipRefresh",
             ]
         )
         serialized = handler(self)

@@ -308,7 +308,7 @@ class DeletePlaylistItemResponseTypedDict(TypedDict):
     media_container_with_playlist_metadata: NotRequired[
         components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadataTypedDict
     ]
-    r"""OK"""
+    r"""Successfully deleted delete a generator"""
 
 
 class DeletePlaylistItemResponse(BaseModel):
@@ -324,7 +324,7 @@ class DeletePlaylistItemResponse(BaseModel):
     media_container_with_playlist_metadata: Optional[
         components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadata
     ] = None
-    r"""OK"""
+    r"""Successfully deleted delete a generator"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

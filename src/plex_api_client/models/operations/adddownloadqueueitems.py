@@ -4,6 +4,7 @@ from __future__ import annotations
 import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
+    addedqueueitem as components_addedqueueitem,
     advancedsubtitles as components_advancedsubtitles,
     boolint as components_boolint,
     location as components_location,
@@ -184,9 +185,7 @@ class AddDownloadQueueItemsRequestTypedDict(TypedDict):
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
     advanced_subtitles: NotRequired[components_advancedsubtitles.AdvancedSubtitles]
-    r"""Indicates how incompatible advanced subtitles (such as ass/ssa) should be included: * 'burn' - Burn incompatible advanced text subtitles into the video stream * 'text' - Transcode incompatible advanced text subtitles to a compatible text format, even if some markup is lost
-
-    """
+    r"""Indicates how incompatible advanced subtitles (such as ass/ssa) should be included: * 'burn' - Burn incompatible advanced text subtitles into the video stream * 'text' - Transcode incompatible advanced text subtitles to a compatible text format, even if some markup is lost"""
     audio_boost: NotRequired[int]
     r"""Percentage of original audio loudness to use when transcoding (100 is equivalent to original volume, 50 is half, 200 is double, etc)"""
     audio_channel_count: NotRequired[int]
@@ -224,17 +223,13 @@ class AddDownloadQueueItemsRequestTypedDict(TypedDict):
     photo_resolution: NotRequired[str]
     r"""Target photo resolution."""
     protocol: NotRequired[components_protocol.Protocol]
-    r"""Indicates the network streaming protocol to be used for the transcode session: * 'http' - include the file in the http response such as MKV streaming * 'hls' - hls stream (RFC 8216) * 'dash' - dash stream (ISO/IEC 23009-1:2022)
-
-    """
+    r"""Indicates the network streaming protocol to be used for the transcode session: * 'http' - include the file in the http response such as MKV streaming * 'hls' - hls stream (RFC 8216) * 'dash' - dash stream (ISO/IEC 23009-1:2022)"""
     seconds_per_segment: NotRequired[int]
     r"""Number of seconds to include in each transcoded segment"""
     subtitle_size: NotRequired[int]
     r"""Percentage of original subtitle size to use when burning subtitles (100 is equivalent to original size, 50 is half, ect)"""
     subtitles: NotRequired[components_subtitles.Subtitles]
-    r"""Indicates how subtitles should be included: * 'auto' - Compute the appropriate subtitle setting automatically * 'burn' - Burn the selected subtitle; auto if no selected subtitle * 'none' - Ignore all subtitle streams * 'sidecar' - The selected subtitle should be provided as a sidecar * 'embedded' - The selected subtitle should be provided as an embedded stream * 'segmented' - The selected subtitle should be provided as a segmented stream
-
-    """
+    r"""Indicates how subtitles should be included: * 'auto' - Compute the appropriate subtitle setting automatically * 'burn' - Burn the selected subtitle; auto if no selected subtitle * 'none' - Ignore all subtitle streams * 'sidecar' - The selected subtitle should be provided as a sidecar * 'embedded' - The selected subtitle should be provided as an embedded stream * 'segmented' - The selected subtitle should be provided as a segmented stream"""
     video_bitrate: NotRequired[int]
     r"""Target video bitrate (in kbps)."""
     video_quality: NotRequired[int]
@@ -337,9 +332,7 @@ class AddDownloadQueueItemsRequest(BaseModel):
         pydantic.Field(alias="advancedSubtitles"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
-    r"""Indicates how incompatible advanced subtitles (such as ass/ssa) should be included: * 'burn' - Burn incompatible advanced text subtitles into the video stream * 'text' - Transcode incompatible advanced text subtitles to a compatible text format, even if some markup is lost
-
-    """
+    r"""Indicates how incompatible advanced subtitles (such as ass/ssa) should be included: * 'burn' - Burn incompatible advanced text subtitles into the video stream * 'text' - Transcode incompatible advanced text subtitles to a compatible text format, even if some markup is lost"""
 
     audio_boost: Annotated[
         Optional[int],
@@ -468,9 +461,7 @@ class AddDownloadQueueItemsRequest(BaseModel):
         Optional[components_protocol.Protocol],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
-    r"""Indicates the network streaming protocol to be used for the transcode session: * 'http' - include the file in the http response such as MKV streaming * 'hls' - hls stream (RFC 8216) * 'dash' - dash stream (ISO/IEC 23009-1:2022)
-
-    """
+    r"""Indicates the network streaming protocol to be used for the transcode session: * 'http' - include the file in the http response such as MKV streaming * 'hls' - hls stream (RFC 8216) * 'dash' - dash stream (ISO/IEC 23009-1:2022)"""
 
     seconds_per_segment: Annotated[
         Optional[int],
@@ -490,9 +481,7 @@ class AddDownloadQueueItemsRequest(BaseModel):
         Optional[components_subtitles.Subtitles],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
-    r"""Indicates how subtitles should be included: * 'auto' - Compute the appropriate subtitle setting automatically * 'burn' - Burn the selected subtitle; auto if no selected subtitle * 'none' - Ignore all subtitle streams * 'sidecar' - The selected subtitle should be provided as a sidecar * 'embedded' - The selected subtitle should be provided as an embedded stream * 'segmented' - The selected subtitle should be provided as a segmented stream
-
-    """
+    r"""Indicates how subtitles should be included: * 'auto' - Compute the appropriate subtitle setting automatically * 'burn' - Burn the selected subtitle; auto if no selected subtitle * 'none' - Ignore all subtitle streams * 'sidecar' - The selected subtitle should be provided as a sidecar * 'embedded' - The selected subtitle should be provided as an embedded stream * 'segmented' - The selected subtitle should be provided as a segmented stream"""
 
     video_bitrate: Annotated[
         Optional[int],
@@ -572,80 +561,42 @@ class AddDownloadQueueItemsRequest(BaseModel):
         return m
 
 
-class AddedQueueItemsTypedDict(TypedDict):
-    id: NotRequired[int]
-    r"""The queue item id that was added or the existing one if an item already exists in this queue with the same parameters"""
-    key: NotRequired[str]
-    r"""The key added to the queue"""
-
-
-class AddedQueueItems(BaseModel):
-    id: Optional[int] = None
-    r"""The queue item id that was added or the existing one if an item already exists in this queue with the same parameters"""
-
-    key: Optional[str] = None
-    r"""The key added to the queue"""
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["id", "key"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class AddDownloadQueueItemsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    added_queue_items: NotRequired[List[AddedQueueItemsTypedDict]]
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+    added_queue_items: NotRequired[
+        List[components_addedqueueitem.AddedQueueItemTypedDict]
+    ]
 
 
 class AddDownloadQueueItemsMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     added_queue_items: Annotated[
-        Optional[List[AddedQueueItems]], pydantic.Field(alias="AddedQueueItems")
+        Optional[List[components_addedqueueitem.AddedQueueItem]],
+        pydantic.Field(alias="AddedQueueItems"),
     ] = None
 
     @model_serializer(mode="wrap")

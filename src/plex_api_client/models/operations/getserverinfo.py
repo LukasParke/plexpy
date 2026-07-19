@@ -4,13 +4,13 @@ from __future__ import annotations
 import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
-    mediacontainerwithdirectory as components_mediacontainerwithdirectory,
+    directory as components_directory,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata
 import pydantic
 from pydantic import model_serializer
-from typing import Optional
+from typing import Any, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
@@ -280,6 +280,331 @@ class GetServerInfoRequest(BaseModel):
         return m
 
 
+class GetServerInfoResponseBodyTypedDict(TypedDict):
+    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
+    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
+    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
+    """
+
+    identifier: NotRequired[str]
+    offset: NotRequired[int]
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
+    size: NotRequired[int]
+    total_size: NotRequired[int]
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+    allow_camera_upload: NotRequired[bool]
+    allow_channel_access: NotRequired[bool]
+    allow_media_deletion: NotRequired[bool]
+    allow_sharing: NotRequired[bool]
+    allow_sync: NotRequired[bool]
+    allow_tuners: NotRequired[bool]
+    background_processing: NotRequired[bool]
+    certificate: NotRequired[bool]
+    companion_proxy: NotRequired[bool]
+    country_code: NotRequired[str]
+    diagnostics: NotRequired[List[str]]
+    r"""Comma-separated list of enabled diagnostics modules."""
+    event_stream: NotRequired[bool]
+    friendly_name: NotRequired[str]
+    hub_search: NotRequired[bool]
+    item_clusters: NotRequired[bool]
+    livetv: NotRequired[int]
+    machine_identifier: NotRequired[Any]
+    media_providers: NotRequired[bool]
+    multiuser: NotRequired[bool]
+    music_analysis: NotRequired[int]
+    my_plex: NotRequired[bool]
+    my_plex_mapping_state: NotRequired[Any]
+    my_plex_signin_state: NotRequired[Any]
+    my_plex_subscription: NotRequired[bool]
+    my_plex_username: NotRequired[str]
+    offline_transcode: NotRequired[int]
+    r"""Whether offline transcoding is enabled."""
+    owner_features: NotRequired[List[str]]
+    r"""List of enabled owner features."""
+    platform: NotRequired[str]
+    platform_version: NotRequired[str]
+    plugin_host: NotRequired[bool]
+    push_notifications: NotRequired[bool]
+    read_only_libraries: NotRequired[bool]
+    streaming_brain_abr_version: NotRequired[int]
+    streaming_brain_version: NotRequired[int]
+    sync: NotRequired[bool]
+    transcoder_active_video_sessions: NotRequired[int]
+    transcoder_audio: NotRequired[bool]
+    transcoder_lyrics: NotRequired[bool]
+    transcoder_photo: NotRequired[bool]
+    transcoder_subtitles: NotRequired[bool]
+    transcoder_video: NotRequired[bool]
+    transcoder_video_bitrates: NotRequired[List[str]]
+    r"""List of supported transcoder video bitrates."""
+    transcoder_video_qualities: NotRequired[List[str]]
+    r"""List of supported transcoder video qualities."""
+    transcoder_video_resolutions: NotRequired[List[str]]
+    r"""List of supported transcoder video resolutions."""
+    updated_at: NotRequired[int]
+    updater: NotRequired[bool]
+    version: NotRequired[str]
+    voice_search: NotRequired[bool]
+    directory: NotRequired[List[components_directory.DirectoryTypedDict]]
+
+
+class GetServerInfoResponseBody(BaseModel):
+    r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
+    Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
+    The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
+    """
+
+    identifier: Optional[str] = None
+
+    offset: Optional[int] = None
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
+
+    size: Optional[int] = None
+
+    total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+
+    allow_camera_upload: Annotated[
+        Optional[bool], pydantic.Field(alias="allowCameraUpload")
+    ] = None
+
+    allow_channel_access: Annotated[
+        Optional[bool], pydantic.Field(alias="allowChannelAccess")
+    ] = None
+
+    allow_media_deletion: Annotated[
+        Optional[bool], pydantic.Field(alias="allowMediaDeletion")
+    ] = None
+
+    allow_sharing: Annotated[Optional[bool], pydantic.Field(alias="allowSharing")] = (
+        None
+    )
+
+    allow_sync: Annotated[Optional[bool], pydantic.Field(alias="allowSync")] = None
+
+    allow_tuners: Annotated[Optional[bool], pydantic.Field(alias="allowTuners")] = None
+
+    background_processing: Annotated[
+        Optional[bool], pydantic.Field(alias="backgroundProcessing")
+    ] = None
+
+    certificate: Optional[bool] = None
+
+    companion_proxy: Annotated[
+        Optional[bool], pydantic.Field(alias="companionProxy")
+    ] = None
+
+    country_code: Annotated[Optional[str], pydantic.Field(alias="countryCode")] = None
+
+    diagnostics: Optional[List[str]] = None
+    r"""Comma-separated list of enabled diagnostics modules."""
+
+    event_stream: Annotated[Optional[bool], pydantic.Field(alias="eventStream")] = None
+
+    friendly_name: Annotated[Optional[str], pydantic.Field(alias="friendlyName")] = None
+
+    hub_search: Annotated[Optional[bool], pydantic.Field(alias="hubSearch")] = None
+
+    item_clusters: Annotated[Optional[bool], pydantic.Field(alias="itemClusters")] = (
+        None
+    )
+
+    livetv: Optional[int] = None
+
+    machine_identifier: Annotated[
+        Optional[Any], pydantic.Field(alias="machineIdentifier")
+    ] = None
+
+    media_providers: Annotated[
+        Optional[bool], pydantic.Field(alias="mediaProviders")
+    ] = None
+
+    multiuser: Optional[bool] = None
+
+    music_analysis: Annotated[Optional[int], pydantic.Field(alias="musicAnalysis")] = (
+        None
+    )
+
+    my_plex: Annotated[Optional[bool], pydantic.Field(alias="myPlex")] = None
+
+    my_plex_mapping_state: Annotated[
+        Optional[Any], pydantic.Field(alias="myPlexMappingState")
+    ] = None
+
+    my_plex_signin_state: Annotated[
+        Optional[Any], pydantic.Field(alias="myPlexSigninState")
+    ] = None
+
+    my_plex_subscription: Annotated[
+        Optional[bool], pydantic.Field(alias="myPlexSubscription")
+    ] = None
+
+    my_plex_username: Annotated[
+        Optional[str], pydantic.Field(alias="myPlexUsername")
+    ] = None
+
+    offline_transcode: Annotated[
+        Optional[int], pydantic.Field(alias="offlineTranscode")
+    ] = None
+    r"""Whether offline transcoding is enabled."""
+
+    owner_features: Annotated[
+        Optional[List[str]], pydantic.Field(alias="ownerFeatures")
+    ] = None
+    r"""List of enabled owner features."""
+
+    platform: Optional[str] = None
+
+    platform_version: Annotated[
+        Optional[str], pydantic.Field(alias="platformVersion")
+    ] = None
+
+    plugin_host: Annotated[Optional[bool], pydantic.Field(alias="pluginHost")] = None
+
+    push_notifications: Annotated[
+        Optional[bool], pydantic.Field(alias="pushNotifications")
+    ] = None
+
+    read_only_libraries: Annotated[
+        Optional[bool], pydantic.Field(alias="readOnlyLibraries")
+    ] = None
+
+    streaming_brain_abr_version: Annotated[
+        Optional[int], pydantic.Field(alias="streamingBrainABRVersion")
+    ] = None
+
+    streaming_brain_version: Annotated[
+        Optional[int], pydantic.Field(alias="streamingBrainVersion")
+    ] = None
+
+    sync: Optional[bool] = None
+
+    transcoder_active_video_sessions: Annotated[
+        Optional[int], pydantic.Field(alias="transcoderActiveVideoSessions")
+    ] = None
+
+    transcoder_audio: Annotated[
+        Optional[bool], pydantic.Field(alias="transcoderAudio")
+    ] = None
+
+    transcoder_lyrics: Annotated[
+        Optional[bool], pydantic.Field(alias="transcoderLyrics")
+    ] = None
+
+    transcoder_photo: Annotated[
+        Optional[bool], pydantic.Field(alias="transcoderPhoto")
+    ] = None
+
+    transcoder_subtitles: Annotated[
+        Optional[bool], pydantic.Field(alias="transcoderSubtitles")
+    ] = None
+
+    transcoder_video: Annotated[
+        Optional[bool], pydantic.Field(alias="transcoderVideo")
+    ] = None
+
+    transcoder_video_bitrates: Annotated[
+        Optional[List[str]], pydantic.Field(alias="transcoderVideoBitrates")
+    ] = None
+    r"""List of supported transcoder video bitrates."""
+
+    transcoder_video_qualities: Annotated[
+        Optional[List[str]], pydantic.Field(alias="transcoderVideoQualities")
+    ] = None
+    r"""List of supported transcoder video qualities."""
+
+    transcoder_video_resolutions: Annotated[
+        Optional[List[str]], pydantic.Field(alias="transcoderVideoResolutions")
+    ] = None
+    r"""List of supported transcoder video resolutions."""
+
+    updated_at: Annotated[Optional[int], pydantic.Field(alias="updatedAt")] = None
+
+    updater: Optional[bool] = None
+
+    version: Optional[str] = None
+
+    voice_search: Annotated[Optional[bool], pydantic.Field(alias="voiceSearch")] = None
+
+    directory: Annotated[
+        Optional[List[components_directory.Directory]],
+        pydantic.Field(alias="Directory"),
+    ] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "identifier",
+                "offset",
+                "size",
+                "totalSize",
+                "allowCameraUpload",
+                "allowChannelAccess",
+                "allowMediaDeletion",
+                "allowSharing",
+                "allowSync",
+                "allowTuners",
+                "backgroundProcessing",
+                "certificate",
+                "companionProxy",
+                "countryCode",
+                "diagnostics",
+                "eventStream",
+                "friendlyName",
+                "hubSearch",
+                "itemClusters",
+                "livetv",
+                "machineIdentifier",
+                "mediaProviders",
+                "multiuser",
+                "musicAnalysis",
+                "myPlex",
+                "myPlexMappingState",
+                "myPlexSigninState",
+                "myPlexSubscription",
+                "myPlexUsername",
+                "offlineTranscode",
+                "ownerFeatures",
+                "platform",
+                "platformVersion",
+                "pluginHost",
+                "pushNotifications",
+                "readOnlyLibraries",
+                "streamingBrainABRVersion",
+                "streamingBrainVersion",
+                "sync",
+                "transcoderActiveVideoSessions",
+                "transcoderAudio",
+                "transcoderLyrics",
+                "transcoderPhoto",
+                "transcoderSubtitles",
+                "transcoderVideo",
+                "transcoderVideoBitrates",
+                "transcoderVideoQualities",
+                "transcoderVideoResolutions",
+                "updatedAt",
+                "updater",
+                "version",
+                "voiceSearch",
+                "Directory",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
 class GetServerInfoResponseTypedDict(TypedDict):
     content_type: str
     r"""HTTP response content type for this operation"""
@@ -287,9 +612,7 @@ class GetServerInfoResponseTypedDict(TypedDict):
     r"""HTTP response status code for this operation"""
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
-    media_container_with_directory: NotRequired[
-        components_mediacontainerwithdirectory.MediaContainerWithDirectoryTypedDict
-    ]
+    object: NotRequired[GetServerInfoResponseBodyTypedDict]
     r"""OK"""
 
 
@@ -303,14 +626,12 @@ class GetServerInfoResponse(BaseModel):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
 
-    media_container_with_directory: Optional[
-        components_mediacontainerwithdirectory.MediaContainerWithDirectory
-    ] = None
+    object: Optional[GetServerInfoResponseBody] = None
     r"""OK"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["MediaContainerWithDirectory"])
+        optional_fields = set(["object"])
         serialized = handler(self)
         m = {}
 
@@ -323,3 +644,9 @@ class GetServerInfoResponse(BaseModel):
                     m[k] = val
 
         return m
+
+
+try:
+    GetServerInfoResponseBody.model_rebuild()
+except NameError:
+    pass

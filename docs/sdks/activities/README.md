@@ -8,7 +8,6 @@ Activities are associated with HTTP replies via a special `X-Plex-Activity` head
 
 Activities are optional cancellable. If cancellable, they may be cancelled via the `DELETE` endpoint.
 
-
 ### Available Operations
 
 * [list_activities](#list_activities) - Get all activities
@@ -50,9 +49,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## cancel_activity
 

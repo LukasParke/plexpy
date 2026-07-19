@@ -4,15 +4,10 @@ from __future__ import annotations
 import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
-    boolint as components_boolint,
+    successresponse as components_successresponse,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
-from plex_api_client.utils import (
-    FieldMetadata,
-    HeaderMetadata,
-    PathParamMetadata,
-    QueryParamMetadata,
-)
+from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
 from pydantic import model_serializer
 from typing import Optional
@@ -177,10 +172,6 @@ class RefreshSectionRequestTypedDict(TypedDict):
     r"""A friendly name for the client"""
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
-    force: NotRequired[components_boolint.BoolInt]
-    r"""Whether the update of metadata and items should be performed even if modification dates indicate the items have not change"""
-    path: NotRequired[str]
-    r"""Restrict refresh to the specified path"""
 
 
 class RefreshSectionRequest(BaseModel):
@@ -267,18 +258,6 @@ class RefreshSectionRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
-    force: Annotated[
-        Optional[components_boolint.BoolInt],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = components_boolint.BoolInt.FALSE
-    r"""Whether the update of metadata and items should be performed even if modification dates indicate the items have not change"""
-
-    path: Annotated[
-        Optional[str],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""Restrict refresh to the specified path"""
-
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
@@ -294,8 +273,6 @@ class RefreshSectionRequest(BaseModel):
                 "Device-Vendor",
                 "Device-Name",
                 "Marketplace",
-                "force",
-                "path",
             ]
         )
         serialized = handler(self)
@@ -319,6 +296,8 @@ class RefreshSectionResponseTypedDict(TypedDict):
     r"""HTTP response status code for this operation"""
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
+    success_response: NotRequired[components_successresponse.SuccessResponseTypedDict]
+    r"""OK"""
 
 
 class RefreshSectionResponse(BaseModel):
@@ -330,3 +309,22 @@ class RefreshSectionResponse(BaseModel):
 
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
+
+    success_response: Optional[components_successresponse.SuccessResponse] = None
+    r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["SuccessResponse"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m

@@ -19,7 +19,7 @@ class StopAllRefreshesResponseTypedDict(TypedDict):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
     library_sections: NotRequired[components_librarysections.LibrarySectionsTypedDict]
-    r"""OK"""
+    r"""Successfully deleted stop refresh"""
 
 
 class StopAllRefreshesResponse(BaseModel):
@@ -33,7 +33,7 @@ class StopAllRefreshesResponse(BaseModel):
     r"""Raw HTTP response; suitable for custom response parsing"""
 
     library_sections: Optional[components_librarysections.LibrarySections] = None
-    r"""OK"""
+    r"""Successfully deleted stop refresh"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

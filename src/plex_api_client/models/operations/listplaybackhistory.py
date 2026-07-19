@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 import httpx
-from plex_api_client.models.components import accepts as components_accepts
+from plex_api_client.models.components import (
+    accepts as components_accepts,
+    playbackhistorymetadata as components_playbackhistorymetadata,
+)
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
 import pydantic
@@ -167,6 +170,10 @@ class ListPlaybackHistoryRequestTypedDict(TypedDict):
     r"""A friendly name for the client"""
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
+    x_plex_container_start: NotRequired[int]
+    r"""Pagination start offset"""
+    x_plex_container_size: NotRequired[int]
+    r"""Pagination page size"""
     account_id: NotRequired[int]
     r"""The account id to restrict view history"""
     viewed_at: NotRequired[int]
@@ -177,6 +184,20 @@ class ListPlaybackHistoryRequestTypedDict(TypedDict):
     r"""The metadata item to restrict view history (can provide the id for a show to see all of that show's view history).  Note this is translated to `metadata_items.id`, `parents.id`, or `grandparents.id` internally depending on the metadata type."""
     sort: NotRequired[List[str]]
     r"""The field on which to sort.  Multiple orderings can be specified separated by `,` and the direction specified following a `:` (`desc` or `asc`; `asc` is assumed if not provided).  Note `metadataItemID` may not be used here."""
+    exclude_elements: NotRequired[str]
+    r"""Comma-separated list of elements to exclude from the response"""
+    exclude_fields: NotRequired[str]
+    r"""Comma-separated list of fields to exclude from the response"""
+    include_fields: NotRequired[str]
+    r"""Whitelist of fields to return"""
+    include_elements: NotRequired[str]
+    r"""Whitelist of elements to include"""
+    viewed_at_greater_than: NotRequired[int]
+    r"""Greater-than filter for viewedAt timestamp"""
+    viewed_at_less_than: NotRequired[int]
+    r"""Less-than filter for viewedAt timestamp"""
+    device_id: NotRequired[int]
+    r"""Filter by device ID"""
 
 
 class ListPlaybackHistoryRequest(BaseModel):
@@ -256,6 +277,20 @@ class ListPlaybackHistoryRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    x_plex_container_start: Annotated[
+        Optional[int],
+        pydantic.Field(alias="X-Plex-Container-Start"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Pagination start offset"""
+
+    x_plex_container_size: Annotated[
+        Optional[int],
+        pydantic.Field(alias="X-Plex-Container-Size"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Pagination page size"""
+
     account_id: Annotated[
         Optional[int],
         pydantic.Field(alias="accountID"),
@@ -290,6 +325,55 @@ class ListPlaybackHistoryRequest(BaseModel):
     ] = None
     r"""The field on which to sort.  Multiple orderings can be specified separated by `,` and the direction specified following a `:` (`desc` or `asc`; `asc` is assumed if not provided).  Note `metadataItemID` may not be used here."""
 
+    exclude_elements: Annotated[
+        Optional[str],
+        pydantic.Field(alias="excludeElements"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Comma-separated list of elements to exclude from the response"""
+
+    exclude_fields: Annotated[
+        Optional[str],
+        pydantic.Field(alias="excludeFields"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Comma-separated list of fields to exclude from the response"""
+
+    include_fields: Annotated[
+        Optional[str],
+        pydantic.Field(alias="includeFields"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Whitelist of fields to return"""
+
+    include_elements: Annotated[
+        Optional[str],
+        pydantic.Field(alias="includeElements"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Whitelist of elements to include"""
+
+    viewed_at_greater_than: Annotated[
+        Optional[int],
+        pydantic.Field(alias="viewedAt>"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Greater-than filter for viewedAt timestamp"""
+
+    viewed_at_less_than: Annotated[
+        Optional[int],
+        pydantic.Field(alias="viewedAt<"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Less-than filter for viewedAt timestamp"""
+
+    device_id: Annotated[
+        Optional[int],
+        pydantic.Field(alias="deviceID"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Filter by device ID"""
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
@@ -305,105 +389,20 @@ class ListPlaybackHistoryRequest(BaseModel):
                 "Device-Vendor",
                 "Device-Name",
                 "Marketplace",
+                "X-Plex-Container-Start",
+                "X-Plex-Container-Size",
                 "accountID",
                 "viewedAt",
                 "librarySectionID",
                 "metadataItemID",
                 "sort",
-            ]
-        )
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
-class ListPlaybackHistoryMetadataTypedDict(TypedDict):
-    account_id: NotRequired[int]
-    r"""The account id of this playback"""
-    device_id: NotRequired[int]
-    r"""The device id which played the item"""
-    history_key: NotRequired[str]
-    r"""The key for this individual history item"""
-    key: NotRequired[str]
-    r"""The metadata key for the item played"""
-    library_section_id: NotRequired[str]
-    r"""The library section id containing the item played"""
-    originally_available_at: NotRequired[str]
-    r"""The originally available at of the item played"""
-    rating_key: NotRequired[str]
-    r"""The rating key for the item played"""
-    thumb: NotRequired[str]
-    r"""The thumb of the item played"""
-    title: NotRequired[str]
-    r"""The title of the item played"""
-    type: NotRequired[str]
-    r"""The metadata type of the item played"""
-    viewed_at: NotRequired[int]
-    r"""The time when the item was played"""
-
-
-class ListPlaybackHistoryMetadata(BaseModel):
-    account_id: Annotated[Optional[int], pydantic.Field(alias="accountID")] = None
-    r"""The account id of this playback"""
-
-    device_id: Annotated[Optional[int], pydantic.Field(alias="deviceID")] = None
-    r"""The device id which played the item"""
-
-    history_key: Annotated[Optional[str], pydantic.Field(alias="historyKey")] = None
-    r"""The key for this individual history item"""
-
-    key: Optional[str] = None
-    r"""The metadata key for the item played"""
-
-    library_section_id: Annotated[
-        Optional[str], pydantic.Field(alias="librarySectionID")
-    ] = None
-    r"""The library section id containing the item played"""
-
-    originally_available_at: Annotated[
-        Optional[str], pydantic.Field(alias="originallyAvailableAt")
-    ] = None
-    r"""The originally available at of the item played"""
-
-    rating_key: Annotated[Optional[str], pydantic.Field(alias="ratingKey")] = None
-    r"""The rating key for the item played"""
-
-    thumb: Optional[str] = None
-    r"""The thumb of the item played"""
-
-    title: Optional[str] = None
-    r"""The title of the item played"""
-
-    type: Optional[str] = None
-    r"""The metadata type of the item played"""
-
-    viewed_at: Annotated[Optional[int], pydantic.Field(alias="viewedAt")] = None
-    r"""The time when the item was played"""
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(
-            [
-                "accountID",
+                "excludeElements",
+                "excludeFields",
+                "includeFields",
+                "includeElements",
+                "viewedAt>",
+                "viewedAt<",
                 "deviceID",
-                "historyKey",
-                "key",
-                "librarySectionID",
-                "originallyAvailableAt",
-                "ratingKey",
-                "thumb",
-                "title",
-                "type",
-                "viewedAt",
             ]
         )
         serialized = handler(self)
@@ -424,45 +423,38 @@ class ListPlaybackHistoryMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
-    metadata: NotRequired[List[ListPlaybackHistoryMetadataTypedDict]]
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+    metadata: NotRequired[
+        List[components_playbackhistorymetadata.PlaybackHistoryMetadataTypedDict]
+    ]
 
 
 class ListPlaybackHistoryMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     metadata: Annotated[
-        Optional[List[ListPlaybackHistoryMetadata]], pydantic.Field(alias="Metadata")
+        Optional[List[components_playbackhistorymetadata.PlaybackHistoryMetadata]],
+        pydantic.Field(alias="Metadata"),
     ] = None
 
     @model_serializer(mode="wrap")
@@ -557,10 +549,6 @@ class ListPlaybackHistoryResponse(BaseModel):
         return m
 
 
-try:
-    ListPlaybackHistoryMetadata.model_rebuild()
-except NameError:
-    pass
 try:
     ListPlaybackHistoryMediaContainer.model_rebuild()
 except NameError:

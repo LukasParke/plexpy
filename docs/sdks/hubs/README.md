@@ -8,6 +8,8 @@ The hubs within a media provider
 
 * [get_all_hubs](#get_all_hubs) - Get global hubs
 * [get_continue_watching](#get_continue_watching) - Get the continue watching hub
+* [get_continue_watching_items](#get_continue_watching_items) - Get Continue Watching Items
+* [get_home_recently_added](#get_home_recently_added) - Get home hubs Recently Added
 * [get_hub_items](#get_hub_items) - Get a hub's items
 * [get_promoted_hubs](#get_promoted_hubs) - Get the hubs which are promoted
 * [get_metadata_hubs](#get_metadata_hubs) - Get hubs for section by metadata item
@@ -52,10 +54,10 @@ with PlexAPI(
         "only_transient": components.BoolInt.TRUE,
     })
 
-    assert res.object is not None
+    assert res.media_container_with_hubs is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_hubs)
 
 ```
 
@@ -72,9 +74,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_continue_watching
 
@@ -105,10 +108,10 @@ with PlexAPI(
 
     res = plex_api.hubs.get_continue_watching(request={})
 
-    assert res.object is not None
+    assert res.media_container_with_hubs is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_hubs)
 
 ```
 
@@ -125,9 +128,118 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_continue_watching_items
+
+Get direct access to Continue Watching items.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getContinueWatchingItems" method="get" path="/hubs/continueWatching/items" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.hubs.get_continue_watching_items(request={})
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                                | Type                                                                                                     | Required                                                                                                 | Description                                                                                              |
+| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `request`                                                                                                | [operations.GetContinueWatchingItemsRequest](../../models/operations/getcontinuewatchingitemsrequest.md) | :heavy_check_mark:                                                                                       | The request object to use for the request.                                                               |
+| `retries`                                                                                                | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                         | :heavy_minus_sign:                                                                                       | Configuration to override the default retry behavior of the client.                                      |
+
+### Response
+
+**[operations.GetContinueWatchingItemsResponse](../../models/operations/getcontinuewatchingitemsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_home_recently_added
+
+Get the recently added hub for the home screen.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getHomeRecentlyAdded" method="get" path="/hubs/home/recentlyAdded" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.hubs.get_home_recently_added(request={})
+
+    assert res.media_container_with_hubs is not None
+
+    # Handle response
+    print(res.media_container_with_hubs)
+
+```
+
+### Parameters
+
+| Parameter                                                                                        | Type                                                                                             | Required                                                                                         | Description                                                                                      |
+| ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `request`                                                                                        | [operations.GetHomeRecentlyAddedRequest](../../models/operations/gethomerecentlyaddedrequest.md) | :heavy_check_mark:                                                                               | The request object to use for the request.                                                       |
+| `retries`                                                                                        | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                 | :heavy_minus_sign:                                                                               | Configuration to override the default retry behavior of the client.                              |
+
+### Response
+
+**[operations.GetHomeRecentlyAddedResponse](../../models/operations/gethomerecentlyaddedresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_hub_items
 
@@ -217,10 +329,10 @@ with PlexAPI(
 
     res = plex_api.hubs.get_promoted_hubs(request={})
 
-    assert res.object is not None
+    assert res.media_container_with_hubs is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_hubs)
 
 ```
 
@@ -237,9 +349,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_metadata_hubs
 
@@ -441,10 +554,10 @@ with PlexAPI(
         "only_transient": components.BoolInt.TRUE,
     })
 
-    assert res.object is not None
+    assert res.media_container_with_hubs is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_hubs)
 
 ```
 

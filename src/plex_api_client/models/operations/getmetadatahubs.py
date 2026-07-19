@@ -325,7 +325,7 @@ class GetMetadataHubsResponseTypedDict(TypedDict):
     media_container_with_hubs: NotRequired[
         components_mediacontainerwithhubs.MediaContainerWithHubsTypedDict
     ]
-    r"""OK"""
+    r"""Successfully retrieved get hubs for section by metadata item"""
 
 
 class GetMetadataHubsResponse(BaseModel):
@@ -343,7 +343,7 @@ class GetMetadataHubsResponse(BaseModel):
     media_container_with_hubs: Optional[
         components_mediacontainerwithhubs.MediaContainerWithHubs
     ] = None
-    r"""OK"""
+    r"""Successfully retrieved get hubs for section by metadata item"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

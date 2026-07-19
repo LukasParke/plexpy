@@ -4,7 +4,7 @@ from __future__ import annotations
 import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
-    mediacontainerwithmetadata as components_mediacontainerwithmetadata,
+    collection as components_collection,
     mediatype as components_mediatype,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
@@ -177,8 +177,6 @@ class CreateCollectionRequestTypedDict(TypedDict):
     r"""The title to filter by or assign"""
     smart: NotRequired[bool]
     r"""Whether this is a smart collection/playlist"""
-    uri: NotRequired[str]
-    r"""The URI for processing the smart collection.  Required for a smart collection"""
     type: NotRequired[components_mediatype.MediaType]
     r"""The type of media to retrieve or filter by.
 
@@ -193,8 +191,9 @@ class CreateCollectionRequestTypedDict(TypedDict):
     9 = photo
 
     E.g. A movie library will not return anything with type 3 as there are no seasons for movie libraries
-
     """
+    uri: NotRequired[str]
+    r"""The URI for processing the smart collection.  Required for a smart collection"""
 
 
 class CreateCollectionRequest(BaseModel):
@@ -293,12 +292,6 @@ class CreateCollectionRequest(BaseModel):
     ] = None
     r"""Whether this is a smart collection/playlist"""
 
-    uri: Annotated[
-        Optional[str],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""The URI for processing the smart collection.  Required for a smart collection"""
-
     type: Annotated[
         Optional[components_mediatype.MediaType],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
@@ -316,8 +309,13 @@ class CreateCollectionRequest(BaseModel):
     9 = photo
 
     E.g. A movie library will not return anything with type 3 as there are no seasons for movie libraries
-
     """
+
+    uri: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""The URI for processing the smart collection.  Required for a smart collection"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -336,8 +334,8 @@ class CreateCollectionRequest(BaseModel):
                 "Marketplace",
                 "title",
                 "smart",
-                "uri",
                 "type",
+                "uri",
             ]
         )
         serialized = handler(self)
@@ -361,10 +359,8 @@ class CreateCollectionResponseTypedDict(TypedDict):
     r"""HTTP response status code for this operation"""
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
-    media_container_with_metadata: NotRequired[
-        components_mediacontainerwithmetadata.MediaContainerWithMetadataTypedDict
-    ]
-    r"""OK"""
+    collection: NotRequired[components_collection.CollectionTypedDict]
+    r"""The created collection"""
 
 
 class CreateCollectionResponse(BaseModel):
@@ -377,14 +373,12 @@ class CreateCollectionResponse(BaseModel):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
 
-    media_container_with_metadata: Optional[
-        components_mediacontainerwithmetadata.MediaContainerWithMetadata
-    ] = None
-    r"""OK"""
+    collection: Optional[components_collection.Collection] = None
+    r"""The created collection"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["MediaContainerWithMetadata"])
+        optional_fields = set(["Collection"])
         serialized = handler(self)
         m = {}
 

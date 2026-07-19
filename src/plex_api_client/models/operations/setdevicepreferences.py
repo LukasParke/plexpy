@@ -176,6 +176,8 @@ class SetDevicePreferencesRequestTypedDict(TypedDict):
     r"""The marketplace on which the client application is distributed"""
     name: NotRequired[str]
     r"""The preference names and values."""
+    value: NotRequired[str]
+    r"""Preference value to set."""
 
 
 class SetDevicePreferencesRequest(BaseModel):
@@ -268,6 +270,12 @@ class SetDevicePreferencesRequest(BaseModel):
     ] = None
     r"""The preference names and values."""
 
+    value: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Preference value to set."""
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
@@ -284,6 +292,7 @@ class SetDevicePreferencesRequest(BaseModel):
                 "Device-Name",
                 "Marketplace",
                 "name",
+                "value",
             ]
         )
         serialized = handler(self)

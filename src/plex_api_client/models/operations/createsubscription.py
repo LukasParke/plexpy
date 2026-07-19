@@ -167,7 +167,6 @@ class ParamsTypedDict(TypedDict):
     r"""Subscription parameters.
     - `mediaProviderID`: Required for downloads to indicate which MP the subscription will download into
     - `source`: Required for downloads to indicate the source of the downloaded content.
-
     """
 
 
@@ -175,7 +174,6 @@ class Params(BaseModel):
     r"""Subscription parameters.
     - `mediaProviderID`: Required for downloads to indicate which MP the subscription will download into
     - `source`: Required for downloads to indicate the source of the downloaded content.
-
     """
 
 
@@ -206,7 +204,7 @@ class CreateSubscriptionRequestTypedDict(TypedDict):
     r"""The library section into which we'll grab the media.  Not actually required when the subscription is to a playlist."""
     target_section_location_id: NotRequired[int]
     r"""The section location into which to grab."""
-    type: NotRequired[int]
+    media_type: NotRequired[int]
     r"""The type of the thing we're subscribing too (e.g. show, season)."""
     hints: NotRequired[HintsTypedDict]
     r"""Hints describing what we're looking for.  Note: The hint `ratingKey` is required for downloading from a PMS remote."""
@@ -216,7 +214,6 @@ class CreateSubscriptionRequestTypedDict(TypedDict):
     r"""Subscription parameters.
     - `mediaProviderID`: Required for downloads to indicate which MP the subscription will download into
     - `source`: Required for downloads to indicate the source of the downloaded content.
-
     """
 
 
@@ -311,8 +308,9 @@ class CreateSubscriptionRequest(BaseModel):
     ] = None
     r"""The section location into which to grab."""
 
-    type: Annotated[
+    media_type: Annotated[
         Optional[int],
+        pydantic.Field(alias="type"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
     r"""The type of the thing we're subscribing too (e.g. show, season)."""
@@ -336,7 +334,6 @@ class CreateSubscriptionRequest(BaseModel):
     r"""Subscription parameters.
     - `mediaProviderID`: Required for downloads to indicate which MP the subscription will download into
     - `source`: Required for downloads to indicate the source of the downloaded content.
-
     """
 
     @model_serializer(mode="wrap")
@@ -356,7 +353,7 @@ class CreateSubscriptionRequest(BaseModel):
                 "Marketplace",
                 "targetLibrarySectionID",
                 "targetSectionLocationID",
-                "type",
+                "mediaType",
                 "hints",
                 "prefs",
                 "params",
@@ -380,19 +377,14 @@ class CreateSubscriptionMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
     media_subscription: NotRequired[
         List[components_mediasubscription.MediaSubscriptionTypedDict]
     ]
@@ -402,22 +394,17 @@ class CreateSubscriptionMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     media_subscription: Annotated[
         Optional[List[components_mediasubscription.MediaSubscription]],

@@ -9,12 +9,27 @@ from typing import Any, Dict, Optional, Union
 from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 
-class CanAutoSync2(str, Enum):
+class BitrateMode(str, Enum):
+    r"""Audio bitrate mode (cbr or vbr)."""
+
+    CBR = "cbr"
+    VBR = "vbr"
+
+
+class One(str, Enum):
     ZERO = "0"
     ONE = "1"
 
 
-CanAutoSyncTypedDict = TypeAliasType("CanAutoSyncTypedDict", Union[bool, CanAutoSync2])
+CanAutoSync2TypedDict = TypeAliasType("CanAutoSync2TypedDict", Union[One, bool])
+
+
+CanAutoSync2 = TypeAliasType("CanAutoSync2", Union[One, bool])
+
+
+CanAutoSyncTypedDict = TypeAliasType(
+    "CanAutoSyncTypedDict", Union[bool, CanAutoSync2TypedDict]
+)
 r"""Indicates if the stream can auto-sync."""
 
 
@@ -27,7 +42,6 @@ class StreamType(int, Enum):
     - VIDEO = 1 (Video stream)
     - AUDIO = 2 (Audio stream)
     - SUBTITLE = 3 (Subtitle stream)
-
     """
 
     VIDEO = 1
@@ -47,14 +61,47 @@ class StreamTypedDict(TypedDict):
     key: str
     r"""Key to access this stream part."""
     stream_type: StreamType
+    title: NotRequired[str]
+    r"""Optional title for the stream (e.g., language variant)."""
+    format_: NotRequired[str]
+    r"""Format of the stream (e.g., srt)."""
     default: NotRequired[bool]
     r"""Indicates if this stream is default."""
+    album_gain: NotRequired[float]
+    r"""ReplayGain album gain in dB."""
+    album_peak: NotRequired[float]
+    r"""ReplayGain album peak amplitude."""
+    album_range: NotRequired[float]
+    r"""ReplayGain album dynamic range in dB."""
     audio_channel_layout: NotRequired[str]
     r"""Audio channel layout."""
-    channels: NotRequired[int]
-    r"""Number of audio channels (for audio streams)."""
     bit_depth: NotRequired[int]
     r"""Bit depth of the video stream."""
+    bitrate: NotRequired[int]
+    r"""Bitrate of the stream."""
+    bitrate_mode: NotRequired[BitrateMode]
+    r"""Audio bitrate mode (cbr or vbr)."""
+    can_auto_sync: NotRequired[CanAutoSyncTypedDict]
+    r"""Indicates if the stream can auto-sync."""
+    channels: NotRequired[int]
+    r"""Number of audio channels (for audio streams)."""
+    chroma_location: NotRequired[str]
+    r"""Chroma sample location."""
+    chroma_subsampling: NotRequired[str]
+    r"""Chroma subsampling format."""
+    closed_captions: NotRequired[bool]
+    coded_height: NotRequired[int]
+    r"""Coded video height."""
+    coded_width: NotRequired[int]
+    r"""Coded video width."""
+    color_primaries: NotRequired[str]
+    r"""Color primaries used."""
+    color_range: NotRequired[str]
+    r"""Color range (e.g., tv)."""
+    color_space: NotRequired[str]
+    r"""Color space."""
+    color_trc: NotRequired[str]
+    r"""Color transfer characteristics."""
     dovibl_compat_id: NotRequired[int]
     r"""Dolby Vision BL compatibility ID."""
     dovibl_present: NotRequired[bool]
@@ -71,32 +118,23 @@ class StreamTypedDict(TypedDict):
     r"""Indicates if Dolby Vision RPU is present."""
     dovi_version: NotRequired[str]
     r"""Dolby Vision version."""
-    bitrate: NotRequired[int]
-    r"""Bitrate of the stream."""
-    can_auto_sync: NotRequired[CanAutoSyncTypedDict]
-    r"""Indicates if the stream can auto-sync."""
-    chroma_location: NotRequired[str]
-    r"""Chroma sample location."""
-    chroma_subsampling: NotRequired[str]
-    r"""Chroma subsampling format."""
-    coded_height: NotRequired[int]
-    r"""Coded video height."""
-    coded_width: NotRequired[int]
-    r"""Coded video width."""
-    closed_captions: NotRequired[bool]
-    color_primaries: NotRequired[str]
-    r"""Color primaries used."""
-    color_range: NotRequired[str]
-    r"""Color range (e.g., tv)."""
-    color_space: NotRequired[str]
-    r"""Color space."""
-    color_trc: NotRequired[str]
-    r"""Color transfer characteristics."""
+    dub: NotRequired[bool]
+    r"""Indicates if the stream is a dub."""
+    embedded_in_video: NotRequired[str]
+    end_ramp: NotRequired[str]
+    r"""Loudness ramp end type."""
     extended_display_title: NotRequired[str]
     r"""Extended display title for the stream."""
+    forced: NotRequired[bool]
     frame_rate: NotRequired[float]
     r"""Frame rate of the stream."""
+    gain: NotRequired[float]
+    r"""Track replay gain in dB."""
     has_scaling_matrix: NotRequired[bool]
+    header_compression: NotRequired[bool]
+    r"""Indicates whether header compression is enabled."""
+    hearing_impaired: NotRequired[bool]
+    r"""Indicates if the stream is for the hearing impaired."""
     height: NotRequired[int]
     r"""Height of the video stream."""
     index: NotRequired[int]
@@ -107,32 +145,48 @@ class StreamTypedDict(TypedDict):
     r"""ISO language code."""
     language_tag: NotRequired[str]
     r"""Language tag (e.g., en)."""
-    format_: NotRequired[str]
-    r"""Format of the stream (e.g., srt)."""
-    header_compression: NotRequired[bool]
-    r"""Indicates whether header compression is enabled."""
     level: NotRequired[int]
     r"""Video level."""
+    loudness: NotRequired[float]
+    r"""Integrated loudness in LUFS."""
+    lra: NotRequired[float]
+    r"""Loudness range in LU."""
+    min_lines: NotRequired[int]
+    r"""Minimum lines in the lyric file."""
     original: NotRequired[bool]
     r"""Indicates if this is the original stream."""
+    peak: NotRequired[float]
+    r"""Track peak amplitude."""
+    perfect_match: NotRequired[bool]
+    r"""Whether the subtitle is an exact match."""
     profile: NotRequired[str]
     r"""Video profile."""
+    provider: NotRequired[str]
+    r"""Lyric or subtitle provider name."""
+    provider_title: NotRequired[str]
+    r"""Subtitle provider display name."""
     ref_frames: NotRequired[int]
     r"""Number of reference frames."""
     sampling_rate: NotRequired[int]
     r"""Sampling rate for the audio stream."""
     scan_type: NotRequired[str]
-    embedded_in_video: NotRequired[str]
+    score: NotRequired[float]
+    r"""Subtitle match confidence score (0-100)."""
     selected: NotRequired[bool]
     r"""Indicates if this stream is selected (applicable for audio streams)."""
-    forced: NotRequired[bool]
-    hearing_impaired: NotRequired[bool]
-    r"""Indicates if the stream is for the hearing impaired."""
-    dub: NotRequired[bool]
-    r"""Indicates if the stream is a dub."""
-    title: NotRequired[str]
-    r"""Optional title for the stream (e.g., language variant)."""
+    source_key: NotRequired[str]
+    r"""Source identifier for the subtitle."""
+    start_ramp: NotRequired[str]
+    r"""Loudness ramp start type."""
     stream_identifier: NotRequired[int]
+    timed: NotRequired[bool]
+    r"""Whether lyrics are timestamped."""
+    transient: NotRequired[bool]
+    r"""Whether the subtitle is temporary or downloaded."""
+    user_id: NotRequired[int]
+    r"""ID of the user who added the subtitle."""
+    visual_impaired: NotRequired[bool]
+    r"""Whether this audio track is an audio description track."""
     width: NotRequired[int]
     r"""Width of the video stream."""
 
@@ -159,19 +213,81 @@ class Stream(BaseModel):
 
     stream_type: Annotated[StreamType, pydantic.Field(alias="streamType")]
 
+    title: Optional[str] = None
+    r"""Optional title for the stream (e.g., language variant)."""
+
+    format_: Annotated[Optional[str], pydantic.Field(alias="format")] = None
+    r"""Format of the stream (e.g., srt)."""
+
     default: Optional[bool] = None
     r"""Indicates if this stream is default."""
+
+    album_gain: Annotated[Optional[float], pydantic.Field(alias="albumGain")] = None
+    r"""ReplayGain album gain in dB."""
+
+    album_peak: Annotated[Optional[float], pydantic.Field(alias="albumPeak")] = None
+    r"""ReplayGain album peak amplitude."""
+
+    album_range: Annotated[Optional[float], pydantic.Field(alias="albumRange")] = None
+    r"""ReplayGain album dynamic range in dB."""
 
     audio_channel_layout: Annotated[
         Optional[str], pydantic.Field(alias="audioChannelLayout")
     ] = None
     r"""Audio channel layout."""
 
+    bit_depth: Annotated[Optional[int], pydantic.Field(alias="bitDepth")] = None
+    r"""Bit depth of the video stream."""
+
+    bitrate: Optional[int] = None
+    r"""Bitrate of the stream."""
+
+    bitrate_mode: Annotated[
+        Optional[BitrateMode], pydantic.Field(alias="bitrateMode")
+    ] = None
+    r"""Audio bitrate mode (cbr or vbr)."""
+
+    can_auto_sync: Annotated[
+        Optional[CanAutoSync], pydantic.Field(alias="canAutoSync")
+    ] = None
+    r"""Indicates if the stream can auto-sync."""
+
     channels: Optional[int] = None
     r"""Number of audio channels (for audio streams)."""
 
-    bit_depth: Annotated[Optional[int], pydantic.Field(alias="bitDepth")] = None
-    r"""Bit depth of the video stream."""
+    chroma_location: Annotated[
+        Optional[str], pydantic.Field(alias="chromaLocation")
+    ] = None
+    r"""Chroma sample location."""
+
+    chroma_subsampling: Annotated[
+        Optional[str], pydantic.Field(alias="chromaSubsampling")
+    ] = None
+    r"""Chroma subsampling format."""
+
+    closed_captions: Annotated[
+        Optional[bool], pydantic.Field(alias="closedCaptions")
+    ] = None
+
+    coded_height: Annotated[Optional[int], pydantic.Field(alias="codedHeight")] = None
+    r"""Coded video height."""
+
+    coded_width: Annotated[Optional[int], pydantic.Field(alias="codedWidth")] = None
+    r"""Coded video width."""
+
+    color_primaries: Annotated[
+        Optional[str], pydantic.Field(alias="colorPrimaries")
+    ] = None
+    r"""Color primaries used."""
+
+    color_range: Annotated[Optional[str], pydantic.Field(alias="colorRange")] = None
+    r"""Color range (e.g., tv)."""
+
+    color_space: Annotated[Optional[str], pydantic.Field(alias="colorSpace")] = None
+    r"""Color space."""
+
+    color_trc: Annotated[Optional[str], pydantic.Field(alias="colorTrc")] = None
+    r"""Color transfer characteristics."""
 
     dovibl_compat_id: Annotated[
         Optional[int], pydantic.Field(alias="DOVIBLCompatID")
@@ -205,59 +321,42 @@ class Stream(BaseModel):
     dovi_version: Annotated[Optional[str], pydantic.Field(alias="DOVIVersion")] = None
     r"""Dolby Vision version."""
 
-    bitrate: Optional[int] = None
-    r"""Bitrate of the stream."""
+    dub: Optional[bool] = None
+    r"""Indicates if the stream is a dub."""
 
-    can_auto_sync: Annotated[
-        Optional[CanAutoSync], pydantic.Field(alias="canAutoSync")
-    ] = None
-    r"""Indicates if the stream can auto-sync."""
-
-    chroma_location: Annotated[
-        Optional[str], pydantic.Field(alias="chromaLocation")
-    ] = None
-    r"""Chroma sample location."""
-
-    chroma_subsampling: Annotated[
-        Optional[str], pydantic.Field(alias="chromaSubsampling")
-    ] = None
-    r"""Chroma subsampling format."""
-
-    coded_height: Annotated[Optional[int], pydantic.Field(alias="codedHeight")] = None
-    r"""Coded video height."""
-
-    coded_width: Annotated[Optional[int], pydantic.Field(alias="codedWidth")] = None
-    r"""Coded video width."""
-
-    closed_captions: Annotated[
-        Optional[bool], pydantic.Field(alias="closedCaptions")
+    embedded_in_video: Annotated[
+        Optional[str], pydantic.Field(alias="embeddedInVideo")
     ] = None
 
-    color_primaries: Annotated[
-        Optional[str], pydantic.Field(alias="colorPrimaries")
-    ] = None
-    r"""Color primaries used."""
-
-    color_range: Annotated[Optional[str], pydantic.Field(alias="colorRange")] = None
-    r"""Color range (e.g., tv)."""
-
-    color_space: Annotated[Optional[str], pydantic.Field(alias="colorSpace")] = None
-    r"""Color space."""
-
-    color_trc: Annotated[Optional[str], pydantic.Field(alias="colorTrc")] = None
-    r"""Color transfer characteristics."""
+    end_ramp: Annotated[Optional[str], pydantic.Field(alias="endRamp")] = None
+    r"""Loudness ramp end type."""
 
     extended_display_title: Annotated[
         Optional[str], pydantic.Field(alias="extendedDisplayTitle")
     ] = None
     r"""Extended display title for the stream."""
 
+    forced: Optional[bool] = None
+
     frame_rate: Annotated[Optional[float], pydantic.Field(alias="frameRate")] = None
     r"""Frame rate of the stream."""
+
+    gain: Optional[float] = None
+    r"""Track replay gain in dB."""
 
     has_scaling_matrix: Annotated[
         Optional[bool], pydantic.Field(alias="hasScalingMatrix")
     ] = None
+
+    header_compression: Annotated[
+        Optional[bool], pydantic.Field(alias="headerCompression")
+    ] = None
+    r"""Indicates whether header compression is enabled."""
+
+    hearing_impaired: Annotated[
+        Optional[bool], pydantic.Field(alias="hearingImpaired")
+    ] = None
+    r"""Indicates if the stream is for the hearing impaired."""
 
     height: Optional[int] = None
     r"""Height of the video stream."""
@@ -274,22 +373,39 @@ class Stream(BaseModel):
     language_tag: Annotated[Optional[str], pydantic.Field(alias="languageTag")] = None
     r"""Language tag (e.g., en)."""
 
-    format_: Annotated[Optional[str], pydantic.Field(alias="format")] = None
-    r"""Format of the stream (e.g., srt)."""
-
-    header_compression: Annotated[
-        Optional[bool], pydantic.Field(alias="headerCompression")
-    ] = None
-    r"""Indicates whether header compression is enabled."""
-
     level: Optional[int] = None
     r"""Video level."""
+
+    loudness: Optional[float] = None
+    r"""Integrated loudness in LUFS."""
+
+    lra: Optional[float] = None
+    r"""Loudness range in LU."""
+
+    min_lines: Annotated[Optional[int], pydantic.Field(alias="minLines")] = None
+    r"""Minimum lines in the lyric file."""
 
     original: Optional[bool] = None
     r"""Indicates if this is the original stream."""
 
+    peak: Optional[float] = None
+    r"""Track peak amplitude."""
+
+    perfect_match: Annotated[Optional[bool], pydantic.Field(alias="perfectMatch")] = (
+        None
+    )
+    r"""Whether the subtitle is an exact match."""
+
     profile: Optional[str] = None
     r"""Video profile."""
+
+    provider: Optional[str] = None
+    r"""Lyric or subtitle provider name."""
+
+    provider_title: Annotated[Optional[str], pydantic.Field(alias="providerTitle")] = (
+        None
+    )
+    r"""Subtitle provider display name."""
 
     ref_frames: Annotated[Optional[int], pydantic.Field(alias="refFrames")] = None
     r"""Number of reference frames."""
@@ -299,29 +415,35 @@ class Stream(BaseModel):
 
     scan_type: Annotated[Optional[str], pydantic.Field(alias="scanType")] = None
 
-    embedded_in_video: Annotated[
-        Optional[str], pydantic.Field(alias="embeddedInVideo")
-    ] = None
+    score: Optional[float] = None
+    r"""Subtitle match confidence score (0-100)."""
 
     selected: Optional[bool] = None
     r"""Indicates if this stream is selected (applicable for audio streams)."""
 
-    forced: Optional[bool] = None
+    source_key: Annotated[Optional[str], pydantic.Field(alias="sourceKey")] = None
+    r"""Source identifier for the subtitle."""
 
-    hearing_impaired: Annotated[
-        Optional[bool], pydantic.Field(alias="hearingImpaired")
-    ] = None
-    r"""Indicates if the stream is for the hearing impaired."""
-
-    dub: Optional[bool] = None
-    r"""Indicates if the stream is a dub."""
-
-    title: Optional[str] = None
-    r"""Optional title for the stream (e.g., language variant)."""
+    start_ramp: Annotated[Optional[str], pydantic.Field(alias="startRamp")] = None
+    r"""Loudness ramp start type."""
 
     stream_identifier: Annotated[
         Optional[int], pydantic.Field(alias="streamIdentifier")
     ] = None
+
+    timed: Optional[bool] = None
+    r"""Whether lyrics are timestamped."""
+
+    transient: Optional[bool] = None
+    r"""Whether the subtitle is temporary or downloaded."""
+
+    user_id: Annotated[Optional[int], pydantic.Field(alias="userID")] = None
+    r"""ID of the user who added the subtitle."""
+
+    visual_impaired: Annotated[
+        Optional[bool], pydantic.Field(alias="visualImpaired")
+    ] = None
+    r"""Whether this audio track is an audio description track."""
 
     width: Optional[int] = None
     r"""Width of the video stream."""
@@ -338,10 +460,27 @@ class Stream(BaseModel):
     def serialize_model(self, handler):
         optional_fields = set(
             [
+                "title",
+                "format",
                 "default",
+                "albumGain",
+                "albumPeak",
+                "albumRange",
                 "audioChannelLayout",
-                "channels",
                 "bitDepth",
+                "bitrate",
+                "bitrateMode",
+                "canAutoSync",
+                "channels",
+                "chromaLocation",
+                "chromaSubsampling",
+                "closedCaptions",
+                "codedHeight",
+                "codedWidth",
+                "colorPrimaries",
+                "colorRange",
+                "colorSpace",
+                "colorTrc",
                 "DOVIBLCompatID",
                 "DOVIBLPresent",
                 "DOVIELPresent",
@@ -350,40 +489,43 @@ class Stream(BaseModel):
                 "DOVIProfile",
                 "DOVIRPUPresent",
                 "DOVIVersion",
-                "bitrate",
-                "canAutoSync",
-                "chromaLocation",
-                "chromaSubsampling",
-                "codedHeight",
-                "codedWidth",
-                "closedCaptions",
-                "colorPrimaries",
-                "colorRange",
-                "colorSpace",
-                "colorTrc",
+                "dub",
+                "embeddedInVideo",
+                "endRamp",
                 "extendedDisplayTitle",
+                "forced",
                 "frameRate",
+                "gain",
                 "hasScalingMatrix",
+                "headerCompression",
+                "hearingImpaired",
                 "height",
                 "index",
                 "language",
                 "languageCode",
                 "languageTag",
-                "format",
-                "headerCompression",
                 "level",
+                "loudness",
+                "lra",
+                "minLines",
                 "original",
+                "peak",
+                "perfectMatch",
                 "profile",
+                "provider",
+                "providerTitle",
                 "refFrames",
                 "samplingRate",
                 "scanType",
-                "embeddedInVideo",
+                "score",
                 "selected",
-                "forced",
-                "hearingImpaired",
-                "dub",
-                "title",
+                "sourceKey",
+                "startRamp",
                 "streamIdentifier",
+                "timed",
+                "transient",
+                "userID",
+                "visualImpaired",
                 "width",
             ]
         )

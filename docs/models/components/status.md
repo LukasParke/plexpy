@@ -1,23 +1,27 @@
 # Status
 
+The state of this queue
+  - deciding: At least one item is still being decided
+  - waiting: At least one item is waiting for transcode and none are currently transcoding
+  - processing: At least one item is being transcoded
+  - done: All items are available (or potentially expired)
+  - error: At least one item has encountered an error
+
 ## Example Usage
 
 ```python
 from plex_api_client.models.components import Status
 
-value = Status.INACTIVE
+value = Status.DECIDING
 ```
 
 
 ## Values
 
-| Name             | Value            |
-| ---------------- | ---------------- |
-| `INACTIVE`       | inactive         |
-| `SCHEDULED`      | scheduled        |
-| `INPROGRESS`     | inprogress       |
-| `COMPLETE`       | complete         |
-| `CANCELLED`      | cancelled        |
-| `ERROR`          | error            |
-| `POSTPROCESSING` | postprocessing   |
-| `PAUSED`         | paused           |
+| Name         | Value        |
+| ------------ | ------------ |
+| `DECIDING`   | deciding     |
+| `WAITING`    | waiting      |
+| `PROCESSING` | processing   |
+| `DONE`       | done         |
+| `ERROR`      | error        |

@@ -2,101 +2,22 @@
 
 from __future__ import annotations
 import httpx
+from plex_api_client.models.components import activity as components_activity
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
 from pydantic import model_serializer
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
-class ActivityTypedDict(TypedDict):
-    cancellable: NotRequired[bool]
-    r"""Indicates whether this activity can be cancelled"""
-    context: NotRequired[Dict[str, Any]]
-    r"""An object with additional values"""
-    progress: NotRequired[float]
-    r"""A progress percentage.  A value of -1 means the progress is indeterminate"""
-    response: NotRequired[Dict[str, Any]]
-    r"""An object with the response to the async opperation"""
-    subtitle: NotRequired[str]
-    r"""A user-friendly sub-title for this activity"""
-    title: NotRequired[str]
-    r"""A user-friendly title for this activity"""
-    type: NotRequired[str]
-    r"""The type of activity"""
-    user_id: NotRequired[int]
-    r"""The user this activity belongs to"""
-    uuid: NotRequired[str]
-    r"""The ID of the activity"""
-
-
-class Activity(BaseModel):
-    cancellable: Optional[bool] = None
-    r"""Indicates whether this activity can be cancelled"""
-
-    context: Annotated[Optional[Dict[str, Any]], pydantic.Field(alias="Context")] = None
-    r"""An object with additional values"""
-
-    progress: Optional[float] = None
-    r"""A progress percentage.  A value of -1 means the progress is indeterminate"""
-
-    response: Annotated[Optional[Dict[str, Any]], pydantic.Field(alias="Response")] = (
-        None
-    )
-    r"""An object with the response to the async opperation"""
-
-    subtitle: Optional[str] = None
-    r"""A user-friendly sub-title for this activity"""
-
-    title: Optional[str] = None
-    r"""A user-friendly title for this activity"""
-
-    type: Optional[str] = None
-    r"""The type of activity"""
-
-    user_id: Annotated[Optional[int], pydantic.Field(alias="userID")] = None
-    r"""The user this activity belongs to"""
-
-    uuid: Optional[str] = None
-    r"""The ID of the activity"""
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(
-            [
-                "cancellable",
-                "Context",
-                "progress",
-                "Response",
-                "subtitle",
-                "title",
-                "type",
-                "userID",
-                "uuid",
-            ]
-        )
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class ListActivitiesMediaContainerTypedDict(TypedDict):
-    activity: NotRequired[List[ActivityTypedDict]]
+    activity: NotRequired[List[components_activity.ActivityTypedDict]]
 
 
 class ListActivitiesMediaContainer(BaseModel):
-    activity: Annotated[Optional[List[Activity]], pydantic.Field(alias="Activity")] = (
-        None
-    )
+    activity: Annotated[
+        Optional[List[components_activity.Activity]], pydantic.Field(alias="Activity")
+    ] = None
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -186,10 +107,6 @@ class ListActivitiesResponse(BaseModel):
         return m
 
 
-try:
-    Activity.model_rebuild()
-except NameError:
-    pass
 try:
     ListActivitiesMediaContainer.model_rebuild()
 except NameError:

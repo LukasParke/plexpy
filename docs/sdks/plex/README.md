@@ -2,6 +2,8 @@
 
 ## Overview
 
+Plex Plex operations
+
 ### Available Operations
 
 * [get_server_resources](#get_server_resources) - Get Server Resources
@@ -12,7 +14,7 @@ Get Plex server access tokens and server connections
 
 ### Example Usage
 
-<!-- UsageSnippet language="python" operationID="get-server-resources" method="get" path="/resources" -->
+<!-- UsageSnippet language="python" operationID="getServerResources" method="get" path="/resources" -->
 ```python
 from plex_api_client import PlexAPI
 from plex_api_client.models import components, operations
@@ -20,7 +22,7 @@ from plex_api_client.models import components, operations
 
 with PlexAPI(
     accepts=components.Accepts.APPLICATION_XML,
-    client_identifier="3381b62b-9ab7-4e37-827b-203e9809eb58",
+    client_identifier="abc123",
     token="<YOUR_API_KEY_HERE>",
 ) as plex_api:
 
@@ -51,7 +53,7 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type                            | Status Code                           | Content Type                          |
-| ------------------------------------- | ------------------------------------- | ------------------------------------- |
-| errors.GetServerResourcesUnauthorized | 401                                   | application/json                      |
-| errors.SDKError                       | 4XX, 5XX                              | \*/\*                                 |
+| Error Type          | Status Code         | Content Type        |
+| ------------------- | ------------------- | ------------------- |
+| errors.Unauthorized | 401                 | application/json    |
+| errors.SDKError     | 4XX, 5XX            | \*/\*               |

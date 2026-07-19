@@ -3,11 +3,17 @@
 from __future__ import annotations
 from datetime import datetime
 from enum import Enum
-from plex_api_client.types import BaseModel, Nullable, UNSET_SENTINEL
+from plex_api_client.types import (
+    BaseModel,
+    Nullable,
+    OptionalNullable,
+    UNSET,
+    UNSET_SENTINEL,
+)
 import pydantic
 from pydantic import model_serializer
 from typing import List
-from typing_extensions import Annotated, TypedDict
+from typing_extensions import Annotated, NotRequired, TypedDict
 
 
 class PlexDeviceProtocol(str, Enum):
@@ -18,140 +24,155 @@ class PlexDeviceProtocol(str, Enum):
 
 
 class ConnectionsTypedDict(TypedDict):
-    protocol: PlexDeviceProtocol
-    r"""The protocol used for the connection (http, https, etc)"""
     address: str
     r"""The (ip) address or domain name used for the connection"""
-    port: int
-    r"""The port used for the connection"""
-    uri: str
-    r"""The full URI of the connection"""
-    local: bool
-    r"""If the connection is local address"""
-    relay: bool
-    r"""If the connection is relayed through plex.direct"""
     i_pv6: bool
     r"""If the connection is using IPv6"""
+    local: bool
+    r"""If the connection is local address"""
+    port: int
+    r"""The port used for the connection"""
+    protocol: PlexDeviceProtocol
+    r"""The protocol used for the connection (http, https, etc)"""
+    relay: bool
+    r"""If the connection is relayed through plex.direct"""
+    uri: str
+    r"""The full URI of the connection"""
 
 
 class Connections(BaseModel):
-    protocol: PlexDeviceProtocol
-    r"""The protocol used for the connection (http, https, etc)"""
-
     address: str
     r"""The (ip) address or domain name used for the connection"""
-
-    port: int
-    r"""The port used for the connection"""
-
-    uri: str
-    r"""The full URI of the connection"""
-
-    local: bool
-    r"""If the connection is local address"""
-
-    relay: bool
-    r"""If the connection is relayed through plex.direct"""
 
     i_pv6: Annotated[bool, pydantic.Field(alias="IPv6")]
     r"""If the connection is using IPv6"""
 
+    local: bool
+    r"""If the connection is local address"""
+
+    port: int
+    r"""The port used for the connection"""
+
+    protocol: PlexDeviceProtocol
+    r"""The protocol used for the connection (http, https, etc)"""
+
+    relay: bool
+    r"""If the connection is relayed through plex.direct"""
+
+    uri: str
+    r"""The full URI of the connection"""
+
 
 class PlexDeviceTypedDict(TypedDict):
-    name: str
-    product: str
-    product_version: str
-    platform: Nullable[str]
-    platform_version: Nullable[str]
-    device: Nullable[str]
+    access_token: str
     client_identifier: str
+    connections: List[ConnectionsTypedDict]
     created_at: datetime
+    dns_rebinding_protection: bool
+    home: bool
+    https_required: bool
     last_seen_at: datetime
-    provides: str
+    name: str
+    nat_loopback_supported: bool
+    owned: bool
     owner_id: Nullable[int]
     r"""ownerId is null when the device is owned by the token used to send the request"""
-    source_title: Nullable[str]
-    public_address: str
-    access_token: str
-    owned: bool
-    home: bool
-    synced: bool
-    relay: bool
     presence: bool
-    https_required: bool
+    product: str
+    product_version: str
+    provides: str
+    public_address: str
     public_address_matches: bool
-    dns_rebinding_protection: bool
-    nat_loopback_supported: bool
-    connections: List[ConnectionsTypedDict]
+    relay: bool
+    source_title: Nullable[str]
+    synced: bool
+    device: NotRequired[Nullable[str]]
+    platform: NotRequired[Nullable[str]]
+    platform_version: NotRequired[Nullable[str]]
 
 
 class PlexDevice(BaseModel):
-    name: str
-
-    product: str
-
-    product_version: Annotated[str, pydantic.Field(alias="productVersion")]
-
-    platform: Nullable[str]
-
-    platform_version: Annotated[Nullable[str], pydantic.Field(alias="platformVersion")]
-
-    device: Nullable[str]
+    access_token: Annotated[str, pydantic.Field(alias="accessToken")]
 
     client_identifier: Annotated[str, pydantic.Field(alias="clientIdentifier")]
 
+    connections: List[Connections]
+
     created_at: Annotated[datetime, pydantic.Field(alias="createdAt")]
-
-    last_seen_at: Annotated[datetime, pydantic.Field(alias="lastSeenAt")]
-
-    provides: str
-
-    owner_id: Annotated[Nullable[int], pydantic.Field(alias="ownerId")]
-    r"""ownerId is null when the device is owned by the token used to send the request"""
-
-    source_title: Annotated[Nullable[str], pydantic.Field(alias="sourceTitle")]
-
-    public_address: Annotated[str, pydantic.Field(alias="publicAddress")]
-
-    access_token: Annotated[str, pydantic.Field(alias="accessToken")]
-
-    owned: bool
-
-    home: bool
-
-    synced: bool
-
-    relay: bool
-
-    presence: bool
-
-    https_required: Annotated[bool, pydantic.Field(alias="httpsRequired")]
-
-    public_address_matches: Annotated[
-        bool, pydantic.Field(alias="publicAddressMatches")
-    ]
 
     dns_rebinding_protection: Annotated[
         bool, pydantic.Field(alias="dnsRebindingProtection")
     ]
 
+    home: bool
+
+    https_required: Annotated[bool, pydantic.Field(alias="httpsRequired")]
+
+    last_seen_at: Annotated[datetime, pydantic.Field(alias="lastSeenAt")]
+
+    name: str
+
     nat_loopback_supported: Annotated[
         bool, pydantic.Field(alias="natLoopbackSupported")
     ]
 
-    connections: List[Connections]
+    owned: bool
+
+    owner_id: Annotated[Nullable[int], pydantic.Field(alias="ownerId")]
+    r"""ownerId is null when the device is owned by the token used to send the request"""
+
+    presence: bool
+
+    product: str
+
+    product_version: Annotated[str, pydantic.Field(alias="productVersion")]
+
+    provides: str
+
+    public_address: Annotated[str, pydantic.Field(alias="publicAddress")]
+
+    public_address_matches: Annotated[
+        bool, pydantic.Field(alias="publicAddressMatches")
+    ]
+
+    relay: bool
+
+    source_title: Annotated[Nullable[str], pydantic.Field(alias="sourceTitle")]
+
+    synced: bool
+
+    device: OptionalNullable[str] = UNSET
+
+    platform: OptionalNullable[str] = UNSET
+
+    platform_version: Annotated[
+        OptionalNullable[str], pydantic.Field(alias="platformVersion")
+    ] = UNSET
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
+        optional_fields = set(["device", "platform", "platformVersion"])
+        nullable_fields = set(
+            ["device", "ownerId", "platform", "platformVersion", "sourceTitle"]
+        )
         serialized = handler(self)
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
             val = serialized.get(k, serialized.get(n))
+            is_nullable_and_explicitly_set = (
+                k in nullable_fields
+                and (self.__pydantic_fields_set__.intersection({n}))  # pylint: disable=no-member
+            )
 
             if val != UNSET_SENTINEL:
-                m[k] = val
+                if (
+                    val is not None
+                    or k not in optional_fields
+                    or is_nullable_and_explicitly_set
+                ):
+                    m[k] = val
 
         return m
 

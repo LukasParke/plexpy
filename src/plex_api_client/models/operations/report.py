@@ -5,6 +5,7 @@ from enum import Enum
 import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
+    bandwidth as components_bandwidth,
     boolint as components_boolint,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
@@ -208,6 +209,14 @@ class ReportRequestTypedDict(TypedDict):
     r"""Amount of time in seconds buffered by client.  Omit if computed by `bufferedSize` below."""
     buffered_size: NotRequired[int]
     r"""Size in kilobytes of data buffered by client.  Omit if computed by `bufferedTime` above"""
+    container_key: NotRequired[str]
+    r"""Groups timeline reports (e.g. /playQueues/123)."""
+    guid: NotRequired[str]
+    r"""Global unique identifier for the item."""
+    play_queue_id: NotRequired[int]
+    r"""Identifies the play queue itself (distinct from playQueueItemID)."""
+    url: NotRequired[str]
+    r"""Alternative to key/ratingKey (legacy)."""
     x_plex_session_identifier: NotRequired[str]
     r"""Unique per client playback session.  Used if a client can playback multiple items at a time (such as a browser with multiple tabs)"""
 
@@ -379,6 +388,32 @@ class ReportRequest(BaseModel):
     ] = None
     r"""Size in kilobytes of data buffered by client.  Omit if computed by `bufferedTime` above"""
 
+    container_key: Annotated[
+        Optional[str],
+        pydantic.Field(alias="containerKey"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Groups timeline reports (e.g. /playQueues/123)."""
+
+    guid: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Global unique identifier for the item."""
+
+    play_queue_id: Annotated[
+        Optional[int],
+        pydantic.Field(alias="playQueueID"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Identifies the play queue itself (distinct from playQueueItemID)."""
+
+    url: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Alternative to key/ratingKey (legacy)."""
+
     x_plex_session_identifier: Annotated[
         Optional[str],
         pydantic.Field(alias="X-Plex-Session-Identifier"),
@@ -415,6 +450,10 @@ class ReportRequest(BaseModel):
                 "bandwidth",
                 "bufferedTime",
                 "bufferedSize",
+                "containerKey",
+                "guid",
+                "playQueueID",
+                "url",
                 "X-Plex-Session-Identifier",
             ]
         )
@@ -432,53 +471,18 @@ class ReportRequest(BaseModel):
         return m
 
 
-class BandwidthTypedDict(TypedDict):
-    bandwidth: NotRequired[int]
-    r"""The bandwidth at this time in kbps"""
-    resolution: NotRequired[str]
-    r"""The user-friendly resolution at this time"""
-    time: NotRequired[int]
-    r"""Media playback time where this bandwidth started"""
-
-
-class Bandwidth(BaseModel):
-    bandwidth: Optional[int] = None
-    r"""The bandwidth at this time in kbps"""
-
-    resolution: Optional[str] = None
-    r"""The user-friendly resolution at this time"""
-
-    time: Optional[int] = None
-    r"""Media playback time where this bandwidth started"""
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = set(["bandwidth", "resolution", "time"])
-        serialized = handler(self)
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k, serialized.get(n))
-
-            if val != UNSET_SENTINEL:
-                if val is not None or k not in optional_fields:
-                    m[k] = val
-
-        return m
-
-
 class BandwidthsTypedDict(TypedDict):
     r"""A list of media times and bandwidths when trascoding is using with auto adjustment of bandwidth"""
 
-    bandwidth: NotRequired[List[BandwidthTypedDict]]
+    bandwidth: NotRequired[List[components_bandwidth.BandwidthTypedDict]]
 
 
 class Bandwidths(BaseModel):
     r"""A list of media times and bandwidths when trascoding is using with auto adjustment of bandwidth"""
 
     bandwidth: Annotated[
-        Optional[List[Bandwidth]], pydantic.Field(alias="Bandwidth")
+        Optional[List[components_bandwidth.Bandwidth]],
+        pydantic.Field(alias="Bandwidth"),
     ] = None
 
     @model_serializer(mode="wrap")
@@ -502,19 +506,14 @@ class MediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
     allow_camera_upload: NotRequired[bool]
     allow_channel_access: NotRequired[bool]
     allow_media_deletion: NotRequired[bool]
@@ -525,7 +524,8 @@ class MediaContainerTypedDict(TypedDict):
     certificate: NotRequired[bool]
     companion_proxy: NotRequired[bool]
     country_code: NotRequired[str]
-    diagnostics: NotRequired[str]
+    diagnostics: NotRequired[List[str]]
+    r"""Comma-separated list of enabled diagnostics modules."""
     event_stream: NotRequired[bool]
     friendly_name: NotRequired[str]
     hub_search: NotRequired[bool]
@@ -540,9 +540,10 @@ class MediaContainerTypedDict(TypedDict):
     my_plex_signin_state: NotRequired[Any]
     my_plex_subscription: NotRequired[bool]
     my_plex_username: NotRequired[str]
-    offline_transcode: NotRequired[Any]
-    owner_features: NotRequired[str]
-    r"""A comma-separated list of features which are enabled for the server owner"""
+    offline_transcode: NotRequired[int]
+    r"""Whether offline transcoding is enabled."""
+    owner_features: NotRequired[List[str]]
+    r"""List of enabled owner features."""
     platform: NotRequired[str]
     platform_version: NotRequired[str]
     plugin_host: NotRequired[bool]
@@ -557,17 +558,20 @@ class MediaContainerTypedDict(TypedDict):
     transcoder_photo: NotRequired[bool]
     transcoder_subtitles: NotRequired[bool]
     transcoder_video: NotRequired[bool]
-    transcoder_video_bitrates: NotRequired[Any]
-    r"""The suggested video quality bitrates to present to the user"""
-    transcoder_video_qualities: NotRequired[str]
-    transcoder_video_resolutions: NotRequired[Any]
-    r"""The suggested video resolutions to the above quality bitrates"""
+    transcoder_video_bitrates: NotRequired[List[str]]
+    r"""List of supported transcoder video bitrates."""
+    transcoder_video_qualities: NotRequired[List[str]]
+    r"""List of supported transcoder video qualities."""
+    transcoder_video_resolutions: NotRequired[List[str]]
+    r"""List of supported transcoder video resolutions."""
     updated_at: NotRequired[int]
     updater: NotRequired[bool]
     version: NotRequired[str]
     voice_search: NotRequired[bool]
     bandwidths: NotRequired[BandwidthsTypedDict]
     r"""A list of media times and bandwidths when trascoding is using with auto adjustment of bandwidth"""
+    play_queue_id: NotRequired[int]
+    r"""The play queue ID when playback originates from a queue."""
     termination_code: NotRequired[int]
     r"""A code describing why the session was terminated by the server."""
     termination_text: NotRequired[str]
@@ -578,22 +582,17 @@ class MediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     allow_camera_upload: Annotated[
         Optional[bool], pydantic.Field(alias="allowCameraUpload")
@@ -627,7 +626,8 @@ class MediaContainer(BaseModel):
 
     country_code: Annotated[Optional[str], pydantic.Field(alias="countryCode")] = None
 
-    diagnostics: Optional[str] = None
+    diagnostics: Optional[List[str]] = None
+    r"""Comma-separated list of enabled diagnostics modules."""
 
     event_stream: Annotated[Optional[bool], pydantic.Field(alias="eventStream")] = None
 
@@ -674,13 +674,14 @@ class MediaContainer(BaseModel):
     ] = None
 
     offline_transcode: Annotated[
-        Optional[Any], pydantic.Field(alias="offlineTranscode")
+        Optional[int], pydantic.Field(alias="offlineTranscode")
     ] = None
+    r"""Whether offline transcoding is enabled."""
 
-    owner_features: Annotated[Optional[str], pydantic.Field(alias="ownerFeatures")] = (
-        None
-    )
-    r"""A comma-separated list of features which are enabled for the server owner"""
+    owner_features: Annotated[
+        Optional[List[str]], pydantic.Field(alias="ownerFeatures")
+    ] = None
+    r"""List of enabled owner features."""
 
     platform: Optional[str] = None
 
@@ -733,18 +734,19 @@ class MediaContainer(BaseModel):
     ] = None
 
     transcoder_video_bitrates: Annotated[
-        Optional[Any], pydantic.Field(alias="transcoderVideoBitrates")
+        Optional[List[str]], pydantic.Field(alias="transcoderVideoBitrates")
     ] = None
-    r"""The suggested video quality bitrates to present to the user"""
+    r"""List of supported transcoder video bitrates."""
 
     transcoder_video_qualities: Annotated[
-        Optional[str], pydantic.Field(alias="transcoderVideoQualities")
+        Optional[List[str]], pydantic.Field(alias="transcoderVideoQualities")
     ] = None
+    r"""List of supported transcoder video qualities."""
 
     transcoder_video_resolutions: Annotated[
-        Optional[Any], pydantic.Field(alias="transcoderVideoResolutions")
+        Optional[List[str]], pydantic.Field(alias="transcoderVideoResolutions")
     ] = None
-    r"""The suggested video resolutions to the above quality bitrates"""
+    r"""List of supported transcoder video resolutions."""
 
     updated_at: Annotated[Optional[int], pydantic.Field(alias="updatedAt")] = None
 
@@ -758,6 +760,9 @@ class MediaContainer(BaseModel):
         None
     )
     r"""A list of media times and bandwidths when trascoding is using with auto adjustment of bandwidth"""
+
+    play_queue_id: Annotated[Optional[int], pydantic.Field(alias="playQueueID")] = None
+    r"""The play queue ID when playback originates from a queue."""
 
     termination_code: Annotated[
         Optional[int], pydantic.Field(alias="terminationCode")
@@ -826,6 +831,7 @@ class MediaContainer(BaseModel):
                 "version",
                 "voiceSearch",
                 "Bandwidths",
+                "playQueueID",
                 "terminationCode",
                 "terminationText",
             ]

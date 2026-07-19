@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 import httpx
-from plex_api_client.models.components import accepts as components_accepts
+from plex_api_client.models.components import (
+    accepts as components_accepts,
+    successresponse as components_successresponse,
+)
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
 import pydantic
@@ -146,7 +149,7 @@ class EmptyTrashGlobals(BaseModel):
 
 class EmptyTrashRequestTypedDict(TypedDict):
     section_id: int
-    r"""Section identifier"""
+    r"""The unique identifier of the library section"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -177,7 +180,7 @@ class EmptyTrashRequest(BaseModel):
         pydantic.Field(alias="sectionId"),
         FieldMetadata(path=PathParamMetadata(style="simple", explode=False)),
     ]
-    r"""Section identifier"""
+    r"""The unique identifier of the library section"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -293,6 +296,8 @@ class EmptyTrashResponseTypedDict(TypedDict):
     r"""HTTP response status code for this operation"""
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
+    success_response: NotRequired[components_successresponse.SuccessResponseTypedDict]
+    r"""OK"""
 
 
 class EmptyTrashResponse(BaseModel):
@@ -304,3 +309,22 @@ class EmptyTrashResponse(BaseModel):
 
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
+
+    success_response: Optional[components_successresponse.SuccessResponse] = None
+    r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["SuccessResponse"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m

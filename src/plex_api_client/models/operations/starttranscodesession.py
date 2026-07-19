@@ -194,9 +194,7 @@ class StartTranscodeSessionRequestTypedDict(TypedDict):
     transcode_type: components_transcodetype.TranscodeType
     r"""Type of transcode media"""
     extension: Extension
-    r"""Extension
-
-    """
+    r"""Extension"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -222,9 +220,9 @@ class StartTranscodeSessionRequestTypedDict(TypedDict):
     transcode_session_id: NotRequired[str]
     r"""Transcode session UUID"""
     advanced_subtitles: NotRequired[components_advancedsubtitles.AdvancedSubtitles]
-    r"""Indicates how incompatible advanced subtitles (such as ass/ssa) should be included: * 'burn' - Burn incompatible advanced text subtitles into the video stream * 'text' - Transcode incompatible advanced text subtitles to a compatible text format, even if some markup is lost
-
-    """
+    r"""Indicates how incompatible advanced subtitles (such as ass/ssa) should be included: * 'burn' - Burn incompatible advanced text subtitles into the video stream * 'text' - Transcode incompatible advanced text subtitles to a compatible text format, even if some markup is lost"""
+    platform_query_parameter: NotRequired[str]
+    r"""Client platform (some clients send this in addition to headers)."""
     audio_boost: NotRequired[int]
     r"""Percentage of original audio loudness to use when transcoding (100 is equivalent to original volume, 50 is half, 200 is double, etc)"""
     audio_channel_count: NotRequired[int]
@@ -262,23 +260,23 @@ class StartTranscodeSessionRequestTypedDict(TypedDict):
     photo_resolution: NotRequired[str]
     r"""Target photo resolution."""
     protocol: NotRequired[StartTranscodeSessionQueryParamProtocol]
-    r"""Indicates the network streaming protocol to be used for the transcode session: * 'http' - include the file in the http response such as MKV streaming * 'hls' - hls stream (RFC 8216) * 'dash' - dash stream (ISO/IEC 23009-1:2022)
-
-    """
+    r"""Indicates the network streaming protocol to be used for the transcode session: * 'http' - include the file in the http response such as MKV streaming * 'hls' - hls stream (RFC 8216) * 'dash' - dash stream (ISO/IEC 23009-1:2022)"""
     seconds_per_segment: NotRequired[int]
     r"""Number of seconds to include in each transcoded segment"""
     subtitle_size: NotRequired[int]
     r"""Percentage of original subtitle size to use when burning subtitles (100 is equivalent to original size, 50 is half, ect)"""
     subtitles: NotRequired[StartTranscodeSessionQueryParamSubtitles]
-    r"""Indicates how subtitles should be included: * 'auto' - Compute the appropriate subtitle setting automatically * 'burn' - Burn the selected subtitle; auto if no selected subtitle * 'none' - Ignore all subtitle streams * 'sidecar' - The selected subtitle should be provided as a sidecar * 'embedded' - The selected subtitle should be provided as an embedded stream * 'segmented' - The selected subtitle should be provided as a segmented stream
-
-    """
+    r"""Indicates how subtitles should be included: * 'auto' - Compute the appropriate subtitle setting automatically * 'burn' - Burn the selected subtitle; auto if no selected subtitle * 'none' - Ignore all subtitle streams * 'sidecar' - The selected subtitle should be provided as a sidecar * 'embedded' - The selected subtitle should be provided as an embedded stream * 'segmented' - The selected subtitle should be provided as a segmented stream"""
+    max_video_bitrate: NotRequired[int]
+    r"""Client-side maximum video bitrate cap in kbps"""
+    video_resolution: NotRequired[str]
+    r"""Cap resolution string (e.g. 1920x1080)"""
+    copyts: NotRequired[components_boolint.BoolInt]
+    r"""Copy timestamps instead of re-encoding them"""
     video_bitrate: NotRequired[int]
     r"""Target video bitrate (in kbps)."""
     video_quality: NotRequired[int]
     r"""Target photo quality."""
-    video_resolution: NotRequired[str]
-    r"""Target maximum video resolution."""
     x_plex_client_profile_extra: NotRequired[str]
     r"""See [Profile Augmentations](#section/API-Info/Profile-Augmentations) ."""
     x_plex_client_profile_name: NotRequired[str]
@@ -298,9 +296,7 @@ class StartTranscodeSessionRequest(BaseModel):
     extension: Annotated[
         Extension, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
-    r"""Extension
-
-    """
+    r"""Extension"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -390,9 +386,14 @@ class StartTranscodeSessionRequest(BaseModel):
         pydantic.Field(alias="advancedSubtitles"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
-    r"""Indicates how incompatible advanced subtitles (such as ass/ssa) should be included: * 'burn' - Burn incompatible advanced text subtitles into the video stream * 'text' - Transcode incompatible advanced text subtitles to a compatible text format, even if some markup is lost
+    r"""Indicates how incompatible advanced subtitles (such as ass/ssa) should be included: * 'burn' - Burn incompatible advanced text subtitles into the video stream * 'text' - Transcode incompatible advanced text subtitles to a compatible text format, even if some markup is lost"""
 
-    """
+    platform_query_parameter: Annotated[
+        Optional[str],
+        pydantic.Field(alias="platform"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Client platform (some clients send this in addition to headers)."""
 
     audio_boost: Annotated[
         Optional[int],
@@ -521,9 +522,7 @@ class StartTranscodeSessionRequest(BaseModel):
         Optional[StartTranscodeSessionQueryParamProtocol],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
-    r"""Indicates the network streaming protocol to be used for the transcode session: * 'http' - include the file in the http response such as MKV streaming * 'hls' - hls stream (RFC 8216) * 'dash' - dash stream (ISO/IEC 23009-1:2022)
-
-    """
+    r"""Indicates the network streaming protocol to be used for the transcode session: * 'http' - include the file in the http response such as MKV streaming * 'hls' - hls stream (RFC 8216) * 'dash' - dash stream (ISO/IEC 23009-1:2022)"""
 
     seconds_per_segment: Annotated[
         Optional[int],
@@ -543,9 +542,27 @@ class StartTranscodeSessionRequest(BaseModel):
         Optional[StartTranscodeSessionQueryParamSubtitles],
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
-    r"""Indicates how subtitles should be included: * 'auto' - Compute the appropriate subtitle setting automatically * 'burn' - Burn the selected subtitle; auto if no selected subtitle * 'none' - Ignore all subtitle streams * 'sidecar' - The selected subtitle should be provided as a sidecar * 'embedded' - The selected subtitle should be provided as an embedded stream * 'segmented' - The selected subtitle should be provided as a segmented stream
+    r"""Indicates how subtitles should be included: * 'auto' - Compute the appropriate subtitle setting automatically * 'burn' - Burn the selected subtitle; auto if no selected subtitle * 'none' - Ignore all subtitle streams * 'sidecar' - The selected subtitle should be provided as a sidecar * 'embedded' - The selected subtitle should be provided as an embedded stream * 'segmented' - The selected subtitle should be provided as a segmented stream"""
 
-    """
+    max_video_bitrate: Annotated[
+        Optional[int],
+        pydantic.Field(alias="maxVideoBitrate"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Client-side maximum video bitrate cap in kbps"""
+
+    video_resolution: Annotated[
+        Optional[str],
+        pydantic.Field(alias="videoResolution"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Cap resolution string (e.g. 1920x1080)"""
+
+    copyts: Annotated[
+        Optional[components_boolint.BoolInt],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Copy timestamps instead of re-encoding them"""
 
     video_bitrate: Annotated[
         Optional[int],
@@ -560,13 +577,6 @@ class StartTranscodeSessionRequest(BaseModel):
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
     r"""Target photo quality."""
-
-    video_resolution: Annotated[
-        Optional[str],
-        pydantic.Field(alias="videoResolution"),
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""Target maximum video resolution."""
 
     x_plex_client_profile_extra: Annotated[
         Optional[str],
@@ -606,6 +616,7 @@ class StartTranscodeSessionRequest(BaseModel):
                 "Marketplace",
                 "transcodeSessionId",
                 "advancedSubtitles",
+                "platformQueryParameter",
                 "audioBoost",
                 "audioChannelCount",
                 "autoAdjustQuality",
@@ -628,9 +639,11 @@ class StartTranscodeSessionRequest(BaseModel):
                 "secondsPerSegment",
                 "subtitleSize",
                 "subtitles",
+                "maxVideoBitrate",
+                "videoResolution",
+                "copyts",
                 "videoBitrate",
                 "videoQuality",
-                "videoResolution",
                 "X-Plex-Client-Profile-Extra",
                 "X-Plex-Client-Profile-Name",
                 "X-Plex-Session-Identifier",
@@ -657,7 +670,13 @@ class StartTranscodeSessionResponseTypedDict(TypedDict):
     r"""HTTP response status code for this operation"""
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
-    response_stream: NotRequired[httpx.Response]
+    two_hundred_application_vnd_apple_mpegurl_binary_response: NotRequired[
+        httpx.Response
+    ]
+    r"""MPD file (see ISO/IEC 23009-1:2022), m3u8 file (see RFC 8216), or binary http stream"""
+    two_hundred_text_html_binary_response: NotRequired[httpx.Response]
+    r"""MPD file (see ISO/IEC 23009-1:2022), m3u8 file (see RFC 8216), or binary http stream"""
+    two_hundred_video_x_matroska_response_stream: NotRequired[httpx.Response]
     r"""MPD file (see ISO/IEC 23009-1:2022), m3u8 file (see RFC 8216), or binary http stream"""
 
 
@@ -671,12 +690,26 @@ class StartTranscodeSessionResponse(BaseModel):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
 
-    response_stream: Optional[httpx.Response] = None
+    two_hundred_application_vnd_apple_mpegurl_binary_response: Optional[
+        httpx.Response
+    ] = None
+    r"""MPD file (see ISO/IEC 23009-1:2022), m3u8 file (see RFC 8216), or binary http stream"""
+
+    two_hundred_text_html_binary_response: Optional[httpx.Response] = None
+    r"""MPD file (see ISO/IEC 23009-1:2022), m3u8 file (see RFC 8216), or binary http stream"""
+
+    two_hundred_video_x_matroska_response_stream: Optional[httpx.Response] = None
     r"""MPD file (see ISO/IEC 23009-1:2022), m3u8 file (see RFC 8216), or binary http stream"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["response-stream"])
+        optional_fields = set(
+            [
+                "200_application/vnd.apple.mpegurl_BinaryResponse",
+                "200_text/html_BinaryResponse",
+                "200_video/x-matroska_response-stream",
+            ]
+        )
         serialized = handler(self)
         m = {}
 

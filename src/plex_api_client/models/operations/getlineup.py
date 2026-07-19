@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 import httpx
-from plex_api_client.models.components import accepts as components_accepts
+from plex_api_client.models.components import (
+    accepts as components_accepts,
+    mediacontainerwithlineup as components_mediacontainerwithlineup,
+)
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import FieldMetadata, HeaderMetadata, QueryParamMetadata
 import pydantic
@@ -303,6 +306,10 @@ class GetLineupResponseTypedDict(TypedDict):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
     headers: Dict[str, List[str]]
+    media_container_with_lineup: NotRequired[
+        components_mediacontainerwithlineup.MediaContainerWithLineupTypedDict
+    ]
+    r"""OK"""
 
 
 class GetLineupResponse(BaseModel):
@@ -316,3 +323,24 @@ class GetLineupResponse(BaseModel):
     r"""Raw HTTP response; suitable for custom response parsing"""
 
     headers: Dict[str, List[str]]
+
+    media_container_with_lineup: Optional[
+        components_mediacontainerwithlineup.MediaContainerWithLineup
+    ] = None
+    r"""OK"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["MediaContainerWithLineup"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m

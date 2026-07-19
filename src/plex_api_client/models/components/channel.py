@@ -12,10 +12,18 @@ class ChannelTypedDict(TypedDict):
     title: NotRequired[str]
     call_sign: NotRequired[str]
     channel_vcn: NotRequired[str]
+    drm: NotRequired[bool]
+    r"""Whether the channel requires DRM."""
+    favorite: NotRequired[bool]
+    r"""Whether the channel is marked as a favorite."""
     hd: NotRequired[bool]
     identifier: NotRequired[str]
     key: NotRequired[str]
     language: NotRequired[str]
+    signal_quality: NotRequired[int]
+    r"""Signal quality percentage (0-100)."""
+    signal_strength: NotRequired[int]
+    r"""Signal strength percentage (0-100)."""
     thumb: NotRequired[str]
 
 
@@ -26,6 +34,12 @@ class Channel(BaseModel):
 
     channel_vcn: Annotated[Optional[str], pydantic.Field(alias="channelVcn")] = None
 
+    drm: Optional[bool] = None
+    r"""Whether the channel requires DRM."""
+
+    favorite: Optional[bool] = None
+    r"""Whether the channel is marked as a favorite."""
+
     hd: Optional[bool] = None
 
     identifier: Optional[str] = None
@@ -33,6 +47,16 @@ class Channel(BaseModel):
     key: Optional[str] = None
 
     language: Optional[str] = None
+
+    signal_quality: Annotated[Optional[int], pydantic.Field(alias="signalQuality")] = (
+        None
+    )
+    r"""Signal quality percentage (0-100)."""
+
+    signal_strength: Annotated[
+        Optional[int], pydantic.Field(alias="signalStrength")
+    ] = None
+    r"""Signal strength percentage (0-100)."""
 
     thumb: Optional[str] = None
 
@@ -43,10 +67,14 @@ class Channel(BaseModel):
                 "title",
                 "callSign",
                 "channelVcn",
+                "drm",
+                "favorite",
                 "hd",
                 "identifier",
                 "key",
                 "language",
+                "signalQuality",
+                "signalStrength",
                 "thumb",
             ]
         )

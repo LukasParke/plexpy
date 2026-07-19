@@ -160,7 +160,8 @@ class Attributes(BaseModel):
 
 class CreateMarkerRequestTypedDict(TypedDict):
     ids: str
-    type: int
+    r"""Comma-separated list of IDs"""
+    media_type: int
     r"""The type of marker to edit/create"""
     start_time_offset: int
     r"""The start time of the marker"""
@@ -196,9 +197,12 @@ class CreateMarkerRequest(BaseModel):
     ids: Annotated[
         str, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
+    r"""Comma-separated list of IDs"""
 
-    type: Annotated[
-        int, FieldMetadata(query=QueryParamMetadata(style="form", explode=True))
+    media_type: Annotated[
+        int,
+        pydantic.Field(alias="type"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ]
     r"""The type of marker to edit/create"""
 
@@ -343,32 +347,26 @@ class CreateMarkerMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+    title: NotRequired[str]
+    type: NotRequired[CreateMarkerType]
     color: NotRequired[str]
     end_time_offset: NotRequired[int]
     id: NotRequired[int]
     start_time_offset: NotRequired[int]
-    title: NotRequired[str]
-    type: NotRequired[CreateMarkerType]
 
 
 class CreateMarkerMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     model_config = ConfigDict(
@@ -379,16 +377,16 @@ class CreateMarkerMediaContainer(BaseModel):
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
-    """
+    title: Optional[str] = None
+
+    type: Optional[CreateMarkerType] = None
 
     color: Optional[str] = None
 
@@ -401,10 +399,6 @@ class CreateMarkerMediaContainer(BaseModel):
     start_time_offset: Annotated[
         Optional[int], pydantic.Field(alias="startTimeOffset")
     ] = None
-
-    title: Optional[str] = None
-
-    type: Optional[CreateMarkerType] = None
 
     @property
     def additional_properties(self):
@@ -422,12 +416,12 @@ class CreateMarkerMediaContainer(BaseModel):
                 "offset",
                 "size",
                 "totalSize",
+                "title",
+                "type",
                 "color",
                 "endTimeOffset",
                 "id",
                 "startTimeOffset",
-                "title",
-                "type",
             ]
         )
         serialized = handler(self)

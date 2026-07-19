@@ -325,7 +325,7 @@ class GetRelatedHubsResponseTypedDict(TypedDict):
     media_container_with_hubs: NotRequired[
         components_mediacontainerwithhubs.MediaContainerWithHubsTypedDict
     ]
-    r"""OK"""
+    r"""Successfully retrieved get related hubs"""
 
 
 class GetRelatedHubsResponse(BaseModel):
@@ -343,7 +343,7 @@ class GetRelatedHubsResponse(BaseModel):
     media_container_with_hubs: Optional[
         components_mediacontainerwithhubs.MediaContainerWithHubs
     ] = None
-    r"""OK"""
+    r"""Successfully retrieved get related hubs"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

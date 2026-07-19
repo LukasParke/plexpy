@@ -151,6 +151,7 @@ class MergeItemsGlobals(BaseModel):
 
 class MergeItemsRequestTypedDict(TypedDict):
     ids_path_parameter: str
+    r"""Comma-separated list of IDs"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -174,6 +175,7 @@ class MergeItemsRequestTypedDict(TypedDict):
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
     ids_query_parameter: NotRequired[List[str]]
+    r"""Comma-separated list of item identifiers"""
 
 
 class MergeItemsRequest(BaseModel):
@@ -182,6 +184,7 @@ class MergeItemsRequest(BaseModel):
         pydantic.Field(alias="ids"),
         FieldMetadata(path=PathParamMetadata(style="simple", explode=False)),
     ]
+    r"""Comma-separated list of IDs"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],
@@ -264,6 +267,7 @@ class MergeItemsRequest(BaseModel):
         pydantic.Field(alias="ids"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=False)),
     ] = None
+    r"""Comma-separated list of item identifiers"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

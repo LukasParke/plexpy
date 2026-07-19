@@ -26,7 +26,6 @@ In the response's items, the following extra attributes are returned to further 
 
 This request is intended to be very fast, and called as the user types.
 
-
 ### Example Usage
 
 <!-- UsageSnippet language="python" operationID="searchHubs" method="get" path="/hubs/search" -->
@@ -55,10 +54,10 @@ with PlexAPI(
         "section_id": 1,
     })
 
-    assert res.object is not None
+    assert res.media_container_with_hubs is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_hubs)
 
 ```
 
@@ -87,7 +86,6 @@ This endpoint performs a search specifically tailored towards voice or other imp
 
 Results, as well as their containing per-type hubs, contain a `distance` attribute which can be used to judge result quality.
 
-
 ### Example Usage
 
 <!-- UsageSnippet language="python" operationID="voiceSearchHubs" method="get" path="/hubs/search/voice" -->
@@ -112,14 +110,14 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.search.voice_search_hubs(request={
-        "query": "<value>",
         "type": components.MediaType.TV_SHOW,
+        "query": "<value>",
     })
 
-    assert res.object is not None
+    assert res.media_container_with_hubs is not None
 
     # Handle response
-    print(res.object)
+    print(res.media_container_with_hubs)
 
 ```
 

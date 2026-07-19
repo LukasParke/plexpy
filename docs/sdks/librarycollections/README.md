@@ -7,7 +7,7 @@ Endpoints for manipulating collections.  In addition to these endpoints, `/libra
 ### Available Operations
 
 * [add_collection_items](#add_collection_items) - Add items to a collection
-* [delete_collection_item](#delete_collection_item) - Delete an item from a collection
+* [update_collection_item](#update_collection_item) - Update an item in a collection
 * [move_collection_item](#move_collection_item) - Reorder an item in the collection
 
 ## add_collection_items
@@ -66,13 +66,13 @@ with PlexAPI(
 | --------------- | --------------- | --------------- |
 | errors.SDKError | 4XX, 5XX        | \*/\*           |
 
-## delete_collection_item
+## update_collection_item
 
 Delete an item from a collection
 
 ### Example Usage
 
-<!-- UsageSnippet language="python" operationID="deleteCollectionItem" method="put" path="/library/collections/{collectionId}/items/{itemId}" -->
+<!-- UsageSnippet language="python" operationID="updateCollectionItem" method="put" path="/library/collections/{collectionId}/items/{itemId}" -->
 ```python
 from plex_api_client import PlexAPI
 from plex_api_client.models import components
@@ -93,9 +93,9 @@ with PlexAPI(
     token="<YOUR_API_KEY_HERE>",
 ) as plex_api:
 
-    res = plex_api.library_collections.delete_collection_item(request={
-        "collection_id": 320928,
-        "item_id": 406983,
+    res = plex_api.library_collections.update_collection_item(request={
+        "collection_id": 640014,
+        "item_id": 2136,
     })
 
     assert res.media_container_with_metadata is not None
@@ -109,12 +109,12 @@ with PlexAPI(
 
 | Parameter                                                                                        | Type                                                                                             | Required                                                                                         | Description                                                                                      |
 | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| `request`                                                                                        | [operations.DeleteCollectionItemRequest](../../models/operations/deletecollectionitemrequest.md) | :heavy_check_mark:                                                                               | The request object to use for the request.                                                       |
+| `request`                                                                                        | [operations.UpdateCollectionItemRequest](../../models/operations/updatecollectionitemrequest.md) | :heavy_check_mark:                                                                               | The request object to use for the request.                                                       |
 | `retries`                                                                                        | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                 | :heavy_minus_sign:                                                                               | Configuration to override the default retry behavior of the client.                              |
 
 ### Response
 
-**[operations.DeleteCollectionItemResponse](../../models/operations/deletecollectionitemresponse.md)**
+**[operations.UpdateCollectionItemResponse](../../models/operations/updatecollectionitemresponse.md)**
 
 ### Errors
 

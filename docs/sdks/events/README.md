@@ -6,11 +6,11 @@ The server can notify clients in real-time of a wide range of events, from libra
 
 Two protocols for receiving the events are available: EventSource (also known as SSE), and WebSocket.
 
-
 ### Available Operations
 
 * [get_notifications](#get_notifications) - Connect to Eventsource
 * [connect_web_socket](#connect_web_socket) - Connect to WebSocket
+* [get_websocket_notifications](#get_websocket_notifications) - Get WebSocket Notifications
 
 ## get_notifications
 
@@ -61,9 +61,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## connect_web_socket
 
@@ -114,6 +115,61 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_websocket_notifications
+
+WebSocket endpoint for real-time notifications (plural alias). Connect with X-Plex-Token header. Delivers NotificationContainer messages.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getWebsocketNotifications" method="get" path="/:/websockets/notifications" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.events.get_websocket_notifications(request={})
+
+    assert res.body is not None
+
+    # Handle response
+    print(res.body)
+
+```
+
+### Parameters
+
+| Parameter                                                                                                  | Type                                                                                                       | Required                                                                                                   | Description                                                                                                |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `request`                                                                                                  | [operations.GetWebsocketNotificationsRequest](../../models/operations/getwebsocketnotificationsrequest.md) | :heavy_check_mark:                                                                                         | The request object to use for the request.                                                                 |
+| `retries`                                                                                                  | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                           | :heavy_minus_sign:                                                                                         | Configuration to override the default retry behavior of the client.                                        |
+
+### Response
+
+**[operations.GetWebsocketNotificationsResponse](../../models/operations/getwebsocketnotificationsresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |

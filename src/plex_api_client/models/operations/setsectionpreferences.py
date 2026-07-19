@@ -150,17 +150,18 @@ class SetSectionPreferencesGlobals(BaseModel):
 
 
 class SetSectionPreferencesQueryParamPrefsTypedDict(TypedDict):
-    pass
+    r"""The preference key to retrieve or set"""
 
 
 class SetSectionPreferencesQueryParamPrefs(BaseModel):
-    pass
+    r"""The preference key to retrieve or set"""
 
 
 class SetSectionPreferencesRequestTypedDict(TypedDict):
     section_id: int
     r"""Section identifier"""
     prefs: SetSectionPreferencesQueryParamPrefsTypedDict
+    r"""The preference key to retrieve or set"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -197,6 +198,7 @@ class SetSectionPreferencesRequest(BaseModel):
         SetSectionPreferencesQueryParamPrefs,
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ]
+    r"""The preference key to retrieve or set"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],

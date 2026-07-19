@@ -154,6 +154,7 @@ class ReorderSubscriptionGlobals(BaseModel):
 
 class ReorderSubscriptionRequestTypedDict(TypedDict):
     subscription_id: int
+    r"""The unique identifier of the subscription"""
     accepts: NotRequired[components_accepts.Accepts]
     r"""Indicates the client accepts the indicated media types"""
     client_identifier: NotRequired[str]
@@ -186,6 +187,7 @@ class ReorderSubscriptionRequest(BaseModel):
         pydantic.Field(alias="subscriptionId"),
         FieldMetadata(path=PathParamMetadata(style="simple", explode=False)),
     ]
+    r"""The unique identifier of the subscription"""
 
     accepts: Annotated[
         Optional[components_accepts.Accepts],

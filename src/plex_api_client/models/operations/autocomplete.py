@@ -178,10 +178,6 @@ class AutocompleteRequestTypedDict(TypedDict):
     r"""A friendly name for the client"""
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
-    type: NotRequired[int]
-    r"""Item type"""
-    field_query: NotRequired[str]
-    r"""The \"field\" stands in for any field, the value is a partial string for matching"""
     media_query: NotRequired[components_mediaquery.MediaQueryTypedDict]
     r"""A querystring-based filtering language used to select subsets of media. Can be provided as an object with typed properties for type safety, or as a string for complex queries with operators and boolean logic.
 
@@ -199,8 +195,11 @@ class AutocompleteRequestTypedDict(TypedDict):
     - Complex: `push=1&index=1&or=1&rating=2&pop=1&duration=10` - (index = 1 OR rating = 2) AND duration = 10
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
-
     """
+    media_type: NotRequired[int]
+    r"""Item type"""
+    field_query: NotRequired[str]
+    r"""The \"field\" stands in for any field, the value is a partial string for matching"""
 
 
 class AutocompleteRequest(BaseModel):
@@ -287,19 +286,6 @@ class AutocompleteRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
-    type: Annotated[
-        Optional[int],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""Item type"""
-
-    field_query: Annotated[
-        Optional[str],
-        pydantic.Field(alias="field.query"),
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""The \"field\" stands in for any field, the value is a partial string for matching"""
-
     media_query: Annotated[
         Optional[components_mediaquery.MediaQuery],
         pydantic.Field(alias="mediaQuery"),
@@ -321,8 +307,21 @@ class AutocompleteRequest(BaseModel):
     - Complex: `push=1&index=1&or=1&rating=2&pop=1&duration=10` - (index = 1 OR rating = 2) AND duration = 10
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
-
     """
+
+    media_type: Annotated[
+        Optional[int],
+        pydantic.Field(alias="type"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Item type"""
+
+    field_query: Annotated[
+        Optional[str],
+        pydantic.Field(alias="field.query"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""The \"field\" stands in for any field, the value is a partial string for matching"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
@@ -339,9 +338,9 @@ class AutocompleteRequest(BaseModel):
                 "Device-Vendor",
                 "Device-Name",
                 "Marketplace",
-                "type",
-                "field.query",
                 "mediaQuery",
+                "mediaType",
+                "field.query",
             ]
         )
         serialized = handler(self)

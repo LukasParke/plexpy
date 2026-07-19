@@ -308,7 +308,7 @@ class DeletePlayQueueItemResponseTypedDict(TypedDict):
     media_container_with_playlist_metadata: NotRequired[
         components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadataTypedDict
     ]
-    r"""OK"""
+    r"""Successfully deleted delete an item from a play queue"""
 
 
 class DeletePlayQueueItemResponse(BaseModel):
@@ -324,7 +324,7 @@ class DeletePlayQueueItemResponse(BaseModel):
     media_container_with_playlist_metadata: Optional[
         components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadata
     ] = None
-    r"""OK"""
+    r"""Successfully deleted delete an item from a play queue"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

@@ -299,7 +299,7 @@ class UnshuffleResponseTypedDict(TypedDict):
     media_container_with_playlist_metadata: NotRequired[
         components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadataTypedDict
     ]
-    r"""OK"""
+    r"""Successfully updated unshuffle a play queue"""
 
 
 class UnshuffleResponse(BaseModel):
@@ -315,7 +315,7 @@ class UnshuffleResponse(BaseModel):
     media_container_with_playlist_metadata: Optional[
         components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadata
     ] = None
-    r"""OK"""
+    r"""Successfully updated unshuffle a play queue"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):

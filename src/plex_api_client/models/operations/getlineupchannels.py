@@ -295,7 +295,6 @@ class LineupType(int, Enum):
     - `2`: Satellite
     - `3`: IPTV
     - `4`: Virtual
-
     """
 
     MINUS_1 = -1
@@ -310,6 +309,10 @@ class LineupTypedDict(TypedDict):
     title: NotRequired[str]
     type: NotRequired[str]
     r"""The type of this object (`lineup` in this case)"""
+    identifier: NotRequired[str]
+    r"""Lineup identifier."""
+    key: NotRequired[str]
+    r"""API key for this lineup."""
     lineup_type: NotRequired[LineupType]
     r"""- `-1`: N/A
     - `0`: Over the air
@@ -317,7 +320,6 @@ class LineupTypedDict(TypedDict):
     - `2`: Satellite
     - `3`: IPTV
     - `4`: Virtual
-
     """
     location: NotRequired[str]
     uuid: NotRequired[str]
@@ -331,6 +333,12 @@ class Lineup(BaseModel):
     type: Optional[str] = None
     r"""The type of this object (`lineup` in this case)"""
 
+    identifier: Optional[str] = None
+    r"""Lineup identifier."""
+
+    key: Optional[str] = None
+    r"""API key for this lineup."""
+
     lineup_type: Annotated[Optional[LineupType], pydantic.Field(alias="lineupType")] = (
         None
     )
@@ -340,7 +348,6 @@ class Lineup(BaseModel):
     - `2`: Satellite
     - `3`: IPTV
     - `4`: Virtual
-
     """
 
     location: Optional[str] = None
@@ -355,7 +362,16 @@ class Lineup(BaseModel):
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
-            ["title", "type", "lineupType", "location", "uuid", "Channel"]
+            [
+                "title",
+                "type",
+                "identifier",
+                "key",
+                "lineupType",
+                "location",
+                "uuid",
+                "Channel",
+            ]
         )
         serialized = handler(self)
         m = {}
@@ -375,19 +391,14 @@ class GetLineupChannelsMediaContainerTypedDict(TypedDict):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: NotRequired[str]
     offset: NotRequired[int]
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
     size: NotRequired[int]
     total_size: NotRequired[int]
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
     lineup: NotRequired[List[LineupTypedDict]]
 
 
@@ -395,22 +406,17 @@ class GetLineupChannelsMediaContainer(BaseModel):
     r"""`MediaContainer` is the root element of most Plex API responses. It serves as a generic container for various types of content (Metadata, Hubs, Directories, etc.) and includes pagination information (offset, size, totalSize) when applicable.
     Common attributes: - identifier: Unique identifier for this container - size: Number of items in this response page - totalSize: Total number of items available (for pagination) - offset: Starting index of this page (for pagination)
     The container often \"hoists\" common attributes from its children. For example, if all tracks in a container share the same album title, the `parentTitle` attribute may appear on the MediaContainer rather than being repeated on each track.
-
     """
 
     identifier: Optional[str] = None
 
     offset: Optional[int] = None
-    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header.
-
-    """
+    r"""The offset of where this container page starts among the total objects available. Also provided in the `X-Plex-Container-Start` header."""
 
     size: Optional[int] = None
 
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
-    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header.
-
-    """
+    r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
     lineup: Annotated[Optional[List[Lineup]], pydantic.Field(alias="Lineup")] = None
 

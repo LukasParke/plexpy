@@ -9,6 +9,7 @@ The actions feature within a media provider
 * [mark_played](#mark_played) - Mark an item as played
 * [report](#report) - Report media timeline
 * [unscrobble](#unscrobble) - Mark an item as unplayed
+* [get_conversion_queue](#get_conversion_queue) - Get Conversion Queue
 
 ## mark_played
 
@@ -41,6 +42,7 @@ with PlexAPI(
     res = plex_api.timeline.mark_played(request={
         "identifier": "<value>",
         "key": "59398",
+        "uri": "https://mad-dredger.name",
     })
 
     assert res is not None
@@ -70,7 +72,6 @@ with PlexAPI(
 ## report
 
 This endpoint is hit during media playback for an item. It must be hit whenever the play state changes, or in the absence of a play state change, in a regular fashion (generally this means every 10 seconds on a LAN/WAN, and every 20 seconds over cellular).
-
 
 ### Example Usage
 
@@ -166,6 +167,7 @@ with PlexAPI(
 
     res = plex_api.timeline.unscrobble(request={
         "identifier": "<value>",
+        "uri": "https://qualified-order.org",
     })
 
     assert res is not None
@@ -191,3 +193,57 @@ with PlexAPI(
 | Error Type      | Status Code     | Content Type    |
 | --------------- | --------------- | --------------- |
 | errors.SDKError | 4XX, 5XX        | \*/\*           |
+
+## get_conversion_queue
+
+Get the conversion/optimization queue.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getConversionQueue" method="get" path="/playQueues/1" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.timeline.get_conversion_queue(request={})
+
+    assert res.media_container_with_play_queue is not None
+
+    # Handle response
+    print(res.media_container_with_play_queue)
+
+```
+
+### Parameters
+
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `request`                                                                                    | [operations.GetConversionQueueRequest](../../models/operations/getconversionqueuerequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
+| `retries`                                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                             | :heavy_minus_sign:                                                                           | Configuration to override the default retry behavior of the client.                          |
+
+### Response
+
+**[operations.GetConversionQueueResponse](../../models/operations/getconversionqueueresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |

@@ -48,14 +48,14 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## get_tasks
 
 Get the list of butler tasks and their scheduling
-
 
 ### Example Usage
 
@@ -89,9 +89,10 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## start_tasks
 
@@ -101,7 +102,6 @@ This endpoint will attempt to start all Butler tasks that are enabled in the set
   2. If a task is configured to run at a random time during the configured window and we are outside that window, the task will start immediately.
   3. If a task is configured to run at a random time during the configured window and we are within that window, the task will be scheduled at a random time within the window.
   4. If we are outside the configured window, the task will start immediately.
-
 
 ### Example Usage
 
@@ -135,14 +135,14 @@ with PlexAPI(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.SDKError | 4XX, 5XX        | \*/\*           |
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
 
 ## stop_task
 
 This endpoint will stop a currently running task by name, or remove it from the list of scheduled tasks if it exists
-
 
 ### Example Usage
 
@@ -199,7 +199,6 @@ with PlexAPI(
 
 This endpoint will attempt to start a specific Butler task by name.
 
-
 ### Example Usage
 
 <!-- UsageSnippet language="python" operationID="startTask" method="post" path="/butler/{butlerTask}" -->
@@ -227,10 +226,10 @@ with PlexAPI(
         "butler_task": operations.PathParamButlerTask.REFRESH_LOCAL_MEDIA,
     })
 
-    assert res is not None
+    assert res.body is not None
 
     # Handle response
-    print(res)
+    print(res.body)
 
 ```
 

@@ -20,6 +20,8 @@ class PartTypedDict(TypedDict):
     audio_profile: NotRequired[str]
     container: NotRequired[str]
     r"""The container of the media file, such as `mp4` or `mkv`"""
+    deep_analysis_version: NotRequired[int]
+    r"""Deep analysis version for this part."""
     duration: NotRequired[int]
     r"""The duration of the media item, in milliseconds"""
     exists: NotRequired[bool]
@@ -29,9 +31,19 @@ class PartTypedDict(TypedDict):
     has64bit_offsets: NotRequired[bool]
     indexes: NotRequired[str]
     optimized_for_streaming: NotRequired[bool]
+    packet_length: NotRequired[int]
+    r"""RTP packet length for streaming."""
+    protocol: NotRequired[str]
+    r"""Streaming protocol (e.g. dash, hls, direct)."""
+    required_bandwidths: NotRequired[str]
+    r"""Comma-separated list of bandwidth requirements."""
     size: NotRequired[int]
     r"""The size of the media, in bytes"""
     stream: NotRequired[List[StreamTypedDict]]
+    sync_item_id: NotRequired[int]
+    r"""Mobile sync item association ID."""
+    sync_state: NotRequired[str]
+    r"""Sync state (e.g. pending, downloaded, processing)."""
     video_profile: NotRequired[str]
 
 
@@ -56,6 +68,11 @@ class Part(BaseModel):
     container: Optional[str] = None
     r"""The container of the media file, such as `mp4` or `mkv`"""
 
+    deep_analysis_version: Annotated[
+        Optional[int], pydantic.Field(alias="deepAnalysisVersion")
+    ] = None
+    r"""Deep analysis version for this part."""
+
     duration: Optional[int] = None
     r"""The duration of the media item, in milliseconds"""
 
@@ -75,10 +92,27 @@ class Part(BaseModel):
         Optional[bool], pydantic.Field(alias="optimizedForStreaming")
     ] = None
 
+    packet_length: Annotated[Optional[int], pydantic.Field(alias="packetLength")] = None
+    r"""RTP packet length for streaming."""
+
+    protocol: Optional[str] = None
+    r"""Streaming protocol (e.g. dash, hls, direct)."""
+
+    required_bandwidths: Annotated[
+        Optional[str], pydantic.Field(alias="requiredBandwidths")
+    ] = None
+    r"""Comma-separated list of bandwidth requirements."""
+
     size: Optional[int] = None
     r"""The size of the media, in bytes"""
 
     stream: Annotated[Optional[List[Stream]], pydantic.Field(alias="Stream")] = None
+
+    sync_item_id: Annotated[Optional[int], pydantic.Field(alias="syncItemId")] = None
+    r"""Mobile sync item association ID."""
+
+    sync_state: Annotated[Optional[str], pydantic.Field(alias="syncState")] = None
+    r"""Sync state (e.g. pending, downloaded, processing)."""
 
     video_profile: Annotated[Optional[str], pydantic.Field(alias="videoProfile")] = None
 
@@ -97,14 +131,20 @@ class Part(BaseModel):
                 "accessible",
                 "audioProfile",
                 "container",
+                "deepAnalysisVersion",
                 "duration",
                 "exists",
                 "file",
                 "has64bitOffsets",
                 "indexes",
                 "optimizedForStreaming",
+                "packetLength",
+                "protocol",
+                "requiredBandwidths",
                 "size",
                 "Stream",
+                "syncItemId",
+                "syncState",
                 "videoProfile",
             ]
         )

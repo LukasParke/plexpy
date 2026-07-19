@@ -5,7 +5,7 @@ import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
     boolint as components_boolint,
-    mediacontainerwithplaylistmetadata as components_mediacontainerwithplaylistmetadata,
+    playqueueresponse as components_playqueueresponse,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 from plex_api_client.utils import (
@@ -349,10 +349,10 @@ class GetPlayQueueResponseTypedDict(TypedDict):
     r"""HTTP response status code for this operation"""
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
-    media_container_with_playlist_metadata: NotRequired[
-        components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadataTypedDict
+    play_queue_response: NotRequired[
+        components_playqueueresponse.PlayQueueResponseTypedDict
     ]
-    r"""OK"""
+    r"""The play queue"""
 
 
 class GetPlayQueueResponse(BaseModel):
@@ -365,14 +365,12 @@ class GetPlayQueueResponse(BaseModel):
     raw_response: httpx.Response
     r"""Raw HTTP response; suitable for custom response parsing"""
 
-    media_container_with_playlist_metadata: Optional[
-        components_mediacontainerwithplaylistmetadata.MediaContainerWithPlaylistMetadata
-    ] = None
-    r"""OK"""
+    play_queue_response: Optional[components_playqueueresponse.PlayQueueResponse] = None
+    r"""The play queue"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["MediaContainerWithPlaylistMetadata"])
+        optional_fields = set(["PlayQueueResponse"])
         serialized = handler(self)
         m = {}
 
