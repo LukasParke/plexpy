@@ -196,8 +196,6 @@ class AutocompleteRequestTypedDict(TypedDict):
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
     """
-    media_type: NotRequired[int]
-    r"""Item type"""
     field_query: NotRequired[str]
     r"""The \"field\" stands in for any field, the value is a partial string for matching"""
 
@@ -309,13 +307,6 @@ class AutocompleteRequest(BaseModel):
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
     """
 
-    media_type: Annotated[
-        Optional[int],
-        pydantic.Field(alias="type"),
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""Item type"""
-
     field_query: Annotated[
         Optional[str],
         pydantic.Field(alias="field.query"),
@@ -339,7 +330,6 @@ class AutocompleteRequest(BaseModel):
                 "Device-Name",
                 "Marketplace",
                 "mediaQuery",
-                "mediaType",
                 "field.query",
             ]
         )

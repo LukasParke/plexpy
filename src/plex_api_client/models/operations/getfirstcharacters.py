@@ -195,10 +195,6 @@ class GetFirstCharactersRequestTypedDict(TypedDict):
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
     """
-    media_type: NotRequired[int]
-    r"""The metadata type to filter on"""
-    sort: NotRequired[int]
-    r"""The metadata type to filter on"""
 
 
 class GetFirstCharactersRequest(BaseModel):
@@ -308,19 +304,6 @@ class GetFirstCharactersRequest(BaseModel):
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
     """
 
-    media_type: Annotated[
-        Optional[int],
-        pydantic.Field(alias="type"),
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""The metadata type to filter on"""
-
-    sort: Annotated[
-        Optional[int],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""The metadata type to filter on"""
-
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
@@ -337,8 +320,6 @@ class GetFirstCharactersRequest(BaseModel):
                 "Device-Name",
                 "Marketplace",
                 "mediaQuery",
-                "mediaType",
-                "sort",
             ]
         )
         serialized = handler(self)

@@ -196,8 +196,6 @@ class GetCommonRequestTypedDict(TypedDict):
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
     """
-    media_type: NotRequired[int]
-    r"""Item type"""
 
 
 class GetCommonRequest(BaseModel):
@@ -307,13 +305,6 @@ class GetCommonRequest(BaseModel):
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
     """
 
-    media_type: Annotated[
-        Optional[int],
-        pydantic.Field(alias="type"),
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""Item type"""
-
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
@@ -330,7 +321,6 @@ class GetCommonRequest(BaseModel):
                 "Device-Name",
                 "Marketplace",
                 "mediaQuery",
-                "mediaType",
             ]
         )
         serialized = handler(self)

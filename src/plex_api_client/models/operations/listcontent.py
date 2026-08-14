@@ -207,10 +207,6 @@ class ListContentRequestTypedDict(TypedDict):
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
     """
-    media_type: NotRequired[int]
-    r"""Filter by metadata type (1=movie, 2=show, 3=season, 4=episode, 8=artist, 9=album, 10=track)"""
-    sort: NotRequired[str]
-    r"""Sort key and direction (e.g. addedAt:desc, titleSort)"""
     include_meta: NotRequired[components_boolint.BoolInt]
     r"""Adds the Meta object to the response"""
     include_guids: NotRequired[components_boolint.BoolInt]
@@ -415,19 +411,6 @@ class ListContentRequest(BaseModel):
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
     """
-
-    media_type: Annotated[
-        Optional[int],
-        pydantic.Field(alias="type"),
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""Filter by metadata type (1=movie, 2=show, 3=season, 4=episode, 8=artist, 9=album, 10=track)"""
-
-    sort: Annotated[
-        Optional[str],
-        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
-    ] = None
-    r"""Sort key and direction (e.g. addedAt:desc, titleSort)"""
 
     include_meta: Annotated[
         Optional[components_boolint.BoolInt],
@@ -706,8 +689,6 @@ class ListContentRequest(BaseModel):
                 "X-Plex-Container-Start",
                 "X-Plex-Container-Size",
                 "mediaQuery",
-                "mediaType",
-                "sort",
                 "includeMeta",
                 "includeGuids",
                 "includeCollections",

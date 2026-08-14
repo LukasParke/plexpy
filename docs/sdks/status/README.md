@@ -125,29 +125,8 @@ with PlexAPI(
 
     res = plex_api.status.list_playback_history(request={
         "sort": [
-            "v",
-            "i",
-            "e",
-            "w",
-            "e",
-            "d",
-            "A",
-            "t",
-            ":",
-            "d",
-            "e",
-            "s",
-            "c",
-            ",",
-            "a",
-            "c",
-            "c",
-            "o",
-            "u",
-            "n",
-            "t",
-            "I",
-            "D",
+            "viewedAt:desc",
+            "accountID",
         ],
     })
 
