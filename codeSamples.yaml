@@ -576,6 +576,42 @@ actions:
 
                 # Handle response
                 print(res)
+  - target: $["paths"]["/api/invites/requests/{inviteId}"]["put"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: PlexPy
+          source: |-
+            from plex_api_client import PlexAPI
+            from plex_api_client.models import components, operations
+
+
+            with PlexAPI(
+                accepts=components.Accepts.APPLICATION_XML,
+                client_identifier="abc123",
+                product="Plex for Roku",
+                version="2.4.1",
+                platform="Roku",
+                platform_version="4.3 build 1057",
+                device="Roku 3",
+                model="4200X",
+                device_vendor="Roku",
+                device_name="Living Room TV",
+                marketplace="googlePlay",
+                token="<YOUR_API_KEY_HERE>",
+            ) as plex_api:
+
+                res = plex_api.users.accept_invite(request=operations.AcceptInviteRequest(
+                    invite_id=530502,
+                    friend=components.BoolInt.TRUE,
+                    home=components.BoolInt.TRUE,
+                    server=components.BoolInt.TRUE,
+                ))
+
+                assert res.body is not None
+
+                # Handle response
+                print(res.body)
   - target: $["paths"]["/api/resources"]["get"]
     update:
       x-codeSamples:

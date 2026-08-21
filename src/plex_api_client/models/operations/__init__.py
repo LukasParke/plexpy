@@ -5,6 +5,15 @@ from typing import Any, TYPE_CHECKING
 from plex_api_client.utils.dynamic_imports import lazy_getattr, lazy_dir
 
 if TYPE_CHECKING:
+    from .acceptinvite import (
+        ACCEPT_INVITE_SERVERS,
+        AcceptInviteGlobals,
+        AcceptInviteGlobalsTypedDict,
+        AcceptInviteRequest,
+        AcceptInviteRequestTypedDict,
+        AcceptInviteResponse,
+        AcceptInviteResponseTypedDict,
+    )
     from .addcollectionitems import (
         AddCollectionItemsGlobals,
         AddCollectionItemsGlobalsTypedDict,
@@ -3484,9 +3493,16 @@ if TYPE_CHECKING:
     )
 
 __all__ = [
+    "ACCEPT_INVITE_SERVERS",
     "ADD_TO_WATCHLIST_SERVERS",
     "ADD_USER_WEBHOOK_SERVERS",
     "ADD_WEBHOOK_SERVERS",
+    "AcceptInviteGlobals",
+    "AcceptInviteGlobalsTypedDict",
+    "AcceptInviteRequest",
+    "AcceptInviteRequestTypedDict",
+    "AcceptInviteResponse",
+    "AcceptInviteResponseTypedDict",
     "Action",
     "AddCollectionItemsGlobals",
     "AddCollectionItemsGlobalsTypedDict",
@@ -6188,6 +6204,13 @@ __all__ = [
 ]
 
 _dynamic_imports: dict[str, str] = {
+    "ACCEPT_INVITE_SERVERS": ".acceptinvite",
+    "AcceptInviteGlobals": ".acceptinvite",
+    "AcceptInviteGlobalsTypedDict": ".acceptinvite",
+    "AcceptInviteRequest": ".acceptinvite",
+    "AcceptInviteRequestTypedDict": ".acceptinvite",
+    "AcceptInviteResponse": ".acceptinvite",
+    "AcceptInviteResponseTypedDict": ".acceptinvite",
     "AddCollectionItemsGlobals": ".addcollectionitems",
     "AddCollectionItemsGlobalsTypedDict": ".addcollectionitems",
     "AddCollectionItemsRequest": ".addcollectionitems",

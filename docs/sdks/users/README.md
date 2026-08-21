@@ -20,6 +20,7 @@ Plex Users operations
 * [get_users](#get_users) - Get list of all connected users
 * [get_account_xml](#get_account_xml) - Get Account (XML)
 * [get_account_json](#get_account_json) - Get Account (JSON)
+* [accept_invite](#accept_invite) - Accept an Invite
 * [delete_home_user](#delete_home_user) - Delete Home User
 * [update_home_user](#update_home_user) - Update Home User
 * [update_restricted_user](#update_restricted_user) - Update Restricted User
@@ -739,6 +740,66 @@ with PlexAPI(
 ### Response
 
 **[operations.GetAccountJSONResponse](../../models/operations/getaccountjsonresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## accept_invite
+
+Accept a pending Plex friend, home, or server invitation.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="acceptInvite" method="put" path="/api/invites/requests/{inviteId}" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components, operations
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    client_identifier="abc123",
+    product="Plex for Roku",
+    version="2.4.1",
+    platform="Roku",
+    platform_version="4.3 build 1057",
+    device="Roku 3",
+    model="4200X",
+    device_vendor="Roku",
+    device_name="Living Room TV",
+    marketplace="googlePlay",
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.users.accept_invite(request=operations.AcceptInviteRequest(
+        invite_id=530502,
+        friend=components.BoolInt.TRUE,
+        home=components.BoolInt.TRUE,
+        server=components.BoolInt.TRUE,
+    ))
+
+    assert res.body is not None
+
+    # Handle response
+    print(res.body)
+
+```
+
+### Parameters
+
+| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `request`                                                                        | [operations.AcceptInviteRequest](../../models/operations/acceptinviterequest.md) | :heavy_check_mark:                                                               | The request object to use for the request.                                       |
+| `retries`                                                                        | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                 | :heavy_minus_sign:                                                               | Configuration to override the default retry behavior of the client.              |
+| `server_url`                                                                     | *Optional[str]*                                                                  | :heavy_minus_sign:                                                               | An optional server URL to use.                                                   |
+
+### Response
+
+**[operations.AcceptInviteResponse](../../models/operations/acceptinviteresponse.md)**
 
 ### Errors
 

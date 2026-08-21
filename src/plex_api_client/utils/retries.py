@@ -109,6 +109,18 @@ class PermanentError(Exception):
         self.inner = inner
 
 
+_TRANSPORT_ERROR_NAMES = frozenset({"NetworkError", "TimeoutException"})
+_TRANSPORT_ERROR_BASES = frozenset({"TransportError", "RequestError", "HTTPError"})
+
+
+def _is_transport_error(exception: BaseException) -> bool:
+    """Report whether an exception is a connection or timeout failure."""
+    if isinstance(exception, (httpx.NetworkError, httpx.TimeoutException)):
+        return True
+    names = {base.__name__ for base in type(exception).__mro__}
+    return bool(names & _TRANSPORT_ERROR_NAMES) and _TRANSPORT_ERROR_BASES <= names
+
+
 def _parse_retry_after_header(response: httpx.Response) -> Optional[int]:
     """Parse Retry-After header from response.
 
@@ -207,14 +219,15 @@ def retry(func, retries: Retries):
 
                         if res.status_code == parsed_code:
                             raise TemporaryError(res)
-            except (httpx.NetworkError, httpx.TimeoutException) as exception:
-                if retries.config.retry_connection_errors:
-                    raise
-
-                raise PermanentError(exception) from exception
             except TemporaryError:
                 raise
             except Exception as exception:
+                if (
+                    _is_transport_error(exception)
+                    and retries.config.retry_connection_errors
+                ):
+                    raise
+
                 raise PermanentError(exception) from exception
 
             return res
@@ -252,14 +265,15 @@ async def retry_async(func, retries: Retries):
 
                         if res.status_code == parsed_code:
                             raise TemporaryError(res)
-            except (httpx.NetworkError, httpx.TimeoutException) as exception:
-                if retries.config.retry_connection_errors:
-                    raise
-
-                raise PermanentError(exception) from exception
             except TemporaryError:
                 raise
             except Exception as exception:
+                if (
+                    _is_transport_error(exception)
+                    and retries.config.retry_connection_errors
+                ):
+                    raise
+
                 raise PermanentError(exception) from exception
 
             return res

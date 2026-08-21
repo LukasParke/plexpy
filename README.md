@@ -776,6 +776,7 @@ asyncio.run(main())
 * [get_users](docs/sdks/users/README.md#get_users) - Get list of all connected users
 * [get_account_xml](docs/sdks/users/README.md#get_account_xml) - Get Account (XML)
 * [get_account_json](docs/sdks/users/README.md#get_account_json) - Get Account (JSON)
+* [accept_invite](docs/sdks/users/README.md#accept_invite) - Accept an Invite
 * [delete_home_user](docs/sdks/users/README.md#delete_home_user) - Delete Home User
 * [update_home_user](docs/sdks/users/README.md#update_home_user) - Update Home User
 * [update_restricted_user](docs/sdks/users/README.md#update_restricted_user) - Update Restricted User
@@ -979,9 +980,9 @@ with PlexAPI(
 
 
 **Inherit from [`PlexAPIError`](./src/plex_api_client/models/errors/plexapierror.py)**:
-* [`Error`](./src/plex_api_client/models/errors/error.py): Unauthorized. Status code `401`. Applicable to 276 of 404 methods.*
-* [`Unauthorized`](./src/plex_api_client/models/errors/unauthorized.py): Unauthorized - Returned if the X-Plex-Token is missing from the header or query. Status code `401`. Applicable to 4 of 404 methods.*
-* [`BadRequest`](./src/plex_api_client/models/errors/badrequest.py): Bad Request - A parameter was not specified, or was specified incorrectly. Status code `400`. Applicable to 3 of 404 methods.*
+* [`Error`](./src/plex_api_client/models/errors/error.py): Unauthorized. Status code `401`. Applicable to 277 of 405 methods.*
+* [`Unauthorized`](./src/plex_api_client/models/errors/unauthorized.py): Unauthorized - Returned if the X-Plex-Token is missing from the header or query. Status code `401`. Applicable to 4 of 405 methods.*
+* [`BadRequest`](./src/plex_api_client/models/errors/badrequest.py): Bad Request - A parameter was not specified, or was specified incorrectly. Status code `400`. Applicable to 3 of 405 methods.*
 * [`ResponseValidationError`](./src/plex_api_client/models/errors/responsevalidationerror.py): Type mismatch between the response data and the expected Pydantic model. Provides access to the Pydantic validation error via the `cause` attribute.
 
 </details>
@@ -1181,6 +1182,20 @@ class CustomClient(AsyncHttpClient):
 
 s = PlexAPI(async_client=CustomClient(httpx.AsyncClient()))
 ```
+### httpx2 (Pydantic's httpx fork)
+
+[httpx2](https://httpx2.pydantic.dev/) is Pydantic's maintained fork of `httpx`. To run this SDK on httpx2, call `alias_httpx()` at your program's entry point, before importing the SDK, so every `import httpx` — including the ones inside the SDK — resolves to `httpx2`:
+```python
+import httpx2
+
+httpx2.alias_httpx()
+
+from plex_api_client import PlexAPI
+
+s = PlexAPI()
+```
+
+An SDK can also be generated against httpx2 directly, so it depends on the fork instead of `httpx`, by setting `python.httpClientLibrary: httpx2` in `gen.yaml`.
 <!-- End Custom HTTP Client [http-client] -->
 
 <!-- Start Authentication [security] -->
