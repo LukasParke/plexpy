@@ -179,6 +179,10 @@ class ListContentRequestTypedDict(TypedDict):
     r"""A friendly name for the client"""
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
+    pms_api_version: NotRequired[str]
+    r"""The PMS API version requested by the client. If omitted, the server assumes `0.0`.
+    Use `1.0` for the published PMS API response customization behavior.
+    """
     x_plex_container_start: NotRequired[int]
     r"""The index of the first item to return. If not specified, the first item will be returned.
     If the number of items exceeds the limit, the response will be paginated.
@@ -206,6 +210,34 @@ class ListContentRequestTypedDict(TypedDict):
     - Complex: `push=1&index=1&or=1&rating=2&pop=1&duration=10` - (index = 1 OR rating = 2) AND duration = 10
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
+    """
+    updated_at_after: NotRequired[int]
+    r"""Return current items whose updatedAt is strictly greater than this Unix timestamp in seconds.
+    The query key is updatedAt>> (URL-encoded as updatedAt%3E%3E), for example updatedAt%3E%3E=1792000000.
+    Items updated exactly at the supplied timestamp are excluded; overlap polling windows and deduplicate ratingKey values to avoid missing same-second updates.
+    Verified for movies, episodes, and tracks on PMS 1.43.4.10903. Support on other server versions and library types may vary.
+    This filters current items, not a durable change log: deleted items are not returned, and it does not guarantee that every file, part, or stream change updates the parent timestamp.
+    """
+    updated_at_before: NotRequired[int]
+    r"""Return current items whose updatedAt is strictly less than this Unix timestamp in seconds.
+    The query key is updatedAt<< (URL-encoded as updatedAt%3C%3C), for example updatedAt%3C%3C=1792054845.
+    Items updated exactly at the supplied timestamp are excluded. Combine with updatedAt>> to request a bounded interval; both conditions must match.
+    Verified for movies on PMS 1.43.4.10903. Support on other server versions and library types may vary.
+    This filters current items and does not provide an atomic snapshot, a replay cursor, or deleted items.
+    """
+    added_at_after: NotRequired[int]
+    r"""Return current items whose addedAt is strictly greater than this Unix timestamp in seconds.
+    The query key is addedAt>> (URL-encoded as addedAt%3E%3E), for example addedAt%3E%3E=1791200000.
+    Items added exactly at the supplied timestamp are excluded; overlap polling windows and deduplicate ratingKey values to avoid missing same-second additions.
+    Verified for movies on PMS 1.43.4.10903. Support on other server versions and library types may vary.
+    This filters surviving additions only; it does not identify later metadata updates or deleted items.
+    """
+    added_at_before: NotRequired[int]
+    r"""Return current items whose addedAt is strictly less than this Unix timestamp in seconds.
+    The query key is addedAt<< (URL-encoded as addedAt%3C%3C), for example addedAt%3C%3C=1791252847.
+    Items added exactly at the supplied timestamp are excluded. Combine with addedAt>> to request a bounded interval; both conditions must match.
+    Support on server versions and library types may vary.
+    This filters surviving additions only; it does not identify later metadata updates or deleted items, or provide an atomic snapshot.
     """
     include_meta: NotRequired[components_boolint.BoolInt]
     r"""Adds the Meta object to the response"""
@@ -254,7 +286,12 @@ class ListContentRequestTypedDict(TypedDict):
     include_theme: NotRequired[components_boolint.BoolInt]
     r"""Force inclusion of theme fields"""
     include_fields: NotRequired[str]
-    r"""Whitelist of fields to return"""
+    r"""Comma-separated whitelist of fields to return.
+    With PMS API version 1.0.0 or later, this projection also applies to container attributes.
+    Include size,totalSize,offset alongside item fields when paging, for example ratingKey,updatedAt,size,totalSize,offset.
+    Otherwise the response may omit the pagination attributes needed to determine whether the complete result has been retrieved.
+    This does not necessarily remove nested elements; use excludeElements to request their exclusion.
+    """
     exclude_fields: NotRequired[str]
     r"""Blacklist of fields to omit"""
     async_augment_metadata: NotRequired[components_boolint.BoolInt]
@@ -265,6 +302,11 @@ class ListContentRequestTypedDict(TypedDict):
     r"""Bypass cache"""
     skip_refresh: NotRequired[components_boolint.BoolInt]
     r"""Skip synchronous refresh"""
+    include_optional_elements: NotRequired[str]
+    r"""Comma-separated list of optional elements to add to the response.
+    Use `Stream` to request stream metadata within returned media parts.
+    Unlike `includeElements`, this adds optional elements without excluding the normal response elements.
+    """
     exclude_elements: NotRequired[str]
     r"""Comma-separated list of elements to exclude from the response"""
     filters: NotRequired[str]
@@ -369,6 +411,15 @@ class ListContentRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    pms_api_version: Annotated[
+        Optional[str],
+        pydantic.Field(alias="X-Plex-Pms-Api-Version"),
+        FieldMetadata(header=HeaderMetadata(style="simple", explode=False)),
+    ] = None
+    r"""The PMS API version requested by the client. If omitted, the server assumes `0.0`.
+    Use `1.0` for the published PMS API response customization behavior.
+    """
+
     x_plex_container_start: Annotated[
         Optional[int],
         pydantic.Field(alias="X-Plex-Container-Start"),
@@ -410,6 +461,54 @@ class ListContentRequest(BaseModel):
     - Complex: `push=1&index=1&or=1&rating=2&pop=1&duration=10` - (index = 1 OR rating = 2) AND duration = 10
 
     See [API Info section](#section/API-Info/Media-Queries) for detailed information on building media queries.
+    """
+
+    updated_at_after: Annotated[
+        Optional[int],
+        pydantic.Field(alias="updatedAt>>"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Return current items whose updatedAt is strictly greater than this Unix timestamp in seconds.
+    The query key is updatedAt>> (URL-encoded as updatedAt%3E%3E), for example updatedAt%3E%3E=1792000000.
+    Items updated exactly at the supplied timestamp are excluded; overlap polling windows and deduplicate ratingKey values to avoid missing same-second updates.
+    Verified for movies, episodes, and tracks on PMS 1.43.4.10903. Support on other server versions and library types may vary.
+    This filters current items, not a durable change log: deleted items are not returned, and it does not guarantee that every file, part, or stream change updates the parent timestamp.
+    """
+
+    updated_at_before: Annotated[
+        Optional[int],
+        pydantic.Field(alias="updatedAt<<"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Return current items whose updatedAt is strictly less than this Unix timestamp in seconds.
+    The query key is updatedAt<< (URL-encoded as updatedAt%3C%3C), for example updatedAt%3C%3C=1792054845.
+    Items updated exactly at the supplied timestamp are excluded. Combine with updatedAt>> to request a bounded interval; both conditions must match.
+    Verified for movies on PMS 1.43.4.10903. Support on other server versions and library types may vary.
+    This filters current items and does not provide an atomic snapshot, a replay cursor, or deleted items.
+    """
+
+    added_at_after: Annotated[
+        Optional[int],
+        pydantic.Field(alias="addedAt>>"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Return current items whose addedAt is strictly greater than this Unix timestamp in seconds.
+    The query key is addedAt>> (URL-encoded as addedAt%3E%3E), for example addedAt%3E%3E=1791200000.
+    Items added exactly at the supplied timestamp are excluded; overlap polling windows and deduplicate ratingKey values to avoid missing same-second additions.
+    Verified for movies on PMS 1.43.4.10903. Support on other server versions and library types may vary.
+    This filters surviving additions only; it does not identify later metadata updates or deleted items.
+    """
+
+    added_at_before: Annotated[
+        Optional[int],
+        pydantic.Field(alias="addedAt<<"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Return current items whose addedAt is strictly less than this Unix timestamp in seconds.
+    The query key is addedAt<< (URL-encoded as addedAt%3C%3C), for example addedAt%3C%3C=1791252847.
+    Items added exactly at the supplied timestamp are excluded. Combine with addedAt>> to request a bounded interval; both conditions must match.
+    Support on server versions and library types may vary.
+    This filters surviving additions only; it does not identify later metadata updates or deleted items, or provide an atomic snapshot.
     """
 
     include_meta: Annotated[
@@ -578,7 +677,12 @@ class ListContentRequest(BaseModel):
         pydantic.Field(alias="includeFields"),
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = None
-    r"""Whitelist of fields to return"""
+    r"""Comma-separated whitelist of fields to return.
+    With PMS API version 1.0.0 or later, this projection also applies to container attributes.
+    Include size,totalSize,offset alongside item fields when paging, for example ratingKey,updatedAt,size,totalSize,offset.
+    Otherwise the response may omit the pagination attributes needed to determine whether the complete result has been retrieved.
+    This does not necessarily remove nested elements; use excludeElements to request their exclusion.
+    """
 
     exclude_fields: Annotated[
         Optional[str],
@@ -613,6 +717,16 @@ class ListContentRequest(BaseModel):
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = components_boolint.BoolInt.FALSE
     r"""Skip synchronous refresh"""
+
+    include_optional_elements: Annotated[
+        Optional[str],
+        pydantic.Field(alias="includeOptionalElements"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+    r"""Comma-separated list of optional elements to add to the response.
+    Use `Stream` to request stream metadata within returned media parts.
+    Unlike `includeElements`, this adds optional elements without excluding the normal response elements.
+    """
 
     exclude_elements: Annotated[
         Optional[str],
@@ -686,9 +800,14 @@ class ListContentRequest(BaseModel):
                 "Device-Vendor",
                 "Device-Name",
                 "Marketplace",
+                "Pms-Api-Version",
                 "X-Plex-Container-Start",
                 "X-Plex-Container-Size",
                 "mediaQuery",
+                "updatedAtAfter",
+                "updatedAtBefore",
+                "addedAtAfter",
+                "addedAtBefore",
                 "includeMeta",
                 "includeGuids",
                 "includeCollections",
@@ -718,6 +837,7 @@ class ListContentRequest(BaseModel):
                 "asyncRefreshLocalMediaAgent",
                 "nocache",
                 "skipRefresh",
+                "includeOptionalElements",
                 "excludeElements",
                 "filters",
                 "unwatched",

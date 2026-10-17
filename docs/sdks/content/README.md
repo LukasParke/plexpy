@@ -224,12 +224,17 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.content.list_content(request=operations.ListContentRequest(
+        pms_api_version="1.0",
         media_query=components.MediaQuery(
             type=components.MediaType.EPISODE,
             sort="duration:desc,index",
             source_type=2,
         ),
         section_id=813218,
+        updated_at_after=1792000000,
+        updated_at_before=1792054845,
+        added_at_after=1791200000,
+        added_at_before=1791252847,
         include_meta=components.BoolInt.TRUE,
         include_guids=components.BoolInt.TRUE,
         include_collections=components.BoolInt.TRUE,
@@ -253,10 +258,12 @@ with PlexAPI(
         include_thumb=components.BoolInt.TRUE,
         include_banner=components.BoolInt.TRUE,
         include_theme=components.BoolInt.TRUE,
+        include_fields="ratingKey,updatedAt,size,totalSize,offset",
         async_augment_metadata=components.BoolInt.TRUE,
         async_refresh_local_media_agent=components.BoolInt.TRUE,
         nocache=components.BoolInt.TRUE,
         skip_refresh=components.BoolInt.TRUE,
+        include_optional_elements="Stream",
         unwatched=components.BoolInt.TRUE,
     ))
 
