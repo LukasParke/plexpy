@@ -58,24 +58,14 @@ class MediaContainerWithDecisionBitrateMode(str, Enum):
     VBR = "vbr"
 
 
-class Two1(str, Enum):
+class MediaContainerWithDecisionCanAutoSync2(str, Enum):
     ZERO = "0"
     ONE = "1"
 
 
-MediaContainerWithDecisionCanAutoSync2TypedDict = TypeAliasType(
-    "MediaContainerWithDecisionCanAutoSync2TypedDict", Union[Two1, bool]
-)
-
-
-MediaContainerWithDecisionCanAutoSync2 = TypeAliasType(
-    "MediaContainerWithDecisionCanAutoSync2", Union[Two1, bool]
-)
-
-
 MediaContainerWithDecisionCanAutoSyncTypedDict = TypeAliasType(
     "MediaContainerWithDecisionCanAutoSyncTypedDict",
-    Union[bool, MediaContainerWithDecisionCanAutoSync2TypedDict],
+    Union[bool, MediaContainerWithDecisionCanAutoSync2],
 )
 r"""Indicates if the stream can auto-sync."""
 
@@ -85,6 +75,49 @@ MediaContainerWithDecisionCanAutoSync = TypeAliasType(
     Union[bool, MediaContainerWithDecisionCanAutoSync2],
 )
 r"""Indicates if the stream can auto-sync."""
+
+
+MediaContainerWithDecisionLoudnessTypedDict = TypeAliasType(
+    "MediaContainerWithDecisionLoudnessTypedDict", Union[float, str]
+)
+r"""Integrated loudness in LUFS. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
+
+
+MediaContainerWithDecisionLoudness = TypeAliasType(
+    "MediaContainerWithDecisionLoudness", Union[float, str]
+)
+r"""Integrated loudness in LUFS. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
+
+
+MediaContainerWithDecisionPeakTypedDict = TypeAliasType(
+    "MediaContainerWithDecisionPeakTypedDict", Union[float, str]
+)
+r"""Track peak amplitude. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
+
+
+MediaContainerWithDecisionPeak = TypeAliasType(
+    "MediaContainerWithDecisionPeak", Union[float, str]
+)
+r"""Track peak amplitude. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
+
+
+class MediaContainerWithDecisionPerfectMatch2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+MediaContainerWithDecisionPerfectMatchTypedDict = TypeAliasType(
+    "MediaContainerWithDecisionPerfectMatchTypedDict",
+    Union[bool, MediaContainerWithDecisionPerfectMatch2],
+)
+r"""Whether the subtitle is an exact match."""
+
+
+MediaContainerWithDecisionPerfectMatch = TypeAliasType(
+    "MediaContainerWithDecisionPerfectMatch",
+    Union[bool, MediaContainerWithDecisionPerfectMatch2],
+)
+r"""Whether the subtitle is an exact match."""
 
 
 class MediaContainerWithDecisionStreamType(int, Enum):
@@ -97,6 +130,43 @@ class MediaContainerWithDecisionStreamType(int, Enum):
     VIDEO = 1
     AUDIO = 2
     SUBTITLE = 3
+
+
+class MediaContainerWithDecisionTimed2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+class MediaContainerWithDecisionTransient2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+MediaContainerWithDecisionTimedTypedDict = TypeAliasType(
+    "MediaContainerWithDecisionTimedTypedDict",
+    Union[bool, MediaContainerWithDecisionTimed2],
+)
+r"""Whether lyrics are timestamped."""
+
+
+MediaContainerWithDecisionTimed = TypeAliasType(
+    "MediaContainerWithDecisionTimed", Union[bool, MediaContainerWithDecisionTimed2]
+)
+r"""Whether lyrics are timestamped."""
+
+
+MediaContainerWithDecisionTransientTypedDict = TypeAliasType(
+    "MediaContainerWithDecisionTransientTypedDict",
+    Union[bool, MediaContainerWithDecisionTransient2],
+)
+r"""Whether the subtitle is temporary or downloaded."""
+
+
+MediaContainerWithDecisionTransient = TypeAliasType(
+    "MediaContainerWithDecisionTransient",
+    Union[bool, MediaContainerWithDecisionTransient2],
+)
+r"""Whether the subtitle is temporary or downloaded."""
 
 
 class MediaContainerWithDecisionDecision(str, Enum):
@@ -217,17 +287,17 @@ class MediaContainerWithDecisionStreamTypedDict(TypedDict):
     r"""Language tag (e.g., en)."""
     level: NotRequired[int]
     r"""Video level."""
-    loudness: NotRequired[float]
-    r"""Integrated loudness in LUFS."""
+    loudness: NotRequired[MediaContainerWithDecisionLoudnessTypedDict]
+    r"""Integrated loudness in LUFS. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
     lra: NotRequired[float]
     r"""Loudness range in LU."""
     min_lines: NotRequired[int]
     r"""Minimum lines in the lyric file."""
     original: NotRequired[bool]
     r"""Indicates if this is the original stream."""
-    peak: NotRequired[float]
-    r"""Track peak amplitude."""
-    perfect_match: NotRequired[bool]
+    peak: NotRequired[MediaContainerWithDecisionPeakTypedDict]
+    r"""Track peak amplitude. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
+    perfect_match: NotRequired[MediaContainerWithDecisionPerfectMatchTypedDict]
     r"""Whether the subtitle is an exact match."""
     profile: NotRequired[str]
     r"""Video profile."""
@@ -249,9 +319,9 @@ class MediaContainerWithDecisionStreamTypedDict(TypedDict):
     start_ramp: NotRequired[str]
     r"""Loudness ramp start type."""
     stream_identifier: NotRequired[int]
-    timed: NotRequired[bool]
+    timed: NotRequired[MediaContainerWithDecisionTimedTypedDict]
     r"""Whether lyrics are timestamped."""
-    transient: NotRequired[bool]
+    transient: NotRequired[MediaContainerWithDecisionTransientTypedDict]
     r"""Whether the subtitle is temporary or downloaded."""
     user_id: NotRequired[int]
     r"""ID of the user who added the subtitle."""
@@ -452,8 +522,8 @@ class MediaContainerWithDecisionStream(BaseModel):
     level: Optional[int] = None
     r"""Video level."""
 
-    loudness: Optional[float] = None
-    r"""Integrated loudness in LUFS."""
+    loudness: Optional[MediaContainerWithDecisionLoudness] = None
+    r"""Integrated loudness in LUFS. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
 
     lra: Optional[float] = None
     r"""Loudness range in LU."""
@@ -464,12 +534,13 @@ class MediaContainerWithDecisionStream(BaseModel):
     original: Optional[bool] = None
     r"""Indicates if this is the original stream."""
 
-    peak: Optional[float] = None
-    r"""Track peak amplitude."""
+    peak: Optional[MediaContainerWithDecisionPeak] = None
+    r"""Track peak amplitude. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
 
-    perfect_match: Annotated[Optional[bool], pydantic.Field(alias="perfectMatch")] = (
-        None
-    )
+    perfect_match: Annotated[
+        Optional[MediaContainerWithDecisionPerfectMatch],
+        pydantic.Field(alias="perfectMatch"),
+    ] = None
     r"""Whether the subtitle is an exact match."""
 
     profile: Optional[str] = None
@@ -507,10 +578,10 @@ class MediaContainerWithDecisionStream(BaseModel):
         Optional[int], pydantic.Field(alias="streamIdentifier")
     ] = None
 
-    timed: Optional[bool] = None
+    timed: Optional[MediaContainerWithDecisionTimed] = None
     r"""Whether lyrics are timestamped."""
 
-    transient: Optional[bool] = None
+    transient: Optional[MediaContainerWithDecisionTransient] = None
     r"""Whether the subtitle is temporary or downloaded."""
 
     user_id: Annotated[Optional[int], pydantic.Field(alias="userID")] = None

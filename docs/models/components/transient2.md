@@ -1,11 +1,11 @@
-# One
+# Transient2
 
 ## Example Usage
 
 ```python
-from plex_api_client.models.components import One
+from plex_api_client.models.components import Transient2
 
-value = One.ZERO
+value = Transient2.ZERO
 ```
 
 

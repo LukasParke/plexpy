@@ -1,17 +1,17 @@
 # CanAutoSync2
 
-
-## Supported Types
-
-### `components.One`
+## Example Usage
 
 ```python
-value: components.One = /* values here */
+from plex_api_client.models.components import CanAutoSync2
+
+value = CanAutoSync2.ZERO
 ```
 
-### `bool`
 
-```python
-value: bool = /* values here */
-```
+## Values
 
+| Name   | Value  |
+| ------ | ------ |
+| `ZERO` | 0      |
+| `ONE`  | 1      |

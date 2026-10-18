@@ -1,6 +1,6 @@
 # MediaTypeString
 
-The type of media content in the Plex library. This can represent videos, music, or photos.
+The Plex media type name, corresponding to the numeric MediaType schema.
 
 ## Example Usage
 
@@ -13,15 +13,20 @@ value = MediaTypeString.MOVIE
 
 ## Values
 
-| Name          | Value         |
-| ------------- | ------------- |
-| `MOVIE`       | movie         |
-| `TV_SHOW`     | show          |
-| `SEASON`      | season        |
-| `EPISODE`     | episode       |
-| `ARTIST`      | artist        |
-| `ALBUM`       | album         |
-| `TRACK`       | track         |
-| `PHOTO_ALBUM` | photoalbum    |
-| `PHOTO`       | photo         |
-| `COLLECTION`  | collection    |
+| Name              | Value             |
+| ----------------- | ----------------- |
+| `MOVIE`           | movie             |
+| `TV_SHOW`         | show              |
+| `SEASON`          | season            |
+| `EPISODE`         | episode           |
+| `TRAILER`         | trailer           |
+| `PERSON`          | person            |
+| `ARTIST`          | artist            |
+| `ALBUM`           | album             |
+| `TRACK`           | track             |
+| `CLIP`            | clip              |
+| `PHOTO`           | photo             |
+| `PHOTO_ALBUM`     | photoalbum        |
+| `PLAYLIST`        | playlist          |
+| `PLAYLIST_FOLDER` | playlistfolder    |
+| `COLLECTION`      | collection        |

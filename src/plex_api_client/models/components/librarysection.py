@@ -60,7 +60,7 @@ class LibrarySectionLocation(BaseModel):
 
 class LibrarySectionTypedDict(TypedDict):
     type: MediaTypeString
-    r"""The type of media content in the Plex library. This can represent videos, music, or photos."""
+    r"""The Plex media type name, corresponding to the numeric MediaType schema."""
     language: str
     uuid: str
     r"""The universally unique identifier for the library."""
@@ -93,7 +93,7 @@ class LibrarySectionTypedDict(TypedDict):
 
 class LibrarySection(BaseModel):
     type: MediaTypeString
-    r"""The type of media content in the Plex library. This can represent videos, music, or photos."""
+    r"""The Plex media type name, corresponding to the numeric MediaType schema."""
 
     language: str
 

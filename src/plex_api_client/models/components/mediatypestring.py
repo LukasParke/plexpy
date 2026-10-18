@@ -5,15 +5,20 @@ from enum import Enum
 
 
 class MediaTypeString(str, Enum):
-    r"""The type of media content in the Plex library. This can represent videos, music, or photos."""
+    r"""The Plex media type name, corresponding to the numeric MediaType schema."""
 
     MOVIE = "movie"
     TV_SHOW = "show"
     SEASON = "season"
     EPISODE = "episode"
+    TRAILER = "trailer"
+    PERSON = "person"
     ARTIST = "artist"
     ALBUM = "album"
     TRACK = "track"
-    PHOTO_ALBUM = "photoalbum"
+    CLIP = "clip"
     PHOTO = "photo"
+    PHOTO_ALBUM = "photoalbum"
+    PLAYLIST = "playlist"
+    PLAYLIST_FOLDER = "playlistfolder"
     COLLECTION = "collection"

@@ -1,11 +1,11 @@
-# Two1
+# PerfectMatch2
 
 ## Example Usage
 
 ```python
-from plex_api_client.models.components import Two1
+from plex_api_client.models.components import PerfectMatch2
 
-value = Two1.ZERO
+value = PerfectMatch2.ZERO
 ```
 
 

@@ -16,25 +16,48 @@ class BitrateMode(str, Enum):
     VBR = "vbr"
 
 
-class One(str, Enum):
+class CanAutoSync2(str, Enum):
     ZERO = "0"
     ONE = "1"
 
 
-CanAutoSync2TypedDict = TypeAliasType("CanAutoSync2TypedDict", Union[One, bool])
-
-
-CanAutoSync2 = TypeAliasType("CanAutoSync2", Union[One, bool])
-
-
-CanAutoSyncTypedDict = TypeAliasType(
-    "CanAutoSyncTypedDict", Union[bool, CanAutoSync2TypedDict]
-)
+CanAutoSyncTypedDict = TypeAliasType("CanAutoSyncTypedDict", Union[bool, CanAutoSync2])
 r"""Indicates if the stream can auto-sync."""
 
 
 CanAutoSync = TypeAliasType("CanAutoSync", Union[bool, CanAutoSync2])
 r"""Indicates if the stream can auto-sync."""
+
+
+LoudnessTypedDict = TypeAliasType("LoudnessTypedDict", Union[float, str])
+r"""Integrated loudness in LUFS. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
+
+
+Loudness = TypeAliasType("Loudness", Union[float, str])
+r"""Integrated loudness in LUFS. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
+
+
+PeakTypedDict = TypeAliasType("PeakTypedDict", Union[float, str])
+r"""Track peak amplitude. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
+
+
+Peak = TypeAliasType("Peak", Union[float, str])
+r"""Track peak amplitude. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
+
+
+class PerfectMatch2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+PerfectMatchTypedDict = TypeAliasType(
+    "PerfectMatchTypedDict", Union[bool, PerfectMatch2]
+)
+r"""Whether the subtitle is an exact match."""
+
+
+PerfectMatch = TypeAliasType("PerfectMatch", Union[bool, PerfectMatch2])
+r"""Whether the subtitle is an exact match."""
 
 
 class StreamType(int, Enum):
@@ -47,6 +70,32 @@ class StreamType(int, Enum):
     VIDEO = 1
     AUDIO = 2
     SUBTITLE = 3
+
+
+class Timed2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+class Transient2(str, Enum):
+    ZERO = "0"
+    ONE = "1"
+
+
+TimedTypedDict = TypeAliasType("TimedTypedDict", Union[bool, Timed2])
+r"""Whether lyrics are timestamped."""
+
+
+Timed = TypeAliasType("Timed", Union[bool, Timed2])
+r"""Whether lyrics are timestamped."""
+
+
+TransientTypedDict = TypeAliasType("TransientTypedDict", Union[bool, Transient2])
+r"""Whether the subtitle is temporary or downloaded."""
+
+
+Transient = TypeAliasType("Transient", Union[bool, Transient2])
+r"""Whether the subtitle is temporary or downloaded."""
 
 
 class StreamTypedDict(TypedDict):
@@ -147,17 +196,17 @@ class StreamTypedDict(TypedDict):
     r"""Language tag (e.g., en)."""
     level: NotRequired[int]
     r"""Video level."""
-    loudness: NotRequired[float]
-    r"""Integrated loudness in LUFS."""
+    loudness: NotRequired[LoudnessTypedDict]
+    r"""Integrated loudness in LUFS. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
     lra: NotRequired[float]
     r"""Loudness range in LU."""
     min_lines: NotRequired[int]
     r"""Minimum lines in the lyric file."""
     original: NotRequired[bool]
     r"""Indicates if this is the original stream."""
-    peak: NotRequired[float]
-    r"""Track peak amplitude."""
-    perfect_match: NotRequired[bool]
+    peak: NotRequired[PeakTypedDict]
+    r"""Track peak amplitude. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
+    perfect_match: NotRequired[PerfectMatchTypedDict]
     r"""Whether the subtitle is an exact match."""
     profile: NotRequired[str]
     r"""Video profile."""
@@ -179,9 +228,9 @@ class StreamTypedDict(TypedDict):
     start_ramp: NotRequired[str]
     r"""Loudness ramp start type."""
     stream_identifier: NotRequired[int]
-    timed: NotRequired[bool]
+    timed: NotRequired[TimedTypedDict]
     r"""Whether lyrics are timestamped."""
-    transient: NotRequired[bool]
+    transient: NotRequired[TransientTypedDict]
     r"""Whether the subtitle is temporary or downloaded."""
     user_id: NotRequired[int]
     r"""ID of the user who added the subtitle."""
@@ -376,8 +425,8 @@ class Stream(BaseModel):
     level: Optional[int] = None
     r"""Video level."""
 
-    loudness: Optional[float] = None
-    r"""Integrated loudness in LUFS."""
+    loudness: Optional[Loudness] = None
+    r"""Integrated loudness in LUFS. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
 
     lra: Optional[float] = None
     r"""Loudness range in LU."""
@@ -388,12 +437,12 @@ class Stream(BaseModel):
     original: Optional[bool] = None
     r"""Indicates if this is the original stream."""
 
-    peak: Optional[float] = None
-    r"""Track peak amplitude."""
+    peak: Optional[Peak] = None
+    r"""Track peak amplitude. Plex may return a numeric value as a number or numeric string, or the sentinel string \"-inf\"."""
 
-    perfect_match: Annotated[Optional[bool], pydantic.Field(alias="perfectMatch")] = (
-        None
-    )
+    perfect_match: Annotated[
+        Optional[PerfectMatch], pydantic.Field(alias="perfectMatch")
+    ] = None
     r"""Whether the subtitle is an exact match."""
 
     profile: Optional[str] = None
@@ -431,10 +480,10 @@ class Stream(BaseModel):
         Optional[int], pydantic.Field(alias="streamIdentifier")
     ] = None
 
-    timed: Optional[bool] = None
+    timed: Optional[Timed] = None
     r"""Whether lyrics are timestamped."""
 
-    transient: Optional[bool] = None
+    transient: Optional[Transient] = None
     r"""Whether the subtitle is temporary or downloaded."""
 
     user_id: Annotated[Optional[int], pydantic.Field(alias="userID")] = None

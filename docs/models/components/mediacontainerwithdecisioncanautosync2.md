@@ -1,17 +1,17 @@
 # MediaContainerWithDecisionCanAutoSync2
 
-
-## Supported Types
-
-### `components.Two1`
+## Example Usage
 
 ```python
-value: components.Two1 = /* values here */
+from plex_api_client.models.components import MediaContainerWithDecisionCanAutoSync2
+
+value = MediaContainerWithDecisionCanAutoSync2.ZERO
 ```
 
-### `bool`
 
-```python
-value: bool = /* values here */
-```
+## Values
 
+| Name   | Value  |
+| ------ | ------ |
+| `ZERO` | 0      |
+| `ONE`  | 1      |
