@@ -88,6 +88,7 @@ Library endpoints which are outside of the Media Provider API.  Typically this i
 * [get_section_episodes](#get_section_episodes) - Get Section Episodes
 * [get_section_filters](#get_section_filters) - Get section filters
 * [get_first_characters](#get_first_characters) - Get list of first characters
+* [get_section_folder](#get_section_folder) - Get library folder contents
 * [get_library_section_hubs](#get_library_section_hubs) - Get Section Hubs
 * [delete_indexes](#delete_indexes) - Delete section indexes
 * [delete_intros](#delete_intros) - Delete section intro markers
@@ -735,10 +736,10 @@ with PlexAPI(
 
     res = plex_api.library.get_library_sections_fallback()
 
-    assert res.media_container_with_directory is not None
+    assert res.object is not None
 
     # Handle response
-    print(res.media_container_with_directory)
+    print(res.object)
 
 ```
 
@@ -1135,7 +1136,8 @@ with PlexAPI(
 
 ## get_metadata_children
 
-Get children of a show, season, artist, or album.
+Get children of a show, season, artist, or album, including a photo album.
+Photo album children can include both photos and video clips; omit media-type filters to retrieve all members.
 
 ### Example Usage: include-stream
 
@@ -1161,6 +1163,7 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.library.get_metadata_children(request={
+        "include_meta": components.BoolInt.TRUE,
         "id": 240367,
     })
 
@@ -1194,6 +1197,7 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.library.get_metadata_children(request={
+        "include_meta": components.BoolInt.TRUE,
         "id": 240367,
     })
 
@@ -1227,6 +1231,7 @@ with PlexAPI(
 ) as plex_api:
 
     res = plex_api.library.get_metadata_children(request={
+        "include_meta": components.BoolInt.TRUE,
         "id": 240367,
     })
 
@@ -4810,6 +4815,57 @@ with PlexAPI(
 ### Response
 
 **[operations.GetFirstCharactersResponse](../../models/operations/getfirstcharactersresponse.md)**
+
+### Errors
+
+| Error Type       | Status Code      | Content Type     |
+| ---------------- | ---------------- | ---------------- |
+| errors.Error     | 401              | application/json |
+| errors.SDKError  | 4XX, 5XX         | \*/\*            |
+
+## get_section_folder
+
+Browse the physical folders and direct media items in a library section.
+Omit parent to retrieve the root page. For a child folder, use the parent query value from the folder key returned by Plex.
+A folder token is distinct from a metadata rating key; do not substitute an album rating key.
+Photo libraries can return navigation directories, photos, and video clips in the same response.
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getSectionFolder" method="get" path="/library/sections/{sectionId}/folder" -->
+```python
+from plex_api_client import PlexAPI
+from plex_api_client.models import components
+
+
+with PlexAPI(
+    accepts=components.Accepts.APPLICATION_XML,
+    token="<YOUR_API_KEY_HERE>",
+) as plex_api:
+
+    res = plex_api.library.get_section_folder(request={
+        "section_id": 924129,
+        "parent": "3706",
+        "include_meta": components.BoolInt.TRUE,
+    })
+
+    assert res.media_container_with_metadata is not None
+
+    # Handle response
+    print(res.media_container_with_metadata)
+
+```
+
+### Parameters
+
+| Parameter                                                                                | Type                                                                                     | Required                                                                                 | Description                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `request`                                                                                | [operations.GetSectionFolderRequest](../../models/operations/getsectionfolderrequest.md) | :heavy_check_mark:                                                                       | The request object to use for the request.                                               |
+| `retries`                                                                                | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                         | :heavy_minus_sign:                                                                       | Configuration to override the default retry behavior of the client.                      |
+
+### Response
+
+**[operations.GetSectionFolderResponse](../../models/operations/getsectionfolderresponse.md)**
 
 ### Errors
 

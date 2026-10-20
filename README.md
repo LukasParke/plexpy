@@ -544,6 +544,7 @@ asyncio.run(main())
 * [get_section_episodes](docs/sdks/library/README.md#get_section_episodes) - Get Section Episodes
 * [get_section_filters](docs/sdks/library/README.md#get_section_filters) - Get section filters
 * [get_first_characters](docs/sdks/library/README.md#get_first_characters) - Get list of first characters
+* [get_section_folder](docs/sdks/library/README.md#get_section_folder) - Get library folder contents
 * [get_library_section_hubs](docs/sdks/library/README.md#get_library_section_hubs) - Get Section Hubs
 * [delete_indexes](docs/sdks/library/README.md#delete_indexes) - Delete section indexes
 * [delete_intros](docs/sdks/library/README.md#delete_intros) - Delete section intro markers
@@ -980,9 +981,9 @@ with PlexAPI(
 
 
 **Inherit from [`PlexAPIError`](./src/plex_api_client/models/errors/plexapierror.py)**:
-* [`Error`](./src/plex_api_client/models/errors/error.py): Unauthorized. Status code `401`. Applicable to 277 of 405 methods.*
-* [`Unauthorized`](./src/plex_api_client/models/errors/unauthorized.py): Unauthorized - Returned if the X-Plex-Token is missing from the header or query. Status code `401`. Applicable to 4 of 405 methods.*
-* [`BadRequest`](./src/plex_api_client/models/errors/badrequest.py): Bad Request - A parameter was not specified, or was specified incorrectly. Status code `400`. Applicable to 3 of 405 methods.*
+* [`Error`](./src/plex_api_client/models/errors/error.py): Unauthorized. Status code `401`. Applicable to 278 of 406 methods.*
+* [`Unauthorized`](./src/plex_api_client/models/errors/unauthorized.py): Unauthorized - Returned if the X-Plex-Token is missing from the header or query. Status code `401`. Applicable to 4 of 406 methods.*
+* [`BadRequest`](./src/plex_api_client/models/errors/badrequest.py): Bad Request - A parameter was not specified, or was specified incorrectly. Status code `400`. Applicable to 3 of 406 methods.*
 * [`ResponseValidationError`](./src/plex_api_client/models/errors/responsevalidationerror.py): Type mismatch between the response data and the expected Pydantic model. Provides access to the Pydantic validation error via the `cause` attribute.
 
 </details>

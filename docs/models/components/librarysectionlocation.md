@@ -8,4 +8,4 @@ Represents a top-level location on disk where media in this library section is s
 | Field                                           | Type                                            | Required                                        | Description                                     |
 | ----------------------------------------------- | ----------------------------------------------- | ----------------------------------------------- | ----------------------------------------------- |
 | `id`                                            | *Optional[int]*                                 | :heavy_minus_sign:                              | N/A                                             |
-| `path`                                          | *Optional[Any]*                                 | :heavy_minus_sign:                              | The path of where this directory exists on disk |
+| `path`                                          | *Optional[str]*                                 | :heavy_minus_sign:                              | The path of where this directory exists on disk |

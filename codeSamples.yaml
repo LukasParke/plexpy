@@ -4120,6 +4120,7 @@ actions:
             ) as plex_api:
 
                 res = plex_api.library.get_metadata_children(request={
+                    "include_meta": components.BoolInt.TRUE,
                     "id": 240367,
                 })
 
@@ -4813,10 +4814,10 @@ actions:
 
                 res = plex_api.library.get_library_sections_fallback()
 
-                assert res.media_container_with_directory is not None
+                assert res.object is not None
 
                 # Handle response
-                print(res.media_container_with_directory)
+                print(res.object)
   - target: $["paths"]["/library/sections/all"]["get"]
     update:
       x-codeSamples:
@@ -6160,6 +6161,31 @@ actions:
 
                 # Handle response
                 print(res.object)
+  - target: $["paths"]["/library/sections/{sectionId}/folder"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: PlexPy
+          source: |-
+            from plex_api_client import PlexAPI
+            from plex_api_client.models import components
+
+
+            with PlexAPI(
+                accepts=components.Accepts.APPLICATION_XML,
+                token="<YOUR_API_KEY_HERE>",
+            ) as plex_api:
+
+                res = plex_api.library.get_section_folder(request={
+                    "section_id": 924129,
+                    "parent": "3706",
+                    "include_meta": components.BoolInt.TRUE,
+                })
+
+                assert res.media_container_with_metadata is not None
+
+                # Handle response
+                print(res.media_container_with_metadata)
   - target: $["paths"]["/library/sections/{sectionId}/hubs"]["get"]
     update:
       x-codeSamples:

@@ -6,7 +6,7 @@ from enum import Enum
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
 from pydantic import model_serializer
-from typing import Any, List, Optional, Union
+from typing import List, Optional, Union
 from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 
@@ -29,7 +29,7 @@ class LibrarySectionLocationTypedDict(TypedDict):
     r"""Represents a top-level location on disk where media in this library section is stored"""
 
     id: NotRequired[int]
-    path: NotRequired[Any]
+    path: NotRequired[str]
     r"""The path of where this directory exists on disk"""
 
 
@@ -38,7 +38,7 @@ class LibrarySectionLocation(BaseModel):
 
     id: Optional[int] = None
 
-    path: Optional[Any] = None
+    path: Optional[str] = None
     r"""The path of where this directory exists on disk"""
 
     @model_serializer(mode="wrap")

@@ -2535,8 +2535,9 @@ class Library(BaseSDK):
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetLibrarySectionsFallbackResponse(
-                media_container_with_directory=unmarshal_json_response(
-                    Optional[components.MediaContainerWithDirectory], http_res
+                object=unmarshal_json_response(
+                    Optional[operations.GetLibrarySectionsFallbackResponseBody],
+                    http_res,
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -2630,8 +2631,9 @@ class Library(BaseSDK):
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return operations.GetLibrarySectionsFallbackResponse(
-                media_container_with_directory=unmarshal_json_response(
-                    Optional[components.MediaContainerWithDirectory], http_res
+                object=unmarshal_json_response(
+                    Optional[operations.GetLibrarySectionsFallbackResponseBody],
+                    http_res,
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",
@@ -4193,7 +4195,8 @@ class Library(BaseSDK):
     ) -> operations.GetMetadataChildrenResponse:
         r"""Get Metadata Children
 
-        Get children of a show, season, artist, or album.
+        Get children of a show, season, artist, or album, including a photo album.
+        Photo album children can include both photos and video clips; omit media-type filters to retrieve all members.
 
         If set, this operation will use `token` from the global security.
 
@@ -4311,7 +4314,8 @@ class Library(BaseSDK):
     ) -> operations.GetMetadataChildrenResponse:
         r"""Get Metadata Children
 
-        Get children of a show, season, artist, or album.
+        Get children of a show, season, artist, or album, including a photo album.
+        Photo album children can include both photos and video clips; omit media-type filters to retrieve all members.
 
         If set, this operation will use `token` from the global security.
 
@@ -18758,6 +18762,228 @@ class Library(BaseSDK):
             return operations.GetFirstCharactersResponse(
                 object=unmarshal_json_response(
                     Optional[operations.GetFirstCharactersResponseBody], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    def get_section_folder(
+        self,
+        *,
+        request: Union[
+            operations.GetSectionFolderRequest,
+            operations.GetSectionFolderRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetSectionFolderResponse:
+        r"""Get library folder contents
+
+        Browse the physical folders and direct media items in a library section.
+        Omit parent to retrieve the root page. For a child folder, use the parent query value from the folder key returned by Plex.
+        A folder token is distinct from a metadata rating key; do not substitute an album rating key.
+        Photo libraries can return navigation directories, photos, and video clips in the same response.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetSectionFolderRequest)
+        request = cast(operations.GetSectionFolderRequest, request)
+
+        req = self._build_request(
+            method="GET",
+            path="/library/sections/{sectionId}/folder",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetSectionFolderGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getSectionFolder",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Library"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetSectionFolderResponse(
+                media_container_with_metadata=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMetadata], http_res
+                ),
+                status_code=http_res.status_code,
+                content_type=http_res.headers.get("Content-Type") or "",
+                raw_response=http_res,
+            )
+        if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, ["400", "4XX"], "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.SDKError("API error occurred", http_res, http_res_text)
+
+        raise errors.SDKError("Unexpected response received", http_res)
+
+    async def get_section_folder_async(
+        self,
+        *,
+        request: Union[
+            operations.GetSectionFolderRequest,
+            operations.GetSectionFolderRequestTypedDict,
+        ],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetSectionFolderResponse:
+        r"""Get library folder contents
+
+        Browse the physical folders and direct media items in a library section.
+        Omit parent to retrieve the root page. For a child folder, use the parent query value from the folder key returned by Plex.
+        A folder token is distinct from a metadata rating key; do not substitute an album rating key.
+        Photo libraries can return navigation directories, photos, and video clips in the same response.
+
+        If set, this operation will use `token` from the global security.
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, operations.GetSectionFolderRequest)
+        request = cast(operations.GetSectionFolderRequest, request)
+
+        req = self._build_request_async(
+            method="GET",
+            path="/library/sections/{sectionId}/folder",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            _globals=operations.GetSectionFolderGlobals(
+                accepts=self.sdk_configuration.globals.accepts,
+            ),
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            allowed_fields=["token"],
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(1000, 30000, 2, 300000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="getSectionFolder",
+                oauth2_scopes=None,
+                security_source=self.sdk_configuration.security,
+                tags=["Library"],
+                extensions=None,
+            ),
+            request=req,
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return operations.GetSectionFolderResponse(
+                media_container_with_metadata=unmarshal_json_response(
+                    Optional[components.MediaContainerWithMetadata], http_res
                 ),
                 status_code=http_res.status_code,
                 content_type=http_res.headers.get("Content-Type") or "",

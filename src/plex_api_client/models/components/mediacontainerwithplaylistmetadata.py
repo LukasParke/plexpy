@@ -6,7 +6,6 @@ from .image import Image, ImageTypedDict
 from .media import Media, MediaTypedDict
 from .sort import Sort, SortTypedDict
 from .tag import Tag, TagTypedDict
-from datetime import date
 from enum import Enum
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
 import pydantic
@@ -83,10 +82,6 @@ class MediaContainerWithPlaylistMetadataMetadataTypedDict(TypedDict):
     r"""The key at which the item's details can be fetched.  In many cases a metadata item may be passed without all the details (such as in a hub) and this key corresponds to the endpoint to fetch additional details."""
     title: str
     r"""The title of the item (e.g. “300” or “The Simpsons”)"""
-    type: str
-    r"""The type of the video item, such as `movie`, `episode`, or `clip`."""
-    added_at: int
-    r"""In units of seconds since the epoch, returns the time at which the item was added to the library."""
     read_only: NotRequired[bool]
     r"""If we return this as true then this playlist cannot be altered or deleted directly by the client."""
     composite: NotRequired[str]
@@ -105,8 +100,12 @@ class MediaContainerWithPlaylistMetadataMetadataTypedDict(TypedDict):
     r"""Whether or not the playlist is smart."""
     special_playlist_type: NotRequired[str]
     r"""If this is a special playlist, this returns its type (e.g. favorites)."""
+    type: NotRequired[str]
+    r"""The type of the video item, such as `movie`, `episode`, or `clip`."""
     absolute_index: NotRequired[int]
     r"""When present, contains the disc number for a track on multi-disc albums."""
+    added_at: NotRequired[int]
+    r"""In units of seconds since the epoch, returns the time at which the item was added to the library."""
     art: NotRequired[str]
     r"""When present, the URL for the background artwork for the item."""
     art_blur_hash: NotRequired[str]
@@ -164,11 +163,16 @@ class MediaContainerWithPlaylistMetadataMetadataTypedDict(TypedDict):
     last_rated_at: NotRequired[int]
     r"""Timestamp of the last user rating."""
     last_viewed_at: NotRequired[int]
+    library_section_id: NotRequired[int]
+    r"""The library section containing this metadata item, when reported by the server."""
     media: NotRequired[List[MediaTypedDict]]
     music_analysis_version: NotRequired[int]
     r"""Analysis version for music items."""
-    originally_available_at: NotRequired[date]
-    r"""When present, in the format YYYY-MM-DD [HH:MM:SS] (the hours/minutes/seconds part is not always present). The air date, or a higher resolution release date for an item, depending on type. For example, episodes usually have air date like 1979-08-10 (we don't use epoch seconds because media existed prior to 1970). In some cases, recorded over-the-air content has higher resolution air date which includes a time component. Albums and movies may have day-resolution release dates as well."""
+    originally_available_at: NotRequired[str]
+    r"""The original release or capture date as reported by the server.
+    Values can be a date (YYYY-MM-DD), a date with a time (YYYY-MM-DD HH:MM:SS), or an ISO 8601 timestamp.
+    Preserve the string representation so higher-resolution timestamps are not reduced to a date-only value.
+    """
     original_title: NotRequired[str]
     r"""When present, used to indicate an item's original title, e.g. a movie's foreign title."""
     parent_guid: NotRequired[str]
@@ -269,12 +273,6 @@ class MediaContainerWithPlaylistMetadataMetadata(BaseModel):
     title: str
     r"""The title of the item (e.g. “300” or “The Simpsons”)"""
 
-    type: str
-    r"""The type of the video item, such as `movie`, `episode`, or `clip`."""
-
-    added_at: Annotated[int, pydantic.Field(alias="addedAt")]
-    r"""In units of seconds since the epoch, returns the time at which the item was added to the library."""
-
     read_only: Annotated[Optional[bool], pydantic.Field(alias="readOnly")] = None
     r"""If we return this as true then this playlist cannot be altered or deleted directly by the client."""
 
@@ -308,10 +306,16 @@ class MediaContainerWithPlaylistMetadataMetadata(BaseModel):
     ] = None
     r"""If this is a special playlist, this returns its type (e.g. favorites)."""
 
+    type: Optional[str] = None
+    r"""The type of the video item, such as `movie`, `episode`, or `clip`."""
+
     absolute_index: Annotated[Optional[int], pydantic.Field(alias="absoluteIndex")] = (
         None
     )
     r"""When present, contains the disc number for a track on multi-disc albums."""
+
+    added_at: Annotated[Optional[int], pydantic.Field(alias="addedAt")] = None
+    r"""In units of seconds since the epoch, returns the time at which the item was added to the library."""
 
     art: Optional[str] = None
     r"""When present, the URL for the background artwork for the item."""
@@ -435,6 +439,11 @@ class MediaContainerWithPlaylistMetadataMetadata(BaseModel):
         None
     )
 
+    library_section_id: Annotated[
+        Optional[int], pydantic.Field(alias="librarySectionID")
+    ] = None
+    r"""The library section containing this metadata item, when reported by the server."""
+
     media: Annotated[Optional[List[Media]], pydantic.Field(alias="Media")] = None
 
     music_analysis_version: Annotated[
@@ -443,9 +452,12 @@ class MediaContainerWithPlaylistMetadataMetadata(BaseModel):
     r"""Analysis version for music items."""
 
     originally_available_at: Annotated[
-        Optional[date], pydantic.Field(alias="originallyAvailableAt")
+        Optional[str], pydantic.Field(alias="originallyAvailableAt")
     ] = None
-    r"""When present, in the format YYYY-MM-DD [HH:MM:SS] (the hours/minutes/seconds part is not always present). The air date, or a higher resolution release date for an item, depending on type. For example, episodes usually have air date like 1979-08-10 (we don't use epoch seconds because media existed prior to 1970). In some cases, recorded over-the-air content has higher resolution air date which includes a time component. Albums and movies may have day-resolution release dates as well."""
+    r"""The original release or capture date as reported by the server.
+    Values can be a date (YYYY-MM-DD), a date with a time (YYYY-MM-DD HH:MM:SS), or an ISO 8601 timestamp.
+    Preserve the string representation so higher-resolution timestamps are not reduced to a date-only value.
+    """
 
     original_title: Annotated[Optional[str], pydantic.Field(alias="originalTitle")] = (
         None
@@ -608,7 +620,9 @@ class MediaContainerWithPlaylistMetadataMetadata(BaseModel):
                 "radio",
                 "smart",
                 "specialPlaylistType",
+                "type",
                 "absoluteIndex",
+                "addedAt",
                 "art",
                 "artBlurHash",
                 "audienceRating",
@@ -641,6 +655,7 @@ class MediaContainerWithPlaylistMetadataMetadata(BaseModel):
                 "languageOverride",
                 "lastRatedAt",
                 "lastViewedAt",
+                "librarySectionID",
                 "Media",
                 "musicAnalysisVersion",
                 "originallyAvailableAt",

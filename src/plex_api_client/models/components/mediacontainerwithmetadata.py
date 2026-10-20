@@ -21,7 +21,13 @@ class MediaContainerWithMetadataMediaContainerTypedDict(TypedDict):
     size: NotRequired[int]
     total_size: NotRequired[int]
     r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
+    directory: NotRequired[List[MetadataTypedDict]]
+    r"""Navigation folders or metadata items returned under the Directory element."""
     metadata: NotRequired[List[MetadataTypedDict]]
+    photo: NotRequired[List[MetadataTypedDict]]
+    r"""Photo items returned under the Photo element."""
+    video: NotRequired[List[MetadataTypedDict]]
+    r"""Video items, including photo-library clips, returned under the Video element."""
 
 
 class MediaContainerWithMetadataMediaContainer(BaseModel):
@@ -40,13 +46,35 @@ class MediaContainerWithMetadataMediaContainer(BaseModel):
     total_size: Annotated[Optional[int], pydantic.Field(alias="totalSize")] = None
     r"""The total size of objects available. Also provided in the `X-Plex-Container-Total-Size` header."""
 
+    directory: Annotated[
+        Optional[List[Metadata]], pydantic.Field(alias="Directory")
+    ] = None
+    r"""Navigation folders or metadata items returned under the Directory element."""
+
     metadata: Annotated[Optional[List[Metadata]], pydantic.Field(alias="Metadata")] = (
         None
     )
 
+    photo: Annotated[Optional[List[Metadata]], pydantic.Field(alias="Photo")] = None
+    r"""Photo items returned under the Photo element."""
+
+    video: Annotated[Optional[List[Metadata]], pydantic.Field(alias="Video")] = None
+    r"""Video items, including photo-library clips, returned under the Video element."""
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = set(["identifier", "offset", "size", "totalSize", "Metadata"])
+        optional_fields = set(
+            [
+                "identifier",
+                "offset",
+                "size",
+                "totalSize",
+                "Directory",
+                "Metadata",
+                "Photo",
+                "Video",
+            ]
+        )
         serialized = handler(self)
         m = {}
 
@@ -62,13 +90,17 @@ class MediaContainerWithMetadataMediaContainer(BaseModel):
 
 
 class MediaContainerWithMetadataTypedDict(TypedDict):
-    r"""A MediaContainer that includes metadata items. When `includeCollections=1` is passed to endpoints such as `/library/sections/{sectionId}/all`, this container may also include `Collection` items."""
+    r"""A MediaContainer that includes metadata items. Photo library responses can also expose items under Directory, Photo, or Video; these optional arrays retain the same item metadata and Media/Part file information.
+    When includeCollections=1 is passed to endpoints such as /library/sections/{sectionId}/all, this container may also include Collection items.
+    """
 
     media_container: NotRequired[MediaContainerWithMetadataMediaContainerTypedDict]
 
 
 class MediaContainerWithMetadata(BaseModel):
-    r"""A MediaContainer that includes metadata items. When `includeCollections=1` is passed to endpoints such as `/library/sections/{sectionId}/all`, this container may also include `Collection` items."""
+    r"""A MediaContainer that includes metadata items. Photo library responses can also expose items under Directory, Photo, or Video; these optional arrays retain the same item metadata and Media/Part file information.
+    When includeCollections=1 is passed to endpoints such as /library/sections/{sectionId}/all, this container may also include Collection items.
+    """
 
     media_container: Annotated[
         Optional[MediaContainerWithMetadataMediaContainer],

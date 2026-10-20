@@ -4,10 +4,16 @@ from __future__ import annotations
 import httpx
 from plex_api_client.models.components import (
     accepts as components_accepts,
+    boolint as components_boolint,
     mediacontainerwithmetadata as components_mediacontainerwithmetadata,
 )
 from plex_api_client.types import BaseModel, UNSET_SENTINEL
-from plex_api_client.utils import FieldMetadata, HeaderMetadata, PathParamMetadata
+from plex_api_client.utils import (
+    FieldMetadata,
+    HeaderMetadata,
+    PathParamMetadata,
+    QueryParamMetadata,
+)
 import pydantic
 from pydantic import model_serializer
 from typing import Optional
@@ -172,6 +178,18 @@ class GetMetadataChildrenRequestTypedDict(TypedDict):
     r"""A friendly name for the client"""
     marketplace: NotRequired[str]
     r"""The marketplace on which the client application is distributed"""
+    x_plex_container_start: NotRequired[int]
+    r"""The index of the first item to return. If not specified, the first item will be returned.
+    If the number of items exceeds the limit, the response will be paginated.
+    By default this is 0
+    """
+    x_plex_container_size: NotRequired[int]
+    r"""The number of items to return. If not specified, all items will be returned.
+    If the number of items exceeds the limit, the response will be paginated.
+    By default this is 50
+    """
+    include_meta: NotRequired[components_boolint.BoolInt]
+    r"""Include the Meta object in the response."""
 
 
 class GetMetadataChildrenRequest(BaseModel):
@@ -256,6 +274,33 @@ class GetMetadataChildrenRequest(BaseModel):
     ] = None
     r"""The marketplace on which the client application is distributed"""
 
+    x_plex_container_start: Annotated[
+        Optional[int],
+        pydantic.Field(alias="X-Plex-Container-Start"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = 0
+    r"""The index of the first item to return. If not specified, the first item will be returned.
+    If the number of items exceeds the limit, the response will be paginated.
+    By default this is 0
+    """
+
+    x_plex_container_size: Annotated[
+        Optional[int],
+        pydantic.Field(alias="X-Plex-Container-Size"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = 50
+    r"""The number of items to return. If not specified, all items will be returned.
+    If the number of items exceeds the limit, the response will be paginated.
+    By default this is 50
+    """
+
+    include_meta: Annotated[
+        Optional[components_boolint.BoolInt],
+        pydantic.Field(alias="includeMeta"),
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = components_boolint.BoolInt.FALSE
+    r"""Include the Meta object in the response."""
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = set(
@@ -271,6 +316,9 @@ class GetMetadataChildrenRequest(BaseModel):
                 "Device-Vendor",
                 "Device-Name",
                 "Marketplace",
+                "X-Plex-Container-Start",
+                "X-Plex-Container-Size",
+                "includeMeta",
             ]
         )
         serialized = handler(self)
